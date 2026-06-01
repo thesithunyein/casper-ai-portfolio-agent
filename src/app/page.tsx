@@ -78,11 +78,27 @@ export default function Home() {
   if (!walletAddress) {
     return (
       <main className="min-h-screen bg-white relative overflow-hidden">
-        {/* Animated Background */}
+        {/* Cool Animated Background */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 right-0 w-96 h-96 bg-primary/3 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          {/* Gradient mesh background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-50 via-white to-blue-50" />
+          
+          {/* Floating gradient orbs */}
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-primary/20 to-secondary/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-secondary/15 to-primary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-gradient-to-br from-primary/10 to-cyan-200/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+          
+          {/* Animated floating particles */}
+          <div className="absolute top-20 left-10 w-2 h-2 bg-primary/30 rounded-full animate-bounce" style={{ animationDuration: '3s' }} />
+          <div className="absolute top-40 right-20 w-1.5 h-1.5 bg-secondary/40 rounded-full animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }} />
+          <div className="absolute bottom-32 left-1/3 w-2 h-2 bg-primary/25 rounded-full animate-bounce" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+          <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-secondary/30 rounded-full animate-bounce" style={{ animationDuration: '3.5s', animationDelay: '0.5s' }} />
+          <div className="absolute bottom-1/4 right-1/4 w-2.5 h-2.5 bg-primary/20 rounded-full animate-bounce" style={{ animationDuration: '6s', animationDelay: '1.5s' }} />
+          <div className="absolute top-1/4 left-1/2 w-1.5 h-1.5 bg-cyan-400/30 rounded-full animate-bounce" style={{ animationDuration: '4.5s', animationDelay: '3s' }} />
+          
+          {/* Diagonal gradient lines */}
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-bl from-primary/[0.03] to-transparent transform rotate-12" />
+          <div className="absolute bottom-0 left-0 w-1/3 h-full bg-gradient-to-tr from-secondary/[0.03] to-transparent transform -rotate-12" />
         </div>
 
         {/* Navigation */}
