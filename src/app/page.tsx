@@ -2,13 +2,14 @@
 
 import { useCallback } from 'react'
 import { useAppStore } from '@/lib/store'
-import { fetchPortfolio } from '@/lib/injective'
+import { fetchPortfolio } from '@/lib/casper'
 import { WalletConnect } from '@/components/WalletConnect'
 import { PortfolioDisplay } from '@/components/PortfolioDisplay'
 import { AIAnalysisComponent } from '@/components/AIAnalysis'
 import { LoadingState } from '@/components/LoadingState'
 import { ErrorState } from '@/components/ErrorState'
 import { Logo } from '@/components/Logo'
+import { AgentChat } from '@/components/AgentChat'
 import { Brain, Shield, BarChart3, Sparkles, Heart, Star, Zap, Rainbow } from 'lucide-react'
 
 export default function Home() {
@@ -140,7 +141,7 @@ export default function Home() {
               </h2>
             </div>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-              AI-powered portfolio analysis with cute bear-powered recommendations for the Injective ecosystem
+              AI-powered portfolio analysis with cute bear-powered recommendations for the Casper ecosystem
             </p>
             <button
               onClick={() => {
@@ -361,9 +362,19 @@ export default function Home() {
               </button>
             </div>
 
-            <PortfolioDisplay portfolio={portfolio} />
-
-            {analysis && <AIAnalysisComponent analysis={analysis} />}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="space-y-8">
+                <PortfolioDisplay portfolio={portfolio} />
+                {analysis && <AIAnalysisComponent analysis={analysis} />}
+              </div>
+              <div className="lg:sticky lg:top-24">
+                <AgentChat 
+                  portfolio={portfolio} 
+                  analysis={analysis} 
+                  onAnalyze={handleAnalyze} 
+                />
+              </div>
+            </div>
           </div>
         )}
       </div>

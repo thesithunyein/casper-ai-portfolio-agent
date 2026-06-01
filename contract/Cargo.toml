@@ -1,0 +1,23 @@
+[package]
+name = "portfolio-agent"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+odra = { version = "1.0.0", default-features = false }
+odra-casper-livenet-env = "1.0.0"
+
+[features]
+default = ["mock-vm"]
+mock-vm = ["odra/mock-vm"]
+casper = ["odra/casper"]
+
+[[bin]]
+name = "portfolio_agent_contract"
+path = "src/main.rs"
+test = false
+
+[lib]
+name = "portfolio_agent"
+path = "src/lib.rs"
+crate-type = ["cdylib", "lib"]

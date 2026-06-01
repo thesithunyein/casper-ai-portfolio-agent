@@ -1,7 +1,7 @@
 {
-  "name": "injective-ai-portfolio-agent",
-  "version": "1.0.1",
-  "description": "AI-powered portfolio analysis and rebalancing agent for Injective",
+  "name": "casper-ai-portfolio-agent",
+  "version": "2.0.0",
+  "description": "Agentic AI-powered portfolio analysis with cute design for Casper Network",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,11 +13,7 @@
     "next": "14.2.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "@injectivelabs/sdk-ts": "^1.14.28",
-    "@injectivelabs/wallet-ts": "^1.14.28",
-    "@injectivelabs/networks": "^1.14.28",
-    "@cosmjs/proto-signing": "^0.32.3",
-    "@cosmjs/stargate": "^0.32.3",
+    "casper-js-sdk": "^3.0.0",
     "@anthropic-ai/sdk": "^0.24.3",
     "lucide-react": "^0.460.0",
     "tailwindcss": "^3.4.14",

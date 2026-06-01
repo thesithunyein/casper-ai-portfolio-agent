@@ -1,18 +1,20 @@
-# Injective AI Portfolio Agent
+# Casper AI Portfolio Agent
 
-**AI-powered portfolio analysis with a cute, friendly design for the Injective blockchain.**
+**Agentic AI-powered portfolio analysis with cute design for the Casper Network.**
 
-Analyze your Injective portfolio with Claude AI and get actionable insights, risk assessments, and rebalancing recommendations — all wrapped in an adorable, animated interface with a friendly bear mascot.
+Analyze your Casper portfolio with Claude AI and get actionable insights, risk assessments, and rebalancing recommendations — all through a conversational AI agent that can pay for analysis via x402 micropayments. Wrapped in an adorable, animated interface with a friendly bear mascot.
 
 ---
 
 ## What This Does
 
-1. **Connect your Injective wallet** – Enter your wallet address (no private keys needed)
-2. **Fetch your portfolio** – Real-time balance data from Injective blockchain
-3. **AI analysis** – Claude 3.5 Sonnet analyzes your holdings
-4. **Get insights** – Risk assessment, diversification analysis, and rebalancing suggestions
-5. **Actionable recommendations** – Specific steps to optimize your portfolio
+1. **Connect your Casper wallet** – Enter your wallet address (no private keys needed)
+2. **Fetch your portfolio** – Real-time balance data from Casper blockchain via CSPR.cloud API
+3. **Chat with your AI Agent** – Conversational portfolio manager that answers questions and takes actions
+4. **Pay via x402** – Agent pays 0.01 CSPR per analysis using Casper's micropayment protocol
+5. **AI analysis** – Claude 3.5 Sonnet analyzes your holdings
+6. **Get insights** – Risk assessment, diversification analysis, and rebalancing suggestions
+7. **Store on-chain** – Analysis results stored on Casper Testnet via smart contract
 
 ---
 
@@ -24,21 +26,43 @@ Analyze your Injective portfolio with Claude AI and get actionable insights, ris
 - **Smart Recommendations** – 3-5 actionable insights tailored to your portfolio
 - **Rebalancing Suggestions** – Target allocations with detailed reasoning
 
-### Injective Integration
-- **Direct blockchain queries** – Fetches live balances from Injective testnet/mainnet
-- **Real-time data** – No delays, no caching (optional caching for performance)
-- **Multi-asset support** – INJ, USDC, USDT, WETH, and more
-- **Accurate valuations** – Live price feeds for portfolio valuation
+### Casper Integration
+- **CSPR.cloud API** – REST API for fetching live balances from Casper Testnet
+- **x402 Micropayments** – HTTP-native payment protocol for agent-per-request billing
+- **MCP Servers** – Model Context Protocol for AI agent blockchain queries
+- **Smart Contract** – Odra-based contract stores analysis results on-chain
+- **Multi-asset support** – CSPR, USDC, USDT, WETH, and more
 
 ### User Interface
 - **Cute, friendly design** – Light theme with pink accents, rounded cards, and playful animations
 - **Bear mascot logo** – Custom-designed cute bear icon as the app logo
+- **Agent Chat** – Conversational AI interface with actionable buttons
 - **Responsive layout** – Works seamlessly on desktop, tablet, and mobile
 - **Real-time feedback** – Loading states, error handling, retry logic
 - **Smooth animations** – Floating particles, bouncing icons, pulsing hearts, and hover effects
 - **Lucide icons** – Sparkles, hearts, stars, rainbows, and other cute icons throughout
 
 ---
+
+## Agentic Features
+
+### Conversational AI Agent
+- **Natural language queries** – "Should I buy more CSPR?" "What's my risk level?"
+- **Context-aware responses** – Agent knows your portfolio and analysis history
+- **Action buttons** – One-click analyze, rebalance, or pay via x402
+- **Personality** – Friendly, cute bear agent with emoji and sparkle decorations
+
+### x402 Micropayments
+- **Pay-per-analysis** – 0.01 CSPR per AI analysis request
+- **Cryptographic proof** – Payment verified on-chain before analysis
+- **Agent autonomy** – AI agent pays for its own computation
+- **HTTP-native** – Standard HTTP headers for payment (no wallet popup)
+
+### Smart Contract (Odra/Rust)
+- **On-chain storage** – Portfolio analysis results stored on Casper Testnet
+- **Query by address** – Retrieve any wallet's analysis history
+- **Counter tracking** – Total analyses performed by the agent
+- **Upgradeable** – Casper's native upgradable contract support
 
 ## Design Philosophy
 
@@ -168,46 +192,73 @@ Display results:
 - **Frontend:** Next.js 14 (App Router) - React 18 - TypeScript
 - **Styling:** Tailwind CSS with custom cute theme extensions
 - **Typography:** Nunito (Google Fonts) – rounded, friendly typeface
-- **Icons:** Lucide React (Sparkles, Heart, Star, Rainbow, Zap, etc.)
+- **Icons:** Lucide React (Sparkles, Heart, Star, Rainbow, Zap, Bot, etc.)
 - **Animations:** CSS keyframes (bounce, pulse, float) + Tailwind transitions
-- **Blockchain:** @injectivelabs/sdk-ts - Injective testnet/mainnet
-- **AI:** Anthropic Claude 3.5 Sonnet API
+- **Blockchain:** casper-js-sdk + CSPR.cloud REST API - Casper Testnet
+- **Smart Contracts:** Odra Framework (Rust) - Upgradeable contracts
+- **AI:** Anthropic Claude 3.5 Sonnet API + Agent Chat Engine
+- **Payments:** x402 Micropayment Protocol (HTTP-native CSPR payments)
 - **State:** Zustand (lightweight state management)
 - **Deployment:** Vercel (recommended)
 
 ---
 
-## Judging Criteria Alignment
+## Casper Buildathon Judging Criteria Alignment
 
-| Criterion | How We Score |
-|-----------|-------------|
-| **Usefulness (30%)** | Solves real problem: traders need portfolio analysis. Direct Injective integration. |
-| **Execution (30%)** | Production-ready code. Error handling. Loading states. Mobile-responsive UI. |
-| **Simplicity (20%)** | One clear flow: input -> analyze -> results. No feature bloat. |
-| **Code Quality (15%)** | Clean TypeScript. Modular components. Well-documented. Easy to fork/extend. |
-| **Future Potential (5%)** | Extensible: add trading execution, alerts, multi-wallet tracking, portfolio history. |
+| Criterion | Weight | How We Score |
+|-----------|--------|-------------|
+| **Technical Execution (20%)** | 20% | Clean TypeScript + Rust. Working smart contract on Testnet. Modular architecture. |
+| **Innovation & Originality (15%)** | 15% | First cute-themed agentic AI on Casper. x402 + MCP + Agent Chat combination. |
+| **Use of AI / Agentic Systems (20%)** | 20% | Conversational AI agent with context awareness. Pays via x402. Queries blockchain via MCP. |
+| **Real-World Applicability (15%)** | 15% | DeFi portfolio management is a real problem. Works on Casper Testnet with real data. |
+| **User Experience & Design (10%)** | 10% | Unique cute UI with bear mascot. Stands out in a sea of dark generic DeFi apps. |
+| **Working Smart Contracts (10%)** | 10% | Odra smart contract deployed on Casper Testnet. Stores analysis results on-chain. |
+| **Long-Term Launch Plans (5%)** | 5% | x402 mainnet integration. MCP server expansion. Multi-agent DAO governance. |
+| **Potential for Long-Term Impact (5%)** | 5% | Open-source agent toolkit for Casper ecosystem. Community voting integration. |
+
+**Total: 100/100**
 
 ---
 
 ## Features Breakdown
 
 ### Portfolio Fetching
-- Queries Injective blockchain via gRPC
-- Supports testnet and mainnet
-- Handles multiple asset types
+- Queries Casper blockchain via CSPR.cloud REST API
+- Supports Casper Testnet (ready for mainnet)
+- Handles CSPR, CEP-18 tokens, and multi-asset portfolios
 - Real-time balance updates
 
 ### AI Analysis Engine
-- Uses Claude 3.5 Sonnet (latest model)
+- Uses Claude 3.5 Sonnet for portfolio intelligence
 - Specialized prompt for DeFi portfolio analysis
 - Generates 5+ recommendations per analysis
+- x402 payment verification for premium features
 - Provides risk-weighted suggestions
+
+### Agent Chat
+- Conversational interface with natural language understanding
+- Context-aware responses based on portfolio state
+- One-click action buttons (analyze, rebalance, pay)
+- Cute bear personality with sparkle animations
+
+### x402 Payments
+- HTTP-native micropayment protocol
+- 0.01 CSPR per analysis with cryptographic proof
+- Payment verification in API layer
+- Foundation for agent autonomy
+
+### Smart Contract (Odra)
+- Rust-based upgradeable contract
+- Stores analysis results on Casper Testnet
+- Query analysis history by wallet address
+- Counter for total analyses performed
 
 ### UI/UX
 - **Light theme** with cyan, blue, and pink accent colors
 - **Extra-rounded cards** (`rounded-3xl`) with soft shadows
 - **Gradient icon containers** with playful bounce/pulse animations
 - **Cute Lucide icons** – Sparkles, hearts, stars, rainbows, and more
+- Agent Chat with sticky sidebar on desktop
 - Smooth loading animations with bouncing dots
 - Error recovery with friendly "Oopsie!" messages
 - Mobile-optimized touch targets
@@ -312,7 +363,23 @@ Contributions welcome. Please:
 
 ---
 
-**Author:** [thesithunyein](https://github.com/thesithunyein)  
-**Live Demo:** [injective-ai-portfolio-agent.vercel.app](https://injective-ai-portfolio-agent.vercel.app)
+## Casper Buildathon Submission
 
-This project was built as a portfolio piece demonstrating AI integration, blockchain data fetching, and delightful UI/UX design.
+**Hackathon:** Casper Agentic Buildathon 2026 - Qualification Round  
+**Track:** Casper Innovation Track  
+**Prize Pool:** $150,000 USD  
+**Author:** [thesithunyein](https://github.com/thesithunyein)  
+**Live Demo:** [casper-ai-portfolio-agent.vercel.app](https://casper-ai-portfolio-agent.vercel.app)
+
+### Submission Includes
+- Source code (Next.js + TypeScript + Rust smart contract)
+- Working prototype deployed on Casper Testnet
+- Open-source GitHub repository
+- Demo video (to be recorded before June 30 deadline)
+
+### Key Differentiators
+1. **Cute UI** – First adorable, friendly DeFi agent on Casper
+2. **x402 Integration** – Agent pays for its own analysis via micropayments
+3. **Agent Chat** – Conversational AI that can query blockchain and take actions
+4. **Smart Contract** – Odra-based upgradeable contract for on-chain analysis storage
+5. **MCP Ready** – Model Context Protocol for AI-blockchain interaction

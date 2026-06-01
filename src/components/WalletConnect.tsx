@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useAppStore } from '@/lib/store'
-import { validateInjectiveAddress } from '@/lib/injective'
+import { validateCasperAddress } from '@/lib/casper'
 import { Wallet, Sparkles, Heart } from 'lucide-react'
 
 export const WalletConnect = () => {
@@ -15,8 +15,8 @@ export const WalletConnect = () => {
       return
     }
 
-    if (!validateInjectiveAddress(input)) {
-      setError('Invalid Injective address. Must start with "inj" and be 42 characters.')
+    if (!validateCasperAddress(input)) {
+      setError('Invalid Casper address. Must be 68 characters starting with 01 or 02.')
       return
     }
 
@@ -36,7 +36,7 @@ export const WalletConnect = () => {
               <h2 className="text-xl font-bold text-black">Connect Wallet</h2>
               <Heart className="w-4 h-4 text-cute-dark animate-pulse" />
             </div>
-            <p className="text-gray-600 text-sm font-semibold">Enter your Injective address</p>
+            <p className="text-gray-600 text-sm font-semibold">Enter your Casper address</p>
           </div>
         </div>
 
@@ -50,7 +50,7 @@ export const WalletConnect = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleConnect()}
-              placeholder="inj1..."
+              placeholder="01abc..."
               className="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-2xl text-black placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-mono text-sm"
             />
           </div>
@@ -72,7 +72,7 @@ export const WalletConnect = () => {
         </span>
         <span className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-cute-dark animate-pulse" style={{ animationDelay: '0.5s' }} />
-          Injective Network
+          Casper Network
         </span>
       </div>
     </div>
