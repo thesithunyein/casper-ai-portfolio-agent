@@ -236,38 +236,49 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a]">
-      {/* Background gradient */}
-      <div className="fixed inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0d1f1a] to-[#0a0a0a] pointer-events-none" />
-      
-      <div className="relative max-w-5xl mx-auto px-4 md:px-8 py-12">
-        <div className="mb-8">
+    <main className="min-h-screen bg-white relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 right-0 w-96 h-96 bg-primary/3 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      </div>
+
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 animate-fade-in">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3 group cursor-pointer hover:opacity-80 transition" onClick={reset}>
+            <Logo className="w-8 h-8" />
+            <span className="font-bold text-lg text-black">Injective Agent</span>
+          </div>
           <button
             onClick={reset}
-            className="px-4 py-2 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-all border border-white/10 text-sm font-medium"
+            className="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition"
           >
             Back to Home
           </button>
         </div>
+      </nav>
 
+      <div className="relative max-w-6xl mx-auto px-4 md:px-8 py-24">
         {!portfolio ? (
-          <div className="max-w-md mx-auto">
-            <div className="glass-strong rounded-2xl p-8 text-center">
+          <div className="max-w-md mx-auto mt-12">
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-lg">
               <div className="mb-6">
-                <p className="text-sm text-gray-500 uppercase tracking-wider mb-2">Connected Wallet</p>
+                <p className="text-sm text-gray-600 uppercase tracking-wider mb-2">Connected Wallet</p>
                 <p className="text-primary font-mono text-sm break-all">{walletAddress}</p>
               </div>
               
               <div className="space-y-3">
                 <button
                   onClick={handleAnalyze}
-                  className="w-full px-6 py-4 bg-primary text-black font-semibold rounded-xl hover:opacity-90 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full px-6 py-4 bg-black text-white font-semibold rounded-xl hover:bg-gray-800 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Analyze Portfolio
                 </button>
                 <button
                   onClick={reset}
-                  className="w-full px-6 py-3 bg-white/5 text-gray-400 font-medium rounded-xl hover:bg-white/10 transition-all border border-white/10"
+                  className="w-full px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all border border-gray-300"
                 >
                   Disconnect
                 </button>
@@ -275,15 +286,15 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center mb-8">
+          <div className="space-y-8">
+            <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-2xl font-bold text-white">Analysis Results</h2>
-                <p className="text-gray-500 text-sm mt-1">Portfolio overview and AI insights</p>
+                <h1 className="text-4xl font-bold text-black">Analysis Results</h1>
+                <p className="text-gray-600 text-lg mt-2">Portfolio overview and AI insights</p>
               </div>
               <button
                 onClick={reset}
-                className="px-4 py-2 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-all border border-white/10 text-sm font-medium"
+                className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-all font-medium"
               >
                 New Analysis
               </button>
