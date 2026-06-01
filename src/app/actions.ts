@@ -14,22 +14,34 @@ export interface AIAnalysis {
   }
 }
 
+const formatPortfolioForAI = (portfolio: Portfolio): string => {
+  const assetLines = portfolio.assets.map(
+    (asset) =>
+      `- ${asset.symbol}: ${(parseFloat(asset.amount) / 1e18).toFixed(4)} (${asset.percentage.toFixed(1)}% of portfolio, $${asset.value.toFixed(2)})`
+  )
+
+  return `Total Portfolio Value: $${portfolio.totalValue.toFixed(2)}
+Assets:
+${assetLines.join('\n')}`
+}
+
 export async function analyzePortfolioAction(
   portfolio: Portfolio
 ): Promise<AIAnalysis> {
   const apiKey = process.env.ANTHROPIC_API_KEY
 
   if (!apiKey) {
-    throw new Error(
-      'ANTHROPIC_API_KEY is not set in environment variables'
-    )
+    console.error('ANTHROPIC_API_KEY is not set')
+    throw new Error('ANTHROPIC_API_KEY is not set in environment variables')
   }
 
-  const client = new Anthropic({ apiKey })
+  try {
+    console.log('Creating Anthropic client')
+    const client = new Anthropic({ apiKey })
 
-  const portfolioSummary = formatPortfolioForAI(portfolio)
+    const portfolioSummary = formatPortfolioForAI(portfolio)
 
-  const prompt = `You are an expert portfolio analyst specializing in cryptocurrency and DeFi assets on the Injective blockchain.
+    const prompt = `You are an expert portfolio analyst specializing in cryptocurrency and DeFi assets on the Injective blockchain.
 
 Analyze the following portfolio and provide:
 1. A brief summary of the portfolio composition
@@ -42,7 +54,7 @@ ${portfolioSummary}
 
 Respond in JSON format with keys: summary, riskAssessment, recommendations (array), rebalancingSuggestion (object with action, targetAllocation object, reasoning).`
 
-  try {
+    console.log('Calling Claude API')
     const message = await client.messages.create({
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 1024,
@@ -68,15 +80,4 @@ Respond in JSON format with keys: summary, riskAssessment, recommendations (arra
     console.error('Error analyzing portfolio:', error)
     throw error
   }
-}
-
-const formatPortfolioForAI = (portfolio: Portfolio): string => {
-  const assetLines = portfolio.assets.map(
-    (asset) =>
-      `- ${asset.symbol}: ${(parseFloat(asset.amount) / 1e18).toFixed(4)} (${asset.percentage.toFixed(1)}% of portfolio, $${asset.value.toFixed(2)})`
-  )
-
-  return `Total Portfolio Value: $${portfolio.totalValue.toFixed(2)}
-Assets:
-${assetLines.join('\n')}`
 }
