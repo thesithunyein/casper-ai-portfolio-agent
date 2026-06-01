@@ -12,15 +12,6 @@ export async function POST(request: any) {
       )
     }
 
-    const assetLines = portfolio.assets.map(
-      (asset: any) =>
-        `- ${asset.symbol}: ${(parseFloat(asset.amount) / 1e18).toFixed(4)} (${asset.percentage.toFixed(1)}% of portfolio, $${asset.value.toFixed(2)})`
-    )
-
-    const portfolioSummary = `Total Portfolio Value: $${portfolio.totalValue.toFixed(2)}
-Assets:
-${assetLines.join('\n')}`
-
     // Generate realistic mock AI analysis based on portfolio data
     const mockAnalysis = {
       summary: `Your portfolio is valued at $${portfolio.totalValue.toFixed(2)} with ${portfolio.assets.length} assets. The portfolio shows a ${portfolio.assets[0]?.percentage > 50 ? 'concentrated' : 'diversified'} allocation with ${portfolio.assets[0]?.symbol} as the largest holding at ${portfolio.assets[0]?.percentage.toFixed(1)}%.`,
