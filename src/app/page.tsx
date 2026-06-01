@@ -157,36 +157,59 @@ export default function Home() {
         </section>
 
         {/* How It Works */}
-        <section id="how-it-works" className="py-20 px-4 md:px-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold text-black mb-12 text-center">How It Works</h2>
-            <div className="space-y-8">
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-black text-white flex items-center justify-center font-bold">1</div>
-                <div>
-                  <h3 className="text-xl font-bold text-black mb-2">Connect Your Wallet</h3>
-                  <p className="text-gray-600">Enter your Injective wallet address (no private keys needed)</p>
+        <section id="how-it-works" className="py-20 px-4 md:px-8 relative">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-16 text-center">How It Works</h2>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="group relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition duration-300" />
+                <div className="relative bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-primary/50 transition duration-300">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xl">1</div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-black mb-2">Connect Wallet</h3>
+                      <p className="text-gray-600 leading-relaxed">Enter your Injective wallet address securely. No private keys needed, just your public address.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-black text-white flex items-center justify-center font-bold">2</div>
-                <div>
-                  <h3 className="text-xl font-bold text-black mb-2">Fetch Your Portfolio</h3>
-                  <p className="text-gray-600">We retrieve your real-time balance data from the Injective blockchain</p>
+
+              <div className="group relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition duration-300" />
+                <div className="relative bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-primary/50 transition duration-300">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xl">2</div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-black mb-2">Fetch Portfolio</h3>
+                      <p className="text-gray-600 leading-relaxed">We retrieve your real-time balance data directly from the Injective blockchain in seconds.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-black text-white flex items-center justify-center font-bold">3</div>
-                <div>
-                  <h3 className="text-xl font-bold text-black mb-2">AI Analysis</h3>
-                  <p className="text-gray-600">Claude AI analyzes your holdings and generates insights</p>
+
+              <div className="group relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition duration-300" />
+                <div className="relative bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-primary/50 transition duration-300">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xl">3</div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-black mb-2">AI Analysis</h3>
+                      <p className="text-gray-600 leading-relaxed">Claude AI analyzes your holdings and generates comprehensive insights in real-time.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-black text-white flex items-center justify-center font-bold">4</div>
-                <div>
-                  <h3 className="text-xl font-bold text-black mb-2">Get Recommendations</h3>
-                  <p className="text-gray-600">Receive actionable recommendations to optimize your portfolio</p>
+
+              <div className="group relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition duration-300" />
+                <div className="relative bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-primary/50 transition duration-300">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xl">4</div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-black mb-2">Get Recommendations</h3>
+                      <p className="text-gray-600 leading-relaxed">Receive actionable recommendations to optimize your portfolio and manage risk effectively.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
