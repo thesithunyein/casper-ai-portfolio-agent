@@ -128,6 +128,12 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative z-10 pt-32 pb-20 px-4 md:px-8">
           <div className="max-w-4xl mx-auto text-center">
+            {/* Hackathon Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-200 rounded-2xl mb-6 animate-pulse">
+              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="text-sm font-bold text-red-600">Casper Agentic Buildathon 2026</span>
+              <span className="text-xs text-red-400 font-semibold">$150,000 Prize Pool</span>
+            </div>
             <div className="relative inline-block mb-6 pb-4">
               <Sparkles className="absolute -top-4 -left-8 w-6 h-6 text-yellow-400 animate-bounce" style={{ animationDelay: '0s' }} />
               <Sparkles className="absolute -top-2 -right-6 w-5 h-5 text-pink-400 animate-bounce" style={{ animationDelay: '0.5s' }} />
@@ -267,10 +273,10 @@ export default function Home() {
           <div className="max-w-6xl mx-auto text-center">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Heart className="w-5 h-5 text-cute-dark animate-pulse" />
-              <p className="text-gray-300 text-sm font-semibold">Built with love for Injective Solo AI Builder Sprint</p>
+              <p className="text-gray-300 text-sm font-semibold">Casper Agentic Buildathon 2026 Submission</p>
               <Heart className="w-5 h-5 text-cute-dark animate-pulse" style={{ animationDelay: '0.5s' }} />
             </div>
-            <p className="text-gray-500 text-xs">Powered by Claude AI and Injective Blockchain</p>
+            <p className="text-gray-500 text-xs">Powered by Claude AI, x402, and Casper Network</p>
             <div className="mt-4 flex items-center justify-center gap-1">
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               <div className="w-2 h-2 rounded-full bg-secondary animate-pulse" style={{ animationDelay: '0.2s' }} />
