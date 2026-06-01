@@ -29,7 +29,7 @@ export const PortfolioDisplay = ({ portfolio }: PortfolioDisplayProps) => {
       </div>
 
       <div className="space-y-3">
-        {portfolio.assets.map((asset, index) => (
+        {portfolio.assets.map((asset) => (
           <div
             key={asset.denom}
             className="group p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] transition-all"
