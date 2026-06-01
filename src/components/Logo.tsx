@@ -3,30 +3,30 @@
 export const Logo = ({ className = '' }: { className?: string }) => {
   return (
     <div className={`relative group ${className}`}>
-      {/* Animated glow background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary rounded-xl blur-xl opacity-60 group-hover:opacity-100 transition duration-500 animate-pulse" />
+      {/* Outer glow on hover */}
+      <div className="absolute -inset-1 bg-gradient-to-br from-primary to-secondary rounded-2xl blur-md opacity-0 group-hover:opacity-40 transition duration-300" />
       
-      {/* Main logo container */}
-      <div className="relative bg-gradient-to-br from-primary to-secondary rounded-xl p-3 flex items-center justify-center shadow-lg group-hover:shadow-2xl transition duration-300 transform group-hover:scale-105">
-        {/* Inner circle with pattern */}
-        <div className="relative w-full h-full flex items-center justify-center">
-          {/* Geometric background */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent rounded-lg" />
-          
-          {/* Logo text with premium styling */}
-          <div className="relative flex flex-col items-center justify-center">
-            <div className="text-white font-black text-sm tracking-widest leading-none">
-              INJ
-            </div>
-            <div className="text-white/80 text-xs font-semibold tracking-wider mt-0.5">
-              AI
-            </div>
+      {/* Main app icon - Apple style rounded square */}
+      <div className="relative bg-gradient-to-br from-primary via-cyan-400 to-secondary rounded-2xl p-0 flex items-center justify-center shadow-lg group-hover:shadow-2xl transition duration-300 transform group-hover:scale-110 aspect-square">
+        
+        {/* Premium glass effect overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-white/10 rounded-2xl" />
+        
+        {/* Inner content */}
+        <div className="relative flex flex-col items-center justify-center gap-0.5">
+          {/* Large INJ text */}
+          <div className="text-white font-black text-xl tracking-tighter leading-none">
+            INJ
+          </div>
+          {/* Small AI text */}
+          <div className="text-white font-bold text-xs tracking-wider">
+            AI
           </div>
         </div>
+        
+        {/* Subtle shine effect */}
+        <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/20 to-transparent rounded-t-2xl" />
       </div>
-      
-      {/* Shine effect on hover */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transition duration-300 transform -skew-x-12" />
     </div>
   )
 }
