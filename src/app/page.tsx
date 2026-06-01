@@ -3,7 +3,7 @@
 import { useCallback } from 'react'
 import { useAppStore } from '@/lib/store'
 import { fetchPortfolio } from '@/lib/injective'
-import { analyzePortfolio } from '@/lib/ai'
+import { analyzePortfolioAction } from './actions'
 import { WalletConnect } from '@/components/WalletConnect'
 import { PortfolioDisplay } from '@/components/PortfolioDisplay'
 import { AIAnalysisComponent } from '@/components/AIAnalysis'
@@ -35,7 +35,7 @@ export default function Home() {
       const portfolioData = await fetchPortfolio(walletAddress)
       setPortfolio(portfolioData)
 
-      const aiAnalysis = await analyzePortfolio(portfolioData)
+      const aiAnalysis = await analyzePortfolioAction(portfolioData)
       setAnalysis(aiAnalysis)
     } catch (err) {
       const errorMessage =
