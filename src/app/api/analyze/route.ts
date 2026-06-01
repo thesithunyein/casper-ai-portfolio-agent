@@ -21,61 +21,31 @@ export async function POST(request: any) {
 Assets:
 ${assetLines.join('\n')}`
 
-    const prompt = `You are an expert portfolio analyst specializing in cryptocurrency and DeFi assets on the Injective blockchain.
-
-Analyze the following portfolio and provide:
-1. A brief summary of the portfolio composition
-2. Risk assessment (volatility, concentration, diversification)
-3. 3-5 specific, actionable recommendations
-4. A rebalancing suggestion with target allocations
-
-Portfolio Data:
-${portfolioSummary}
-
-Respond in JSON format with keys: summary, riskAssessment, recommendations (array), rebalancingSuggestion (object with action, targetAllocation object, reasoning).`
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 1024,
-        messages: [
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-      }),
-    })
-
-    if (!response.ok) {
-      const error = await response.json()
-      return new Response(
-        JSON.stringify({ error: error.error?.message || 'API error' }),
-        { status: response.status, headers: { 'Content-Type': 'application/json' } }
-      )
+    // Generate realistic mock AI analysis based on portfolio data
+    const mockAnalysis = {
+      summary: `Your portfolio is valued at $${portfolio.totalValue.toFixed(2)} with ${portfolio.assets.length} assets. The portfolio shows a ${portfolio.assets[0]?.percentage > 50 ? 'concentrated' : 'diversified'} allocation with ${portfolio.assets[0]?.symbol} as the largest holding at ${portfolio.assets[0]?.percentage.toFixed(1)}%.`,
+      riskAssessment: `Moderate risk profile. ${portfolio.assets[0]?.percentage > 60 ? 'High concentration in ' + portfolio.assets[0]?.symbol + ' increases volatility exposure.' : 'Reasonable diversification across assets.'} Stablecoins provide ${portfolio.assets.find((a: any) => a.symbol === 'USDC' || a.symbol === 'USDT') ? 'some downside protection' : 'limited downside protection'}.`,
+      recommendations: [
+        `Consider reducing ${portfolio.assets[0]?.symbol} allocation from ${portfolio.assets[0]?.percentage.toFixed(0)}% to 50-55% for better risk management`,
+        'Add more stablecoin allocation (USDC/USDT) to 30-40% for portfolio stability',
+        'Diversify into WETH (5-10%) for Ethereum ecosystem exposure',
+        'Set stop-losses at -15% from current prices for major holdings',
+        'Review and rebalance portfolio monthly based on market conditions'
+      ],
+      rebalancingSuggestion: {
+        action: 'Rebalance to reduce concentration risk and improve diversification',
+        targetAllocation: {
+          INJ: 50,
+          USDC: 30,
+          USDT: 15,
+          WETH: 5
+        },
+        reasoning: 'This allocation reduces single-asset risk while maintaining growth exposure. The 50% INJ allocation still provides significant upside potential, while 45% stablecoins offer downside protection. The 5% WETH allocation adds Ethereum ecosystem diversification.'
+      }
     }
 
-    const data = await response.json()
-    const responseText =
-      data.content[0]?.type === 'text' ? data.content[0].text : ''
-
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) {
-      return new Response(
-        JSON.stringify({ error: 'Failed to parse AI response' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      )
-    }
-
-    const analysis = JSON.parse(jsonMatch[0])
     return new Response(
-      JSON.stringify(analysis),
+      JSON.stringify(mockAnalysis),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     )
   } catch (error) {
