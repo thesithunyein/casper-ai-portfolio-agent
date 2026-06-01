@@ -127,15 +127,15 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative z-10 pt-32 pb-20 px-4 md:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="relative inline-block mb-6">
+            <div className="relative inline-block mb-6 pb-4">
               <Sparkles className="absolute -top-4 -left-8 w-6 h-6 text-yellow-400 animate-bounce" style={{ animationDelay: '0s' }} />
               <Sparkles className="absolute -top-2 -right-6 w-5 h-5 text-pink-400 animate-bounce" style={{ animationDelay: '0.5s' }} />
               <Star className="absolute top-1/2 -left-12 w-4 h-4 text-cyan-400 animate-pulse" />
-              <Heart className="absolute bottom-0 -right-8 w-5 h-5 text-red-400 animate-bounce" style={{ animationDelay: '1s' }} />
-              <h1 className="text-5xl md:text-7xl font-extrabold text-black mb-2 leading-tight">
+              <Heart className="absolute bottom-4 -right-8 w-5 h-5 text-red-400 animate-bounce" style={{ animationDelay: '1s' }} />
+              <h1 className="text-5xl md:text-7xl font-extrabold text-black mb-3 leading-normal">
                 Your portfolio agent
               </h1>
-              <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary via-cute-dark to-secondary bg-clip-text text-transparent">
+              <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary via-cute-dark to-secondary bg-clip-text text-transparent leading-normal pb-2">
                 Always watching, always caring
               </h2>
             </div>
@@ -274,15 +274,18 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      {/* Cute Animated Background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 right-0 w-96 h-96 bg-primary/3 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 right-0 w-96 h-96 bg-cute/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-20 right-20 w-4 h-4 bg-cute rounded-full animate-float" />
+        <div className="absolute bottom-40 left-20 w-3 h-3 bg-primary/40 rounded-full animate-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/3 left-10 w-2 h-2 bg-secondary/40 rounded-full animate-float" style={{ animationDelay: '2s' }} />
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 animate-fade-in">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 animate-fade-in">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer hover:opacity-80 transition" onClick={reset}>
             <Logo className="w-8 h-8" />
@@ -290,32 +293,38 @@ export default function Home() {
           </div>
           <button
             onClick={reset}
-            className="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition"
+            className="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-xl text-sm font-bold hover:shadow-lg transition transform hover:scale-105"
           >
             Back to Home
           </button>
         </div>
       </nav>
 
-      <div className="relative max-w-6xl mx-auto px-4 md:px-8 py-24">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 py-24">
         {!portfolio ? (
           <div className="max-w-md mx-auto mt-12">
-            <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-lg">
-              <div className="mb-6">
-                <p className="text-sm text-gray-600 uppercase tracking-wider mb-2">Connected Wallet</p>
-                <p className="text-primary font-mono text-sm break-all">{walletAddress}</p>
+            <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all">
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+                  <Sparkles className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <div className="mb-6 text-center">
+                <p className="text-sm text-gray-500 uppercase tracking-wider mb-2 font-semibold">Connected Wallet</p>
+                <p className="text-primary font-mono text-sm break-all bg-gray-50 rounded-xl p-3">{walletAddress}</p>
               </div>
               
               <div className="space-y-3">
                 <button
                   onClick={handleAnalyze}
-                  className="w-full px-6 py-4 bg-black text-white font-semibold rounded-xl hover:bg-gray-800 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full px-6 py-4 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-2xl hover:shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
                 >
+                  <Zap className="w-5 h-5" />
                   Analyze Portfolio
                 </button>
                 <button
                   onClick={reset}
-                  className="w-full px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all border border-gray-300"
+                  className="w-full px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-2xl hover:bg-gray-200 transition-all border-2 border-gray-200"
                 >
                   Disconnect
                 </button>
@@ -324,15 +333,20 @@ export default function Home() {
           </div>
         ) : (
           <div className="space-y-8">
-            <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-4xl font-bold text-black">Analysis Results</h1>
-                <p className="text-gray-600 text-lg mt-2">Portfolio overview and AI insights</p>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="w-6 h-6 text-cute-dark animate-bounce" />
+                  <h1 className="text-4xl font-bold text-black">Analysis Results</h1>
+                  <Sparkles className="w-6 h-6 text-cute-dark animate-bounce" style={{ animationDelay: '0.5s' }} />
+                </div>
+                <p className="text-gray-600 text-lg">Portfolio overview and AI insights</p>
               </div>
               <button
                 onClick={reset}
-                className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-all font-medium"
+                className="px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-2xl hover:shadow-lg transition-all font-bold transform hover:scale-105 flex items-center gap-2"
               >
+                <Star className="w-4 h-4" />
                 New Analysis
               </button>
             </div>
