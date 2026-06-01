@@ -1,6 +1,6 @@
 {
   "name": "injective-ai-portfolio-agent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AI-powered portfolio analysis and rebalancing agent for Injective",
   "private": true,
   "scripts": {
