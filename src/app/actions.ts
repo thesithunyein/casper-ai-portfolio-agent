@@ -1,6 +1,5 @@
 'use server'
 
-import Anthropic from '@anthropic-ai/sdk'
 import { Portfolio } from '@/lib/injective'
 
 export interface AIAnalysis {
@@ -36,9 +35,6 @@ export async function analyzePortfolioAction(
   }
 
   try {
-    console.log('Creating Anthropic client')
-    const client = new Anthropic({ apiKey })
-
     const portfolioSummary = formatPortfolioForAI(portfolio)
 
     const prompt = `You are an expert portfolio analyst specializing in cryptocurrency and DeFi assets on the Injective blockchain.
@@ -55,19 +51,34 @@ ${portfolioSummary}
 Respond in JSON format with keys: summary, riskAssessment, recommendations (array), rebalancingSuggestion (object with action, targetAllocation object, reasoning).`
 
     console.log('Calling Claude API')
-    const message = await client.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 1024,
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 1024,
+        messages: [
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+      }),
     })
 
+    if (!response.ok) {
+      const error = await response.json()
+      console.error('API error:', error)
+      throw new Error(`API error: ${error.error?.message || 'Unknown error'}`)
+    }
+
+    const data = await response.json()
     const responseText =
-      message.content[0].type === 'text' ? message.content[0].text : ''
+      data.content[0]?.type === 'text' ? data.content[0].text : ''
 
     const jsonMatch = responseText.match(/\{[\s\S]*\}/)
     if (!jsonMatch) {
