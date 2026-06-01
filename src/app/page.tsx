@@ -9,6 +9,7 @@ import { AIAnalysisComponent } from '@/components/AIAnalysis'
 import { LoadingState } from '@/components/LoadingState'
 import { ErrorState } from '@/components/ErrorState'
 import { Logo } from '@/components/Logo'
+import { Brain, Shield, BarChart3 } from 'lucide-react'
 
 export default function Home() {
   const {
@@ -137,18 +138,24 @@ export default function Home() {
           <div className="max-w-6xl mx-auto">
             <h2 className="text-4xl font-bold text-black mb-12 text-center">Powerful Features</h2>
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-2xl border border-gray-200">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4" />
+              <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:border-primary/50 transition-all hover:shadow-lg">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4 flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-white" />
+                </div>
                 <h3 className="text-xl font-bold text-black mb-2">AI Analysis</h3>
                 <p className="text-gray-600">Claude AI analyzes your portfolio and provides actionable insights in seconds</p>
               </div>
-              <div className="bg-white p-8 rounded-2xl border border-gray-200">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4" />
+              <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:border-primary/50 transition-all hover:shadow-lg">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4 flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-white" />
+                </div>
                 <h3 className="text-xl font-bold text-black mb-2">Risk Assessment</h3>
                 <p className="text-gray-600">Get detailed risk profiles and diversification analysis for your holdings</p>
               </div>
-              <div className="bg-white p-8 rounded-2xl border border-gray-200">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4" />
+              <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:border-primary/50 transition-all hover:shadow-lg">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4 flex items-center justify-center">
+                  <BarChart3 className="w-6 h-6 text-white" />
+                </div>
                 <h3 className="text-xl font-bold text-black mb-2">Rebalancing</h3>
                 <p className="text-gray-600">Receive smart rebalancing suggestions tailored to your portfolio</p>
               </div>
