@@ -1,8 +1,8 @@
 # Injective AI Portfolio Agent
 
-**AI-powered portfolio analysis and intelligent rebalancing for Injective blockchain.**
+**AI-powered portfolio analysis with a cute, friendly design for the Injective blockchain.**
 
-Analyze your Injective portfolio with Claude AI and get actionable insights, risk assessments, and rebalancing recommendations in seconds.
+Analyze your Injective portfolio with Claude AI and get actionable insights, risk assessments, and rebalancing recommendations — all wrapped in an adorable, animated interface with a friendly bear mascot.
 
 ---
 
@@ -31,12 +31,25 @@ Analyze your Injective portfolio with Claude AI and get actionable insights, ris
 - **Accurate valuations** – Live price feeds for portfolio valuation
 
 ### User Interface
-- **Dark mode design** – Modern gradient interface with Tailwind CSS
-- **Responsive layout** – Works on desktop, tablet, and mobile
+- **Cute, friendly design** – Light theme with pink accents, rounded cards, and playful animations
+- **Bear mascot logo** – Custom-designed cute bear icon as the app logo
+- **Responsive layout** – Works seamlessly on desktop, tablet, and mobile
 - **Real-time feedback** – Loading states, error handling, retry logic
-- **Smooth animations** – Framer Motion for polished interactions
+- **Smooth animations** – Floating particles, bouncing icons, pulsing hearts, and hover effects
+- **Lucide icons** – Sparkles, hearts, stars, rainbows, and other cute icons throughout
 
 ---
+
+## Design Philosophy
+
+This project combines **powerful AI analysis** with a **delightful, approachable UI**:
+
+- **Nunito font** – Rounded, friendly typography for a welcoming feel
+- **Pink accent palette** – Soft pinks (`#ffb6c1`, `#ff69b4`) alongside cyan and blue
+- **Extra-rounded corners** – `rounded-3xl` cards and `rounded-2xl` icons for a soft, cute aesthetic
+- **Animated decorations** – Floating particles, bouncing sparkles, and pulsing hearts
+- **Gradient buttons** – Smooth primary-to-secondary gradients on all CTAs
+- **Bear mascot** – A custom-designed cute bear logo that appears in the navbar and favicon
 
 ## Architecture
 
@@ -153,7 +166,10 @@ Display results:
 ## Tech Stack
 
 - **Frontend:** Next.js 14 (App Router) - React 18 - TypeScript
-- **Styling:** Tailwind CSS - Framer Motion - Lucide Icons
+- **Styling:** Tailwind CSS with custom cute theme extensions
+- **Typography:** Nunito (Google Fonts) – rounded, friendly typeface
+- **Icons:** Lucide React (Sparkles, Heart, Star, Rainbow, Zap, etc.)
+- **Animations:** CSS keyframes (bounce, pulse, float) + Tailwind transitions
 - **Blockchain:** @injectivelabs/sdk-ts - Injective testnet/mainnet
 - **AI:** Anthropic Claude 3.5 Sonnet API
 - **State:** Zustand (lightweight state management)
@@ -188,10 +204,12 @@ Display results:
 - Provides risk-weighted suggestions
 
 ### UI/UX
-- Dark mode with cyan/blue accent colors
-- Responsive grid layout
-- Smooth loading animations
-- Error recovery with retry buttons
+- **Light theme** with cyan, blue, and pink accent colors
+- **Extra-rounded cards** (`rounded-3xl`) with soft shadows
+- **Gradient icon containers** with playful bounce/pulse animations
+- **Cute Lucide icons** – Sparkles, hearts, stars, rainbows, and more
+- Smooth loading animations with bouncing dots
+- Error recovery with friendly "Oopsie!" messages
 - Mobile-optimized touch targets
 
 ---
@@ -257,6 +275,8 @@ Works with any Node.js hosting (Netlify, Railway, Heroku, etc.)
 
 ## Roadmap
 
+- [x] Cute, friendly UI design with bear mascot
+- [x] Animated decorations and playful interactions
 - [ ] Multi-wallet tracking
 - [ ] Portfolio history and performance charts
 - [ ] Price alerts
@@ -292,6 +312,7 @@ Contributions welcome. Please:
 
 ---
 
-**Built for:** Injective Solo AI Builder Sprint  
 **Author:** [thesithunyein](https://github.com/thesithunyein)  
 **Live Demo:** [injective-ai-portfolio-agent.vercel.app](https://injective-ai-portfolio-agent.vercel.app)
+
+This project was built as a portfolio piece demonstrating AI integration, blockchain data fetching, and delightful UI/UX design.
