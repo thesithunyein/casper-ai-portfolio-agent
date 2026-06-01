@@ -10,7 +10,7 @@ import { LoadingState } from '@/components/LoadingState'
 import { ErrorState } from '@/components/ErrorState'
 import { Logo } from '@/components/Logo'
 import { AgentChat } from '@/components/AgentChat'
-import { Brain, Shield, BarChart3, Sparkles, Heart, Star, Zap, Rainbow } from 'lucide-react'
+import { Brain, Shield, Sparkles, Heart, Star, Zap, Rainbow, Bot } from 'lucide-react'
 
 export default function Home() {
   const {
@@ -170,27 +170,34 @@ export default function Home() {
               <h2 className="text-4xl font-bold text-black">Cute Features</h2>
               <Rainbow className="w-8 h-8 text-cute-dark animate-bounce" style={{ animationDelay: '0.5s' }} />
             </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-4 flex items-center justify-center shadow-lg">
-                  <Brain className="w-7 h-7 text-white" />
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-3 flex items-center justify-center shadow-lg">
+                  <Brain className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-black mb-2">AI Analysis</h3>
-                <p className="text-gray-600">Claude AI analyzes your portfolio and provides actionable insights in seconds</p>
+                <h3 className="text-lg font-bold text-black mb-1">AI Analysis</h3>
+                <p className="text-gray-600 text-sm">Claude AI analyzes your portfolio and provides actionable insights in seconds</p>
               </div>
-              <div className="bg-white p-8 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary to-primary mb-4 flex items-center justify-center shadow-lg">
-                  <Shield className="w-7 h-7 text-white" />
+              <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary to-primary mb-3 flex items-center justify-center shadow-lg">
+                  <Bot className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-black mb-2">Risk Assessment</h3>
-                <p className="text-gray-600">Get detailed risk profiles and diversification analysis for your holdings</p>
+                <h3 className="text-lg font-bold text-black mb-1">Agent Chat</h3>
+                <p className="text-gray-600 text-sm">Conversational AI agent that answers questions and takes actions for your portfolio</p>
               </div>
-              <div className="bg-white p-8 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cute-dark to-secondary mb-4 flex items-center justify-center shadow-lg">
-                  <BarChart3 className="w-7 h-7 text-white" />
+              <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cute-dark to-secondary mb-3 flex items-center justify-center shadow-lg">
+                  <Zap className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-black mb-2">Rebalancing</h3>
-                <p className="text-gray-600">Receive smart rebalancing suggestions tailored to your portfolio</p>
+                <h3 className="text-lg font-bold text-black mb-1">x402 Payments</h3>
+                <p className="text-gray-600 text-sm">Agent pays 0.01 CSPR per analysis via Casper's micropayment protocol</p>
+              </div>
+              <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-400 to-orange-400 mb-3 flex items-center justify-center shadow-lg">
+                  <Shield className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-black mb-1">On-Chain Storage</h3>
+                <p className="text-gray-600 text-sm">Analysis results stored on Casper Testnet via Odra smart contract</p>
               </div>
             </div>
           </div>
@@ -208,7 +215,7 @@ export default function Home() {
                     <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xl">1</div>
                     <div className="flex-1">
                       <h3 className="text-xl font-bold text-black mb-2">Connect Wallet</h3>
-                      <p className="text-gray-600 leading-relaxed">Enter your Injective wallet address securely. No private keys needed, just your public address.</p>
+                      <p className="text-gray-600 leading-relaxed">Enter your Casper wallet address securely. No private keys needed, just your public address.</p>
                     </div>
                   </div>
                 </div>
@@ -221,7 +228,7 @@ export default function Home() {
                     <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xl">2</div>
                     <div className="flex-1">
                       <h3 className="text-xl font-bold text-black mb-2">Fetch Portfolio</h3>
-                      <p className="text-gray-600 leading-relaxed">We retrieve your real-time balance data directly from the Injective blockchain in seconds.</p>
+                      <p className="text-gray-600 leading-relaxed">We retrieve your real-time balance data directly from the Casper blockchain via CSPR.cloud API in seconds.</p>
                     </div>
                   </div>
                 </div>
