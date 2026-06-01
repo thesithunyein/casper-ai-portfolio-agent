@@ -1,9 +1,13 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { Portfolio } from './injective'
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
+const getClient = () => {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) {
+    throw new Error('ANTHROPIC_API_KEY environment variable is not set. Please add it to your Vercel environment variables.')
+  }
+  return new Anthropic({ apiKey })
+}
 
 export interface AIAnalysis {
   summary: string
@@ -35,6 +39,7 @@ ${portfolioSummary}
 Respond in JSON format with keys: summary, riskAssessment, recommendations (array), rebalancingSuggestion (object with action, targetAllocation object, reasoning).`
 
   try {
+    const client = getClient()
     const message = await client.messages.create({
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 1024,
@@ -74,6 +79,7 @@ ${assetLines.join('\n')}`
 }
 
 export const generateInsight = async (topic: string): Promise<string> => {
+  const client = getClient()
   const message = await client.messages.create({
     model: 'claude-3-5-sonnet-20241022',
     max_tokens: 256,
