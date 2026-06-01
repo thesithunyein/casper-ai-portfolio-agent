@@ -107,7 +107,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3 group cursor-pointer hover:opacity-80 transition">
               <Logo className="w-8 h-8" />
-              <span className="font-bold text-lg text-black">Injective Agent</span>
+              <span className="font-bold text-lg text-black">Casper Agent</span>
             </div>
             <div className="flex items-center gap-6">
               <a href="#features" className="text-sm text-gray-600 hover:text-black transition">Features</a>
