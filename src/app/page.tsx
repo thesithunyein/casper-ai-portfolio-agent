@@ -8,6 +8,7 @@ import { PortfolioDisplay } from '@/components/PortfolioDisplay'
 import { AIAnalysisComponent } from '@/components/AIAnalysis'
 import { LoadingState } from '@/components/LoadingState'
 import { ErrorState } from '@/components/ErrorState'
+import { Logo } from '@/components/Logo'
 
 export default function Home() {
   const {
@@ -75,14 +76,19 @@ export default function Home() {
 
   if (!walletAddress) {
     return (
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white relative overflow-hidden">
+        {/* Animated Background */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 right-0 w-96 h-96 bg-primary/3 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        </div>
+
         {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 animate-fade-in">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-sm">
-                AI
-              </div>
+            <div className="flex items-center gap-3 group cursor-pointer hover:opacity-80 transition">
+              <Logo className="w-8 h-8" />
               <span className="font-bold text-lg text-black">Injective Agent</span>
             </div>
             <div className="flex items-center gap-6">
