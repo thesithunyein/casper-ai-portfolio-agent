@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useAppStore } from '@/lib/store'
 import { fetchPortfolio } from '@/lib/injective'
 import { analyzePortfolio } from '@/lib/ai'
