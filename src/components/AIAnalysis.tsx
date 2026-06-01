@@ -1,7 +1,7 @@
 'use client'
 
 import { AIAnalysis } from '@/lib/ai'
-import { Brain, AlertTriangle, Target, Lightbulb, BarChart3 } from 'lucide-react'
+import { Brain, AlertTriangle, Target, Lightbulb } from 'lucide-react'
 
 interface AIAnalysisProps {
   analysis: AIAnalysis
