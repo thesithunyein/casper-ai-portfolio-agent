@@ -45,7 +45,7 @@ A cute, conversational AI agent (with a bear mascot!) that:
 (Link to be added after recording)
 
 ## GitHub
-https://github.com/thesithunyein/injective-ai-portfolio-agent
+https://github.com/thesithunyein/casper-ai-portfolio-agent
 
 ## Live Demo
 https://casper-ai-portfolio-agent.vercel.app
