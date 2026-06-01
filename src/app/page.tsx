@@ -262,10 +262,20 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="relative z-10 bg-black text-white py-12 px-4 md:px-8">
-          <div className="max-w-6xl mx-auto text-center text-gray-400 text-sm">
-            <p>Built for Injective Solo AI Builder Sprint</p>
-            <p className="mt-2">Powered by Claude AI and Injective Blockchain</p>
+        <footer className="relative z-10 bg-gradient-to-r from-gray-900 to-gray-800 text-white py-12 px-4 md:px-8 rounded-t-3xl">
+          <div className="max-w-6xl mx-auto text-center">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Heart className="w-5 h-5 text-cute-dark animate-pulse" />
+              <p className="text-gray-300 text-sm font-semibold">Built with love for Injective Solo AI Builder Sprint</p>
+              <Heart className="w-5 h-5 text-cute-dark animate-pulse" style={{ animationDelay: '0.5s' }} />
+            </div>
+            <p className="text-gray-500 text-xs">Powered by Claude AI and Injective Blockchain</p>
+            <div className="mt-4 flex items-center justify-center gap-1">
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-secondary animate-pulse" style={{ animationDelay: '0.2s' }} />
+              <div className="w-2 h-2 rounded-full bg-cute-dark animate-pulse" style={{ animationDelay: '0.4s' }} />
+              <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" style={{ animationDelay: '0.6s' }} />
+            </div>
           </div>
         </footer>
       </main>
