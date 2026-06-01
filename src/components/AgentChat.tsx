@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useAppStore } from '@/lib/store'
 import { Portfolio } from '@/lib/casper'
 import { generateAgentResponse, ChatMessage, AgentAction } from '@/lib/agent-chat'
 import { createX402Payment, ANALYSIS_COST_CSPR, ANALYSIS_RECIPIENT } from '@/lib/x402'
@@ -29,7 +28,6 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const { setLoading } = useAppStore()
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
