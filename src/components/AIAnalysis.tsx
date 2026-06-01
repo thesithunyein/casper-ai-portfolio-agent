@@ -1,7 +1,7 @@
 'use client'
 
 import { AIAnalysis } from '@/lib/ai'
-import { Brain, AlertCircle, Target } from 'lucide-react'
+import { Brain, AlertTriangle, Target, Lightbulb, BarChart3 } from 'lucide-react'
 
 interface AIAnalysisProps {
   analysis: AIAnalysis
@@ -9,92 +9,101 @@ interface AIAnalysisProps {
 
 export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
-      <div className="p-6 bg-gradient-to-br from-secondary to-accent rounded-lg border border-primary/20">
-        <div className="flex items-center gap-2 mb-4">
-          <Brain className="w-5 h-5 text-primary" />
-          <h2 className="text-2xl font-bold text-white">AI Analysis</h2>
+    <div className="space-y-6 animate-fade-in">
+      {/* Summary Card */}
+      <div className="glass rounded-2xl p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <Brain className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-white">AI Analysis</h2>
+            <p className="text-gray-500 text-sm">Portfolio summary by Claude AI</p>
+          </div>
         </div>
-
-        <div className="p-4 bg-accent/50 rounded-lg border border-primary/10">
-          <p className="text-gray-300 leading-relaxed">{analysis.summary}</p>
-        </div>
+        <p className="text-gray-300 leading-relaxed text-lg">{analysis.summary}</p>
       </div>
 
-      <div className="p-6 bg-gradient-to-br from-secondary to-accent rounded-lg border border-primary/20">
-        <div className="flex items-center gap-2 mb-4">
-          <AlertCircle className="w-5 h-5 text-yellow-400" />
-          <h3 className="text-xl font-bold text-white">Risk Assessment</h3>
+      {/* Risk Assessment */}
+      <div className="glass rounded-2xl p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center">
+            <AlertTriangle className="w-5 h-5 text-yellow-500" />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold text-white">Risk Assessment</h3>
+            <p className="text-gray-500 text-sm">Current portfolio risk profile</p>
+          </div>
         </div>
-
-        <div className="p-4 bg-accent/50 rounded-lg border border-yellow-400/20">
-          <p className="text-gray-300 leading-relaxed">
-            {analysis.riskAssessment}
-          </p>
-        </div>
+        <p className="text-gray-300 leading-relaxed">{analysis.riskAssessment}</p>
       </div>
 
-      <div className="p-6 bg-gradient-to-br from-secondary to-accent rounded-lg border border-primary/20">
-        <div className="flex items-center gap-2 mb-4">
-          <Target className="w-5 h-5 text-green-400" />
-          <h3 className="text-xl font-bold text-white">Recommendations</h3>
+      {/* Recommendations */}
+      <div className="glass rounded-2xl p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
+            <Lightbulb className="w-5 h-5 text-secondary" />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold text-white">Recommendations</h3>
+            <p className="text-gray-500 text-sm">AI-generated actionable insights</p>
+          </div>
         </div>
 
-        <ul className="space-y-3">
+        <div className="space-y-3">
           {analysis.recommendations.map((rec, idx) => (
-            <li
+            <div
               key={idx}
-              className="p-3 bg-accent/50 rounded-lg border border-green-400/20 text-gray-300 flex gap-3"
+              className="flex gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] transition-all"
             >
-              <span className="text-green-400 font-semibold flex-shrink-0">
-                {idx + 1}.
-              </span>
-              <span>{rec}</span>
-            </li>
+              <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-xs font-mono text-primary">{idx + 1}</span>
+              </div>
+              <p className="text-gray-300 leading-relaxed">{rec}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
 
-      <div className="p-6 bg-gradient-to-br from-secondary to-accent rounded-lg border border-primary/20">
-        <h3 className="text-xl font-bold text-white mb-4">Rebalancing Suggestion</h3>
+      {/* Rebalancing */}
+      <div className="glass rounded-2xl p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+            <Target className="w-5 h-5 text-purple-400" />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold text-white">Rebalancing Suggestion</h3>
+            <p className="text-gray-500 text-sm">Optimal target allocation</p>
+          </div>
+        </div>
 
-        <div className="space-y-4">
-          <div className="p-4 bg-accent/50 rounded-lg border border-primary/10">
-            <p className="text-sm text-gray-400 mb-1">Action</p>
-            <p className="text-white font-semibold">
-              {analysis.rebalancingSuggestion.action}
-            </p>
+        <div className="space-y-6">
+          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+            <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2">Action</p>
+            <p className="text-white font-medium">{analysis.rebalancingSuggestion.action}</p>
           </div>
 
-          <div className="p-4 bg-accent/50 rounded-lg border border-primary/10">
-            <p className="text-sm text-gray-400 mb-3">Target Allocation</p>
-            <div className="space-y-2">
-              {Object.entries(
-                analysis.rebalancingSuggestion.targetAllocation
-              ).map(([asset, percentage]) => (
-                <div key={asset} className="flex justify-between items-center">
-                  <span className="text-white font-medium">{asset}</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-24 bg-secondary rounded-full h-2">
-                      <div
-                        className="bg-gradient-to-r from-primary to-cyan-400 h-2 rounded-full"
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
-                    <span className="text-primary font-semibold w-12 text-right">
-                      {percentage.toFixed(1)}%
-                    </span>
+          <div>
+            <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-4">Target Allocation</p>
+            <div className="space-y-3">
+              {Object.entries(analysis.rebalancingSuggestion.targetAllocation).map(([asset, percentage]) => (
+                <div key={asset} className="flex items-center gap-4">
+                  <span className="text-white font-medium w-16">{asset}</span>
+                  <div className="flex-1 bg-white/5 rounded-full h-2 overflow-hidden">
+                    <div
+                      className="bg-gradient-to-r from-primary to-secondary h-full rounded-full transition-all"
+                      style={{ width: `${percentage}%` }}
+                    />
                   </div>
+                  <span className="text-primary font-mono w-12 text-right">{percentage}%</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="p-4 bg-accent/50 rounded-lg border border-primary/10">
-            <p className="text-sm text-gray-400 mb-1">Reasoning</p>
-            <p className="text-gray-300 leading-relaxed">
-              {analysis.rebalancingSuggestion.reasoning}
-            </p>
+          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+            <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2">Reasoning</p>
+            <p className="text-gray-300 leading-relaxed">{analysis.rebalancingSuggestion.reasoning}</p>
           </div>
         </div>
       </div>

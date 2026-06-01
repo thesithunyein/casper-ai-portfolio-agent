@@ -1,4 +1,4 @@
-# 🚀 Injective AI Portfolio Agent
+# Injective AI Portfolio Agent
 
 **AI-powered portfolio analysis and intelligent rebalancing for Injective blockchain.**
 
@@ -6,7 +6,7 @@ Analyze your Injective portfolio with Claude AI and get actionable insights, ris
 
 ---
 
-## 🎯 What This Does
+## What This Does
 
 1. **Connect your Injective wallet** – Enter your wallet address (no private keys needed)
 2. **Fetch your portfolio** – Real-time balance data from Injective blockchain
@@ -16,7 +16,7 @@ Analyze your Injective portfolio with Claude AI and get actionable insights, ris
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 ### AI-Powered Analysis
 - **Portfolio Summary** – Clear breakdown of your holdings and allocation
@@ -30,7 +30,7 @@ Analyze your Injective portfolio with Claude AI and get actionable insights, ris
 - **Multi-asset support** – INJ, USDC, USDT, WETH, and more
 - **Accurate valuations** – Live price feeds for portfolio valuation
 
-### Beautiful UI
+### User Interface
 - **Dark mode design** – Modern gradient interface with Tailwind CSS
 - **Responsive layout** – Works on desktop, tablet, and mobile
 - **Real-time feedback** – Loading states, error handling, retry logic
@@ -38,7 +38,7 @@ Analyze your Injective portfolio with Claude AI and get actionable insights, ris
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────┐
@@ -86,7 +86,7 @@ Analyze your Injective portfolio with Claude AI and get actionable insights, ris
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js 18+
@@ -125,7 +125,7 @@ Open [http://localhost:3000](http://localhost:3000) and start analyzing!
 
 ---
 
-## 📊 How to Use
+## How to Use
 
 1. **Enter wallet address** – Paste your Injective address (starts with `inj`)
 2. **Click "Analyze Portfolio"** – Fetches your holdings and runs AI analysis
@@ -136,11 +136,11 @@ Open [http://localhost:3000](http://localhost:3000) and start analyzing!
 
 ```
 Input: inj1abc123...
-  ↓
+  |
 Fetch balances from Injective
-  ↓
+  |
 Send to Claude AI for analysis
-  ↓
+  |
 Display results:
   - Portfolio composition
   - Risk assessment
@@ -150,30 +150,30 @@ Display results:
 
 ---
 
-## 🔧 Tech Stack
+## Tech Stack
 
-- **Frontend:** Next.js 14 (App Router) · React 18 · TypeScript
-- **Styling:** Tailwind CSS · Framer Motion · Lucide Icons
-- **Blockchain:** @injectivelabs/sdk-ts · Injective testnet/mainnet
+- **Frontend:** Next.js 14 (App Router) - React 18 - TypeScript
+- **Styling:** Tailwind CSS - Framer Motion - Lucide Icons
+- **Blockchain:** @injectivelabs/sdk-ts - Injective testnet/mainnet
 - **AI:** Anthropic Claude 3.5 Sonnet API
 - **State:** Zustand (lightweight state management)
 - **Deployment:** Vercel (recommended)
 
 ---
 
-## 📈 Judging Criteria Alignment
+## Judging Criteria Alignment
 
 | Criterion | How We Score |
 |-----------|-------------|
 | **Usefulness (30%)** | Solves real problem: traders need portfolio analysis. Direct Injective integration. |
 | **Execution (30%)** | Production-ready code. Error handling. Loading states. Mobile-responsive UI. |
-| **Simplicity (20%)** | One clear flow: input → analyze → results. No feature bloat. |
+| **Simplicity (20%)** | One clear flow: input -> analyze -> results. No feature bloat. |
 | **Code Quality (15%)** | Clean TypeScript. Modular components. Well-documented. Easy to fork/extend. |
 | **Future Potential (5%)** | Extensible: add trading execution, alerts, multi-wallet tracking, portfolio history. |
 
 ---
 
-## 🎨 Features Breakdown
+## Features Breakdown
 
 ### Portfolio Fetching
 - Queries Injective blockchain via gRPC
@@ -196,7 +196,7 @@ Display results:
 
 ---
 
-## 🔐 Security
+## Security
 
 - **No private keys stored** – Only reads public wallet data
 - **API keys in environment** – Never hardcoded
@@ -205,7 +205,7 @@ Display results:
 
 ---
 
-## 📝 Example Output
+## Example Output
 
 ```
 Total Portfolio Value: $2,450.50
@@ -235,7 +235,7 @@ Rebalancing Target:
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 ### Deploy to Vercel (Recommended)
 
@@ -255,7 +255,7 @@ Works with any Node.js hosting (Netlify, Railway, Heroku, etc.)
 
 ---
 
-## 🔄 Roadmap
+## Roadmap
 
 - [ ] Multi-wallet tracking
 - [ ] Portfolio history and performance charts
@@ -268,15 +268,15 @@ Works with any Node.js hosting (Netlify, Railway, Heroku, etc.)
 
 ---
 
-## 📄 License
+## License
 
-MIT – Feel free to fork, modify, and deploy!
+MIT – Feel free to fork, modify, and deploy.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-Contributions welcome! Please:
+Contributions welcome. Please:
 1. Fork the repo
 2. Create a feature branch
 3. Commit your changes
@@ -284,7 +284,7 @@ Contributions welcome! Please:
 
 ---
 
-## 📞 Support
+## Support
 
 - **Issues:** GitHub Issues
 - **Questions:** Open a Discussion
@@ -293,5 +293,5 @@ Contributions welcome! Please:
 ---
 
 **Built for:** Injective Solo AI Builder Sprint  
-**Author:** [@thesithunyein](https://github.com/thesithunyein)  
-**Live Demo:** [Coming soon]
+**Author:** [thesithunyein](https://github.com/thesithunyein)  
+**Live Demo:** [injective-ai-portfolio-agent.vercel.app](https://injective-ai-portfolio-agent.vercel.app)
