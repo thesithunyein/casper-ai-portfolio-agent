@@ -9,8 +9,8 @@ const nunito = Nunito({
 })
 
 export const metadata: Metadata = {
-  title: 'Injective Agent - AI Portfolio Analysis',
-  description: 'AI-powered portfolio analysis and rebalancing for Injective blockchain',
+  title: 'Casper Agent - AI Portfolio Analysis',
+  description: 'Agentic AI-powered portfolio analysis with cute design for Casper Network',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32' },
