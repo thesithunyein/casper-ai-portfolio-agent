@@ -79,7 +79,7 @@ export default function Home() {
     return (
       <main className="min-h-screen bg-white relative overflow-hidden">
         {/* Cool Animated Background */}
-        <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
           {/* Gradient mesh background */}
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-50 via-white to-blue-50" />
           
@@ -125,7 +125,7 @@ export default function Home() {
         </nav>
 
         {/* Hero Section */}
-        <section className="pt-32 pb-20 px-4 md:px-8">
+        <section className="relative z-10 pt-32 pb-20 px-4 md:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-6xl md:text-7xl font-bold text-black mb-6 leading-tight">
               Your portfolio agent.
@@ -150,7 +150,7 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-20 px-4 md:px-8 bg-gray-50">
+        <section id="features" className="relative z-10 py-20 px-4 md:px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-4xl font-bold text-black mb-12 text-center">Powerful Features</h2>
             <div className="grid md:grid-cols-3 gap-8">
@@ -180,7 +180,7 @@ export default function Home() {
         </section>
 
         {/* How It Works */}
-        <section id="how-it-works" className="py-20 px-4 md:px-8 relative">
+        <section id="how-it-works" className="relative z-10 py-20 px-4 md:px-8">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-16 text-center">How It Works</h2>
             <div className="grid md:grid-cols-2 gap-8">
@@ -240,7 +240,7 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section id="wallet-section" className="py-20 px-4 md:px-8 bg-gray-50">
+        <section id="wallet-section" className="relative z-10 py-20 px-4 md:px-8 bg-gray-50">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-4xl font-bold text-black mb-8 text-center">Ready to Analyze?</h2>
             <WalletConnect />
@@ -248,7 +248,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="bg-black text-white py-12 px-4 md:px-8">
+        <footer className="relative z-10 bg-black text-white py-12 px-4 md:px-8">
           <div className="max-w-6xl mx-auto text-center text-gray-400 text-sm">
             <p>Built for Injective Solo AI Builder Sprint</p>
             <p className="mt-2">Powered by Claude AI and Injective Blockchain</p>
