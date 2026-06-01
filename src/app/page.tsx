@@ -73,35 +73,155 @@ export default function Home() {
     )
   }
 
+  if (!walletAddress) {
+    return (
+      <main className="min-h-screen bg-white">
+        {/* Navigation */}
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-sm">
+                AI
+              </div>
+              <span className="font-bold text-lg text-black">Injective Agent</span>
+            </div>
+            <div className="flex items-center gap-6">
+              <a href="#features" className="text-sm text-gray-600 hover:text-black transition">Features</a>
+              <a href="#how-it-works" className="text-sm text-gray-600 hover:text-black transition">How It Works</a>
+              <button
+                onClick={() => {
+                  const element = document.getElementById('wallet-section')
+                  element?.scrollIntoView({ behavior: 'smooth' })
+                }}
+                className="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition"
+              >
+                Get Started
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        {/* Hero Section */}
+        <section className="pt-32 pb-20 px-4 md:px-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-6xl md:text-7xl font-bold text-black mb-6 leading-tight">
+              Your portfolio agent.
+              <br />
+              Always watching,
+              <br />
+              always gated.
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+              AI-powered portfolio analysis and intelligent rebalancing recommendations powered by Claude AI for the Injective ecosystem
+            </p>
+            <button
+              onClick={() => {
+                const element = document.getElementById('wallet-section')
+                element?.scrollIntoView({ behavior: 'smooth' })
+              }}
+              className="px-8 py-4 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition transform hover:scale-105"
+            >
+              Start Analyzing
+            </button>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section id="features" className="py-20 px-4 md:px-8 bg-gray-50">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-4xl font-bold text-black mb-12 text-center">Powerful Features</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="bg-white p-8 rounded-2xl border border-gray-200">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4" />
+                <h3 className="text-xl font-bold text-black mb-2">AI Analysis</h3>
+                <p className="text-gray-600">Claude AI analyzes your portfolio and provides actionable insights in seconds</p>
+              </div>
+              <div className="bg-white p-8 rounded-2xl border border-gray-200">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4" />
+                <h3 className="text-xl font-bold text-black mb-2">Risk Assessment</h3>
+                <p className="text-gray-600">Get detailed risk profiles and diversification analysis for your holdings</p>
+              </div>
+              <div className="bg-white p-8 rounded-2xl border border-gray-200">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4" />
+                <h3 className="text-xl font-bold text-black mb-2">Rebalancing</h3>
+                <p className="text-gray-600">Receive smart rebalancing suggestions tailored to your portfolio</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* How It Works */}
+        <section id="how-it-works" className="py-20 px-4 md:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl font-bold text-black mb-12 text-center">How It Works</h2>
+            <div className="space-y-8">
+              <div className="flex gap-6">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-black text-white flex items-center justify-center font-bold">1</div>
+                <div>
+                  <h3 className="text-xl font-bold text-black mb-2">Connect Your Wallet</h3>
+                  <p className="text-gray-600">Enter your Injective wallet address (no private keys needed)</p>
+                </div>
+              </div>
+              <div className="flex gap-6">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-black text-white flex items-center justify-center font-bold">2</div>
+                <div>
+                  <h3 className="text-xl font-bold text-black mb-2">Fetch Your Portfolio</h3>
+                  <p className="text-gray-600">We retrieve your real-time balance data from the Injective blockchain</p>
+                </div>
+              </div>
+              <div className="flex gap-6">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-black text-white flex items-center justify-center font-bold">3</div>
+                <div>
+                  <h3 className="text-xl font-bold text-black mb-2">AI Analysis</h3>
+                  <p className="text-gray-600">Claude AI analyzes your holdings and generates insights</p>
+                </div>
+              </div>
+              <div className="flex gap-6">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-black text-white flex items-center justify-center font-bold">4</div>
+                <div>
+                  <h3 className="text-xl font-bold text-black mb-2">Get Recommendations</h3>
+                  <p className="text-gray-600">Receive actionable recommendations to optimize your portfolio</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section id="wallet-section" className="py-20 px-4 md:px-8 bg-gray-50">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold text-black mb-8 text-center">Ready to Analyze?</h2>
+            <WalletConnect />
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="bg-black text-white py-12 px-4 md:px-8">
+          <div className="max-w-6xl mx-auto text-center text-gray-400 text-sm">
+            <p>Built for Injective Solo AI Builder Sprint</p>
+            <p className="mt-2">Powered by Claude AI and Injective Blockchain</p>
+          </div>
+        </footer>
+      </main>
+    )
+  }
+
   return (
     <main className="min-h-screen bg-[#0a0a0a]">
       {/* Background gradient */}
       <div className="fixed inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0d1f1a] to-[#0a0a0a] pointer-events-none" />
       
       <div className="relative max-w-5xl mx-auto px-4 md:px-8 py-12">
-        {/* Header */}
-        <header className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-6">
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-xs font-mono text-gray-400 uppercase tracking-wider">AI-Powered Analysis</span>
-          </div>
-          
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-4">
-            <span className="gradient-text">Injective</span>
-            <br />
-            <span className="text-white">Portfolio Agent</span>
-          </h1>
-          
-          <p className="text-gray-400 text-lg max-w-xl mx-auto leading-relaxed">
-            Intelligent portfolio analysis and rebalancing recommendations powered by Claude AI for the Injective ecosystem
-          </p>
-        </header>
+        <div className="mb-8">
+          <button
+            onClick={reset}
+            className="px-4 py-2 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-all border border-white/10 text-sm font-medium"
+          >
+            Back to Home
+          </button>
+        </div>
 
-        {!walletAddress ? (
-          <div className="flex justify-center">
-            <WalletConnect />
-          </div>
-        ) : !portfolio ? (
+        {!portfolio ? (
           <div className="max-w-md mx-auto">
             <div className="glass-strong rounded-2xl p-8 text-center">
               <div className="mb-6">
