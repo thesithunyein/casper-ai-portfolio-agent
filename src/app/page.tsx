@@ -3,7 +3,6 @@
 import { useCallback } from 'react'
 import { useAppStore } from '@/lib/store'
 import { fetchPortfolio } from '@/lib/injective'
-import { analyzePortfolioAction } from './actions'
 import { WalletConnect } from '@/components/WalletConnect'
 import { PortfolioDisplay } from '@/components/PortfolioDisplay'
 import { AIAnalysisComponent } from '@/components/AIAnalysis'
@@ -35,7 +34,20 @@ export default function Home() {
       const portfolioData = await fetchPortfolio(walletAddress)
       setPortfolio(portfolioData)
 
-      const aiAnalysis = await analyzePortfolioAction(portfolioData)
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ portfolio: portfolioData }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to analyze portfolio')
+      }
+
+      const aiAnalysis = await response.json()
       setAnalysis(aiAnalysis)
     } catch (err) {
       const errorMessage =
