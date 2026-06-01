@@ -9,7 +9,7 @@ import { AIAnalysisComponent } from '@/components/AIAnalysis'
 import { LoadingState } from '@/components/LoadingState'
 import { ErrorState } from '@/components/ErrorState'
 import { Logo } from '@/components/Logo'
-import { Brain, Shield, BarChart3 } from 'lucide-react'
+import { Brain, Shield, BarChart3, Sparkles, Heart, Star, Zap, Rainbow } from 'lucide-react'
 
 export default function Home() {
   const {
@@ -127,23 +127,29 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative z-10 pt-32 pb-20 px-4 md:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-6xl md:text-7xl font-bold text-black mb-6 leading-tight">
-              Your portfolio agent.
-              <br />
-              Always watching,
-              <br />
-              always gated.
-            </h1>
+            <div className="relative inline-block mb-6">
+              <Sparkles className="absolute -top-4 -left-8 w-6 h-6 text-yellow-400 animate-bounce" style={{ animationDelay: '0s' }} />
+              <Sparkles className="absolute -top-2 -right-6 w-5 h-5 text-pink-400 animate-bounce" style={{ animationDelay: '0.5s' }} />
+              <Star className="absolute top-1/2 -left-12 w-4 h-4 text-cyan-400 animate-pulse" />
+              <Heart className="absolute bottom-0 -right-8 w-5 h-5 text-red-400 animate-bounce" style={{ animationDelay: '1s' }} />
+              <h1 className="text-5xl md:text-7xl font-extrabold text-black mb-2 leading-tight">
+                Your portfolio agent
+              </h1>
+              <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary via-cute-dark to-secondary bg-clip-text text-transparent">
+                Always watching, always caring
+              </h2>
+            </div>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-              AI-powered portfolio analysis and intelligent rebalancing recommendations powered by Claude AI for the Injective ecosystem
+              AI-powered portfolio analysis with cute bear-powered recommendations for the Injective ecosystem
             </p>
             <button
               onClick={() => {
                 const element = document.getElementById('wallet-section')
                 element?.scrollIntoView({ behavior: 'smooth' })
               }}
-              className="px-8 py-4 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition transform hover:scale-105"
+              className="px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white rounded-2xl font-bold hover:shadow-lg transition transform hover:scale-105 flex items-center gap-2 mx-auto"
             >
+              <Zap className="w-5 h-5" />
               Start Analyzing
             </button>
           </div>
@@ -152,25 +158,29 @@ export default function Home() {
         {/* Features Section */}
         <section id="features" className="relative z-10 py-20 px-4 md:px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-black mb-12 text-center">Powerful Features</h2>
+            <div className="flex items-center justify-center gap-3 mb-12">
+              <Rainbow className="w-8 h-8 text-cute-dark animate-bounce" />
+              <h2 className="text-4xl font-bold text-black">Cute Features</h2>
+              <Rainbow className="w-8 h-8 text-cute-dark animate-bounce" style={{ animationDelay: '0.5s' }} />
+            </div>
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:border-primary/50 transition-all hover:shadow-lg">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4 flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-white" />
+              <div className="bg-white p-8 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-4 flex items-center justify-center shadow-lg">
+                  <Brain className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-black mb-2">AI Analysis</h3>
                 <p className="text-gray-600">Claude AI analyzes your portfolio and provides actionable insights in seconds</p>
               </div>
-              <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:border-primary/50 transition-all hover:shadow-lg">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4 flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-white" />
+              <div className="bg-white p-8 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary to-primary mb-4 flex items-center justify-center shadow-lg">
+                  <Shield className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-black mb-2">Risk Assessment</h3>
                 <p className="text-gray-600">Get detailed risk profiles and diversification analysis for your holdings</p>
               </div>
-              <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:border-primary/50 transition-all hover:shadow-lg">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary mb-4 flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-white" />
+              <div className="bg-white p-8 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cute-dark to-secondary mb-4 flex items-center justify-center shadow-lg">
+                  <BarChart3 className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-black mb-2">Rebalancing</h3>
                 <p className="text-gray-600">Receive smart rebalancing suggestions tailored to your portfolio</p>
@@ -242,7 +252,11 @@ export default function Home() {
         {/* CTA Section */}
         <section id="wallet-section" className="relative z-10 py-20 px-4 md:px-8 bg-gray-50">
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-4xl font-bold text-black mb-8 text-center">Ready to Analyze?</h2>
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <Heart className="w-6 h-6 text-cute-dark animate-pulse" />
+              <h2 className="text-4xl font-bold text-black text-center">Ready to Analyze?</h2>
+              <Heart className="w-6 h-6 text-cute-dark animate-pulse" style={{ animationDelay: '0.5s' }} />
+            </div>
             <WalletConnect />
           </div>
         </section>

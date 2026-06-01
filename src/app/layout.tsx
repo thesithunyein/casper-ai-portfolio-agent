@@ -1,5 +1,12 @@
 import type { Metadata } from 'next'
+import { Nunito } from 'next/font/google'
 import './globals.css'
+
+const nunito = Nunito({
+  subsets: ['latin'],
+  weight: ['400', '600', '700', '800', '900'],
+  variable: '--font-nunito',
+})
 
 export const metadata: Metadata = {
   title: 'Injective Agent - AI Portfolio Analysis',
@@ -22,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-white text-black antialiased">
+      <body className={`${nunito.variable} font-sans bg-white text-black antialiased`}>
         {children}
       </body>
     </html>
