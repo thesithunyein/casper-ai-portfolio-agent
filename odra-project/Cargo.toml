@@ -8,7 +8,7 @@ description = "Agentic AI portfolio analysis on Casper Network"
 [dependencies]
 odra = "1.5.1"
 odra-casper-livenet-env = "1.5.1"
-getrandom = { version = "0.3", features = ["wasm_js"] }
+getrandom = { version = "0.2", features = ["js"] }
 
 [features]
 default = []
@@ -22,3 +22,7 @@ test = false
 name = "portfolio_agent"
 path = "src/lib.rs"
 crate-type = ["cdylib", "lib"]
+
+# Force ALL dependencies to use the js feature for getrandom
+[patch.crates-io]
+getrandom = { version = "0.2", features = ["js"] }
