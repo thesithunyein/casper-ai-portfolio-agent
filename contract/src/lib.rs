@@ -1,3 +1,17 @@
+#[cfg(target_arch = "wasm32")]
+use getrandom::register_custom_getrandom;
+
+#[cfg(target_arch = "wasm32")]
+fn custom_getrandom(buf: &mut [u8]) -> Result<(), getrandom::Error> {
+    // Smart contracts on Casper cannot access true randomness
+    // Fill with deterministic placeholder (sufficient for hackathon demo)
+    buf.fill(0);
+    Ok(())
+}
+
+#[cfg(target_arch = "wasm32")]
+register_custom_getrandom!(custom_getrandom);
+
 use odra::prelude::*;
 use odra::types::Address;
 
