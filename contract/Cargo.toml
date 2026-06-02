@@ -7,6 +7,8 @@ edition = "2021"
 # Odra 1.5.x (no casper feature flag needed; it does not exist)
 odra = { version = "1.5.1" }
 odra-casper-livenet-env = "1.5.1"
+# Required for WASM builds (getrandom needs js feature)
+getrandom = { version = "0.2", features = ["js"] }
 
 [features]
 default = []
