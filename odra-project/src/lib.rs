@@ -1,4 +1,5 @@
 #![cfg_attr(not(test), no_std)]
+#![allow(unexpected_cfgs)]
 use odra::prelude::*;
 use odra::casper_types::U256;
 

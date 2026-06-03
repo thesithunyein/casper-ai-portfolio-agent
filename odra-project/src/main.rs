@@ -1,6 +1,5 @@
-use portfolio_agent::PortfolioAgent;
+#![cfg_attr(target_arch = "wasm32", no_std)]
+#![cfg_attr(target_arch = "wasm32", no_main)]
 
-fn main() {
-    // Entry point for the contract binary
-    // The actual contract logic is in lib.rs
-}
+#[cfg(not(target_arch = "wasm32"))]
+fn main() {}
