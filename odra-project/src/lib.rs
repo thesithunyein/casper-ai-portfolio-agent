@@ -1,5 +1,5 @@
+#![cfg_attr(not(test), no_std)]
 use odra::prelude::*;
-use odra::contract_env;
 use odra::casper_types::U256;
 
 /// PortfolioAgent - Smart contract for storing AI portfolio analysis on Casper
@@ -18,7 +18,7 @@ pub struct PortfolioAgent {
 impl PortfolioAgent {
     /// Initialize the contract
     pub fn init(&mut self) {
-        self.owner.set(contract_env::caller());
+        self.owner.set(self.env().caller());
         self.total_analyses.set(0);
     }
 
@@ -38,8 +38,8 @@ impl PortfolioAgent {
             risk_level,
             recommendation_count,
             summary_hash,
-            timestamp: contract_env::get_block_time(),
-            analyst: contract_env::caller(),
+            timestamp: self.env().block_time(),
+            analyst: self.env().caller(),
         };
 
         self.analyses.set(&wallet_address, result);
