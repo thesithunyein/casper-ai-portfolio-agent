@@ -38,7 +38,7 @@ impl PortfolioAgent {
             risk_level,
             recommendation_count,
             summary_hash,
-            timestamp: self.env().block_time(),
+            timestamp: self.env().get_block_time(),
             analyst: self.env().caller(),
         };
 
@@ -65,7 +65,7 @@ impl PortfolioAgent {
 
     /// Get contract owner
     pub fn get_owner(&self) -> Address {
-        self.owner.get_or_default()
+        self.owner.get().expect("owner not initialized")
     }
 }
 

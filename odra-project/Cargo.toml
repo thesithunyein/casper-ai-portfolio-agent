@@ -21,3 +21,11 @@ name = "portfolio_agent"
 path = "src/lib.rs"
 crate-type = ["cdylib", "lib"]
 
+[profile.release]
+panic = "abort"
+opt-level = "z"
+lto = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(odra_module)"] }
+
