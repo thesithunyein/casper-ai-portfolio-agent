@@ -1,0 +1,46 @@
+name: Build Contract WASM
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'odra-project/**'
+      - '.github/workflows/build-contract.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-action@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Verify Rust installation
+        run: |
+          rustc --version
+          cargo --version
+          rustup target list --installed
+
+      - name: Build contract WASM
+        working-directory: ./odra-project
+        run: |
+          cargo build --release --target wasm32-unknown-unknown
+
+      - name: List build artifacts
+        run: |
+          ls -la odra-project/target/wasm32-unknown-unknown/release/
+
+      - name: Upload WASM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-agent-contract
+          path: odra-project/target/wasm32-unknown-unknown/release/*.wasm
+          if-no-files-found: error
+
+      - name: Notify success
+        run: echo "Contract WASM built successfully! Download the artifact to deploy."
