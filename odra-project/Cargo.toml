@@ -6,18 +6,10 @@ authors = ["Casper AI Portfolio Agent"]
 description = "Agentic AI portfolio analysis on Casper Network"
 
 [dependencies]
-odra = "2.7.2"
-
-[features]
-default = []
-
-[[bin]]
-name = "portfolio_agent_contract"
-path = "src/main.rs"
-test = false
+odra = { version = "2.7.2", default-features = false }
 
 [lib]
-name = "portfolio_agent"
+name = "portfolio_agent_contract"
 path = "src/lib.rs"
 crate-type = ["cdylib", "lib"]
 
