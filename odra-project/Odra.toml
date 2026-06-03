@@ -1,0 +1,7 @@
+[package]
+name = "portfolio-agent-odra"
+version = "0.1.0"
+edition = "2021"
+
+[contracts]
+portfolio_agent_contract = { path = "src/lib.rs", name = "PortfolioAgent" }
