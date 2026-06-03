@@ -7,7 +7,6 @@ description = "Agentic AI portfolio analysis on Casper Network"
 
 [dependencies]
 odra = "1.5.1"
-odra-casper-livenet-env = "1.5.1"
 
 [features]
 default = []
