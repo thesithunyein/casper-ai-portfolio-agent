@@ -1,4 +1,4 @@
-use odra::prelude::*;
+use odra::prelude::{env, Address, Mapping, Var};
 use odra::casper_types::U256;
 
 /// PortfolioAgent - Smart contract for storing AI portfolio analysis on Casper
