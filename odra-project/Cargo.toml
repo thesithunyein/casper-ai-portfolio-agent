@@ -6,7 +6,7 @@ authors = ["Casper AI Portfolio Agent"]
 description = "Agentic AI portfolio analysis on Casper Network"
 
 [dependencies]
-odra = { version = "2.7.1", default-features = false, features = ["casper"] }
+odra = "2.7.2"
 
 [features]
 default = []
