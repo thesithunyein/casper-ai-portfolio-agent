@@ -1,5 +1,5 @@
 use odra::prelude::*;
-use odra::types::Address;
+use odra::casper_types::U256;
 
 /// PortfolioAgent - Smart contract for storing AI portfolio analysis on Casper
 /// This demonstrates agentic AI with on-chain data persistence
@@ -17,7 +17,7 @@ pub struct PortfolioAgent {
 impl PortfolioAgent {
     /// Initialize the contract
     pub fn init(&mut self) {
-        self.owner.set(caller());
+        self.owner.set(env::caller());
         self.total_analyses.set(0);
     }
 
@@ -37,8 +37,8 @@ impl PortfolioAgent {
             risk_level,
             recommendation_count,
             summary_hash,
-            timestamp: block_time(),
-            analyst: caller(),
+            timestamp: env::get_block_time(),
+            analyst: env::caller(),
         };
 
         self.analyses.set(&wallet_address, result);
