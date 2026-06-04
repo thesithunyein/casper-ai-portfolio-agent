@@ -35,11 +35,13 @@ jobs:
           ls -la ./wasm/
           find ./wasm -name "*.wasm" -type f
 
-      - name: Install casper-client
+      - name: Install Rust and casper-client
         run: |
-          curl -sL https://github.com/casper-ecosystem/casper-client-rs/releases/download/v2.0.0/casper-client_2.0.0-1_amd64.deb -o casper-client.deb || \
-          curl -sL https://github.com/casper-ecosystem/casper-client-rs/releases/download/v1.6.0/casper-client_1.6.0-1_amd64.deb -o casper-client.deb
-          sudo dpkg -i casper-client.deb || sudo apt-get install -f -y
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+          rustup default stable
+          cargo install casper-client --locked
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           casper-client --version
 
       - name: Setup deployer key
