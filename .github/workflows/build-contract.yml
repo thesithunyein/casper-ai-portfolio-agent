@@ -28,6 +28,8 @@ jobs:
 
       - name: Build contract WASM
         working-directory: ./odra-project
+        env:
+          RUSTFLAGS: "-C link-arg=--allow-undefined"
         run: |
           rm -f Cargo.lock
           cargo build --release --target wasm32-unknown-unknown 2>&1 | tee build.log
