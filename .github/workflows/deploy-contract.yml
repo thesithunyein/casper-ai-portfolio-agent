@@ -1,0 +1,80 @@
+name: Deploy Contract to Casper Testnet
+
+on:
+  workflow_dispatch:
+    inputs:
+      wasm_artifact_run_id:
+        description: 'GitHub Actions run ID that built the WASM (leave empty for latest successful)'
+        required: false
+        default: ''
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download WASM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: portfolio-agent-contract
+          path: ./wasm
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.inputs.wasm_artifact_run_id || '' }}
+        continue-on-error: true
+
+      - name: Find WASM file
+        run: |
+          find ./wasm -name "*.wasm" -type f
+          ls -la ./wasm/
+
+      - name: Install casper-client
+        run: |
+          curl -sL https://github.com/casper-ecosystem/casper-client-rs/releases/download/v2.0.0/casper-client_2.0.0-1_amd64.deb -o casper-client.deb || \
+          curl -sL https://github.com/casper-ecosystem/casper-client-rs/releases/download/v1.6.0/casper-client_1.6.0-1_amd64.deb -o casper-client.deb
+          sudo dpkg -i casper-client.deb || sudo apt-get install -f -y
+          casper-client --version
+
+      - name: Setup deployer key
+        env:
+          CSPR_TESTNET_PRIVATE_KEY: ${{ secrets.CSPR_TESTNET_PRIVATE_KEY }}
+        run: |
+          mkdir -p keys
+          echo "$CSPR_TESTNET_PRIVATE_KEY" > keys/secret_key.pem
+          chmod 600 keys/secret_key.pem
+
+      - name: Deploy contract
+        env:
+          CSPR_TESTNET_PRIVATE_KEY: ${{ secrets.CSPR_TESTNET_PRIVATE_KEY }}
+        run: |
+          WASM_FILE=$(find ./wasm -name "*.wasm" -type f | head -1)
+          echo "Deploying: $WASM_FILE"
+          casper-client put-deploy \
+            --node-address http://188.40.120.12:7777/rpc \
+            --chain-name casper-testnet \
+            --secret-key keys/secret_key.pem \
+            --payment-amount 10000000000 \
+            --session-path "$WASM_FILE" \
+            --transfer-id 0 \
+            --ttl 30m | tee deploy-output.json
+
+      - name: Extract deploy hash
+        run: |
+          DEPLOY_HASH=$(cat deploy-output.json | grep -o '"deploy_hash": "[^"]*"' | head -1 | cut -d'"' -f4)
+          echo "DEPLOY_HASH=$DEPLOY_HASH" >> $GITHUB_ENV
+          echo "Deploy Hash: $DEPLOY_HASH"
+
+      - name: Wait and verify deployment
+        run: |
+          echo "Waiting 60 seconds for deploy to process..."
+          sleep 60
+          casper-client get-deploy "$DEPLOY_HASH" --node-address http://188.40.120.12:7777/rpc | tee deploy-status.json
+
+      - name: Upload deployment info
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-info
+          path: |
+            deploy-output.json
+            deploy-status.json
