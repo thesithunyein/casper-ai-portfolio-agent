@@ -125,13 +125,9 @@ jobs:
           NODE_SCRIPT
           WASM_FILE=$(find ./wasm -name "*.wasm" -type f | head -1)
           export WASM_PATH="$WASM_FILE"
-          node deploy.js > deploy-raw-output.txt 2>&1 || true
-          echo "=== DEPLOY OUTPUT ==="
-          cat deploy-raw-output.txt
-          echo "=== END OUTPUT ==="
-          cat deploy-output.json 2>/dev/null || echo "No deploy-output.json"
-          cat deploy-hash.txt 2>/dev/null || echo "No deploy-hash.txt"
-          cat deploy-error.txt 2>/dev/null || echo "No errors"
+          node deploy.js
+          echo "=== DEPLOY FILES ==="
+          ls -la deploy-*.txt deploy-*.json 2>/dev/null || echo "No deploy files found"
 
       - name: Upload deployment info
         uses: actions/upload-artifact@v4
