@@ -61,7 +61,7 @@ jobs:
           cat > deploy.js << 'NODE_SCRIPT'
           const sdk = require('casper-js-sdk');
           const fs = require('fs');
-          const NODE_URL = 'http://188.40.120.12:7777/rpc';
+          const NODE_URL = 'https://node.testnet.casper.network/rpc';
           const CHAIN_NAME = 'casper-testnet';
           const WASM_PATH = process.env.WASM_PATH;
           const KEY_PATH = 'keys/secret_key.pem';
