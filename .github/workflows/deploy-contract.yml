@@ -52,59 +52,86 @@ jobs:
           echo "$CSPR_TESTNET_PRIVATE_KEY" > keys/secret_key.pem
           chmod 600 keys/secret_key.pem
 
-      - name: Deploy contract
+      - name: Deploy contract with Node.js
         env:
           CSPR_TESTNET_PRIVATE_KEY: ${{ secrets.CSPR_TESTNET_PRIVATE_KEY }}
         run: |
-          set -x
+          # Install Node.js deps for deploy
+          npm install casper-js-sdk@2.15.4
+          cat > deploy.js << 'NODE_SCRIPT'
+          const sdk = require('casper-js-sdk');
+          const fs = require('fs');
+          const NODE_URL = 'http://188.40.120.12:7777/rpc';
+          const CHAIN_NAME = 'casper-testnet';
+          const WASM_PATH = process.env.WASM_PATH;
+          const KEY_PATH = 'keys/secret_key.pem';
+          
+          async function deploy() {
+            console.log('Loading key pair...');
+            const keyPair = sdk.Keys.Secp256K1.loadKeyPairFromPrivateFile(KEY_PATH);
+            console.log('Deployer:', keyPair.publicKey.toHex());
+          
+            console.log('Loading WASM...');
+            const wasmBuffer = fs.readFileSync(WASM_PATH);
+            console.log('WASM size:', wasmBuffer.length, 'bytes');
+          
+            console.log('Connecting to', NODE_URL);
+            const client = new sdk.CasperClient(NODE_URL);
+          
+            const deployParams = new sdk.DeployUtil.DeployParams(
+              keyPair.publicKey,
+              CHAIN_NAME,
+              1,
+              18000000000,
+              [],
+              []
+            );
+            deployParams.timestamp = Date.now();
+          
+            const session = sdk.DeployUtil.ExecutableDeployItem.newModuleBytes(wasmBuffer, sdk.RuntimeArgs.fromMap({}));
+            const payment = sdk.DeployUtil.standardPayment(18000000000);
+          
+            const deploy = sdk.DeployUtil.makeDeploy(deployParams, session, payment);
+            
+            console.log('Signing deploy...');
+            sdk.DeployUtil.signDeploy(deploy, keyPair);
+          
+            console.log('Sending deploy...');
+            const deployHash = await client.putDeploy(deploy);
+            console.log('\n✅ Deploy submitted!');
+            console.log('Deploy Hash:', deployHash);
+            console.log('Explorer:', 'https://testnet.cspr.live/deploy/' + deployHash);
+            
+            fs.writeFileSync('deploy-hash.txt', deployHash);
+            fs.writeFileSync('deploy-output.json', JSON.stringify({ deployHash, explorer: 'https://testnet.cspr.live/deploy/' + deployHash }, null, 2));
+            
+            console.log('\nWaiting 90s for deployment...');
+            await new Promise(r => setTimeout(r, 90000));
+            
+            try {
+              const info = await client.getDeploy(deployHash);
+              fs.writeFileSync('deploy-status.json', JSON.stringify(info, null, 2));
+              console.log('Status saved to deploy-status.json');
+            } catch(e) {
+              console.log('Status check error:', e.message);
+            }
+          }
+          
+          deploy().catch(err => {
+            console.error('Deploy error:', err);
+            fs.writeFileSync('deploy-error.txt', err.message + '\n' + err.stack);
+            process.exit(1);
+          });
+          NODE_SCRIPT
           WASM_FILE=$(find ./wasm -name "*.wasm" -type f | head -1)
-          echo "Deploying: $WASM_FILE"
-          casper-client put-deploy \
-            --node-address http://188.40.120.12:7777/rpc \
-            --chain-name casper-testnet \
-            --secret-key keys/secret_key.pem \
-            --payment-amount 10000000000 \
-            --session-path "$WASM_FILE" \
-            --ttl 30m > deploy-output.json 2>&1 || true
-          echo "=== RAW OUTPUT ==="
-          cat deploy-output.json
-          echo "=== END RAW OUTPUT ==="
-
-      - name: Extract deploy hash
-        run: |
-          set -x
-          # Try multiple patterns to extract deploy hash
-          DEPLOY_HASH=$(cat deploy-output.json | grep -oP '"deploy_hash"\s*:\s*"\K[^"]+' | head -1)
-          if [ -z "$DEPLOY_HASH" ]; then
-            DEPLOY_HASH=$(cat deploy-output.json | grep -oP 'deploy_hash[[:space:]]+\K[0-9a-fA-F]{64}' | head -1)
-          fi
-          if [ -z "$DEPLOY_HASH" ]; then
-            DEPLOY_HASH=$(cat deploy-output.json | grep -oP '[0-9a-fA-F]{64}' | head -1)
-          fi
-          echo "DEPLOY_HASH=$DEPLOY_HASH" >> $GITHUB_ENV
-          echo "Deploy Hash: $DEPLOY_HASH"
-          echo "$DEPLOY_HASH" > deploy-hash.txt
-
-      - name: Wait and verify deployment
-        run: |
-          DEPLOY_HASH=$(cat deploy-hash.txt)
-          if [ -z "$DEPLOY_HASH" ]; then
-            echo "No deploy hash found - cannot verify"
-            exit 0
-          fi
-          echo "Waiting 60 seconds for deploy to process..."
-          sleep 60
-          casper-client get-deploy "$DEPLOY_HASH" --node-address http://188.40.120.12:7777/rpc > deploy-status.json 2>&1 || true
-          cat deploy-status.json
-
-      - name: Show deploy hash
-        run: |
-          echo "========================================="
-          echo "DEPLOY HASH:"
-          cat deploy-hash.txt || echo "No deploy hash file found"
-          echo "========================================="
-          echo "Deploy output preview:"
-          head -20 deploy-output.json
+          export WASM_PATH="$WASM_FILE"
+          node deploy.js > deploy-raw-output.txt 2>&1 || true
+          echo "=== DEPLOY OUTPUT ==="
+          cat deploy-raw-output.txt
+          echo "=== END OUTPUT ==="
+          cat deploy-output.json 2>/dev/null || echo "No deploy-output.json"
+          cat deploy-hash.txt 2>/dev/null || echo "No deploy-hash.txt"
+          cat deploy-error.txt 2>/dev/null || echo "No errors"
 
       - name: Upload deployment info
         uses: actions/upload-artifact@v4
