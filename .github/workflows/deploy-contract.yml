@@ -65,7 +65,6 @@ jobs:
             --secret-key keys/secret_key.pem \
             --payment-amount 10000000000 \
             --session-path "$WASM_FILE" \
-            --transfer-id 0 \
             --ttl 30m > deploy-output.json 2>&1 || true
           echo "=== RAW OUTPUT ==="
           cat deploy-output.json
@@ -97,6 +96,15 @@ jobs:
           sleep 60
           casper-client get-deploy "$DEPLOY_HASH" --node-address http://188.40.120.12:7777/rpc > deploy-status.json 2>&1 || true
           cat deploy-status.json
+
+      - name: Show deploy hash
+        run: |
+          echo "========================================="
+          echo "DEPLOY HASH:"
+          cat deploy-hash.txt || echo "No deploy hash file found"
+          echo "========================================="
+          echo "Deploy output preview:"
+          head -20 deploy-output.json
 
       - name: Upload deployment info
         uses: actions/upload-artifact@v4
