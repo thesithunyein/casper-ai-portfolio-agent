@@ -82,11 +82,10 @@ jobs:
               keyPair.publicKey,
               CHAIN_NAME,
               1,
-              18000000000,
-              [],
-              []
+              '30min',
+              null,
+              null
             );
-            deployParams.timestamp = Date.now();
           
             const session = sdk.DeployUtil.ExecutableDeployItem.newModuleBytes(wasmBuffer, sdk.RuntimeArgs.fromMap({}));
             const payment = sdk.DeployUtil.standardPayment(18000000000);
