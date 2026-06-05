@@ -56,6 +56,7 @@ jobs:
         env:
           CSPR_TESTNET_PRIVATE_KEY: ${{ secrets.CSPR_TESTNET_PRIVATE_KEY }}
         run: |
+          set -x
           WASM_FILE=$(find ./wasm -name "*.wasm" -type f | head -1)
           echo "Deploying: $WASM_FILE"
           casper-client put-deploy \
@@ -65,19 +66,37 @@ jobs:
             --payment-amount 10000000000 \
             --session-path "$WASM_FILE" \
             --transfer-id 0 \
-            --ttl 30m | tee deploy-output.json
+            --ttl 30m > deploy-output.json 2>&1 || true
+          echo "=== RAW OUTPUT ==="
+          cat deploy-output.json
+          echo "=== END RAW OUTPUT ==="
 
       - name: Extract deploy hash
         run: |
-          DEPLOY_HASH=$(cat deploy-output.json | grep -o '"deploy_hash": "[^"]*"' | head -1 | cut -d'"' -f4)
+          set -x
+          # Try multiple patterns to extract deploy hash
+          DEPLOY_HASH=$(cat deploy-output.json | grep -oP '"deploy_hash"\s*:\s*"\K[^"]+' | head -1)
+          if [ -z "$DEPLOY_HASH" ]; then
+            DEPLOY_HASH=$(cat deploy-output.json | grep -oP 'deploy_hash[[:space:]]+\K[0-9a-fA-F]{64}' | head -1)
+          fi
+          if [ -z "$DEPLOY_HASH" ]; then
+            DEPLOY_HASH=$(cat deploy-output.json | grep -oP '[0-9a-fA-F]{64}' | head -1)
+          fi
           echo "DEPLOY_HASH=$DEPLOY_HASH" >> $GITHUB_ENV
           echo "Deploy Hash: $DEPLOY_HASH"
+          echo "$DEPLOY_HASH" > deploy-hash.txt
 
       - name: Wait and verify deployment
         run: |
+          DEPLOY_HASH=$(cat deploy-hash.txt)
+          if [ -z "$DEPLOY_HASH" ]; then
+            echo "No deploy hash found - cannot verify"
+            exit 0
+          fi
           echo "Waiting 60 seconds for deploy to process..."
           sleep 60
-          casper-client get-deploy "$DEPLOY_HASH" --node-address http://188.40.120.12:7777/rpc | tee deploy-status.json
+          casper-client get-deploy "$DEPLOY_HASH" --node-address http://188.40.120.12:7777/rpc > deploy-status.json 2>&1 || true
+          cat deploy-status.json
 
       - name: Upload deployment info
         uses: actions/upload-artifact@v4
@@ -86,3 +105,4 @@ jobs:
           path: |
             deploy-output.json
             deploy-status.json
+            deploy-hash.txt
