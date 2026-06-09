@@ -1,6 +1,6 @@
 'use client'
 
-import { AIAnalysis } from '@/lib/ai'
+import { AIAnalysis } from '@/lib/casper'
 import { Brain, AlertTriangle, Target, Lightbulb, Sparkles, Heart, Star, Zap } from 'lucide-react'
 
 interface AIAnalysisProps {

@@ -35,20 +35,21 @@ A cute, conversational AI agent (with a bear mascot!) that:
 
 ## Judging Criteria Alignment
 
-| Criterion | Score | Evidence |
-|-----------|-------|----------|
-| Technical Execution (20%) | 18/20 | Clean TypeScript + Rust. Working contract on Testnet. Modular architecture. Real API integration. |
-| Innovation & Originality (15%) | 14/15 | First cute-themed agentic AI on Casper. x402 + Agent Chat + On-chain storage combination. |
-| Use of AI / Agentic Systems (20%) | 18/20 | Real Claude API integration. Conversational agent with actions. Pays via x402 autonomously. |
-| Real-World Applicability (15%) | 13/15 | DeFi portfolio management is a real problem. Works on Casper Testnet with real data. |
-| User Experience & Design (10%) | 10/10 | Unique cute UI with bear mascot. Stands out from dark generic DeFi apps. |
-| Working Smart Contracts (10%) | 10/10 | Odra contract deployed on Casper Testnet. Stores analysis on-chain. |
-| Long-Term Launch Plans (5%) | 4/5 | Social media presence (Twitter/X), roadmap, open-source, grant-ready. |
-| Potential for Long-Term Impact (5%) | 5/5 | Open-source agent toolkit. MCP-ready. Community voting integration planned. |
-| **TOTAL** | **92/100** | Production-ready agentic AI on Casper |
+| Criterion | How this project addresses it |
+|-----------|-------------------------------|
+| Technical Execution | TypeScript frontend + Rust/Odra contract, modular `src/lib` integration layer, CI for web and WASM builds. |
+| Innovation & Originality | Friendly, approachable agentic DeFi assistant on Casper combining an AI agent, x402 micropayments, and on-chain analysis storage. |
+| Use of AI / Agentic Systems | Claude 3.5 Sonnet powers both the structured analysis (`/api/analyze`) and the conversational agent (`/api/chat`), grounded in live portfolio context. |
+| Real-World Applicability | Portfolio risk assessment and rebalancing is a genuine DeFi need; reads live Testnet balances via CSPR.cloud. |
+| User Experience & Design | Distinctive, polished cute UI with a bear mascot that stands out from generic dark DeFi dashboards. |
+| Working Smart Contracts | Odra contract (`odra-project/`) storing analysis results on Casper Testnet. |
+| Long-Term Launch Plans | Roadmap toward live x402 Facilitator settlement, full CEP-18 indexing, and community voting. |
+| Potential for Long-Term Impact | Open-source reference for building agentic AI dApps on Casper. |
 
 ## Contract Address (Testnet)
-**Deploy Hash:** (To be filled after running `node contract/deploy.js`)
+**Status:** Pending deployment. The contract source lives in `odra-project/` and is built to WASM in CI (`.github/workflows/ci.yml`). Deploy with the `build-and-deploy` workflow (requires a funded Casper Testnet key in the `CSPR_TESTNET_PRIVATE_KEY` secret), then fill in:
+
+**Deploy Hash:** (To be filled after deployment)
 **Contract Hash:** (To be filled after deployment)
 **Explorer:** https://testnet.cspr.live/contract/[contract-hash]
 

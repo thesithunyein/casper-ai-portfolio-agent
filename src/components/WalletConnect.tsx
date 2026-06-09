@@ -16,7 +16,7 @@ export const WalletConnect = () => {
     }
 
     if (!validateCasperAddress(input)) {
-      setError('Invalid Casper address. Must be 68 characters starting with 01 or 02.')
+      setError('Invalid Casper public key. It must start with 01 (66 chars) or 02 (68 chars).')
       return
     }
 

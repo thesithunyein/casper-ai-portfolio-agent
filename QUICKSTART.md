@@ -1,32 +1,28 @@
-# ⚡ Quick Start (5 minutes)
+# Quick Start (5 minutes)
 
-Get Injective AI Portfolio Agent running locally in 5 minutes.
+Get the Casper AI Portfolio Agent running locally in 5 minutes.
 
 ---
 
-## 1️⃣ Clone & Install
+## 1. Clone & Install
 
 ```bash
-git clone https://github.com/thesithunyein/injective-ai-portfolio-agent.git
-cd injective-ai-portfolio-agent
+git clone https://github.com/thesithunyein/casper-ai-portfolio-agent.git
+cd casper-ai-portfolio-agent
 npm install
 ```
 
-**Time: 2 minutes**
-
 ---
 
-## 2️⃣ Get API Key
+## 2. Get an Anthropic API Key
 
 1. Go to [console.anthropic.com](https://console.anthropic.com)
 2. Sign up (free tier includes credits)
 3. Copy your API key
 
-**Time: 1 minute**
-
 ---
 
-## 3️⃣ Setup Environment
+## 3. Setup Environment
 
 ```bash
 cp .env.example .env.local
@@ -34,17 +30,19 @@ cp .env.example .env.local
 
 Edit `.env.local`:
 ```env
-ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxx  # Paste your key here
-NEXT_PUBLIC_INJECTIVE_NETWORK=testnet
-NEXT_PUBLIC_INJECTIVE_CHAIN_ID=injective-888
-NEXT_PUBLIC_INJECTIVE_ENV=testnet
-```
+# Required for AI analysis (server-side)
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxx
 
-**Time: 1 minute**
+# Casper network (defaults to testnet)
+NEXT_PUBLIC_CASPER_NETWORK=testnet
+
+# Optional: live balances from CSPR.cloud (falls back to demo data if unset)
+NEXT_PUBLIC_CSPR_CLOUD_API_KEY=your-cspr-cloud-key
+```
 
 ---
 
-## 4️⃣ Run Locally
+## 4. Run Locally
 
 ```bash
 npm run dev
@@ -52,48 +50,32 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
-**Time: 1 minute**
+---
+
+## 5. Test It
+
+1. Enter a Casper public key (starts with `01` or `02`).
+   - Get a funded Testnet account from the [faucet](https://testnet.cspr.live/tools/faucet).
+2. Click "Analyze Portfolio".
+3. Review the AI analysis and chat with the agent.
+
+> Without a `NEXT_PUBLIC_CSPR_CLOUD_API_KEY`, the app uses clearly-labelled demo
+> balances so the flow still works end-to-end.
 
 ---
 
-## 5️⃣ Test It
+## What You'll See
 
-1. Enter an Injective wallet address (starts with `inj`)
-   - Example: `inj1abc123...` (any valid format)
-2. Click "Analyze Portfolio"
-3. Watch the magic happen! ✨
-
----
-
-## 🎯 What You'll See
-
-1. **Portfolio Display** – Your holdings, amounts, percentages
-2. **AI Analysis** – Summary of your portfolio
+1. **Portfolio Display** – Holdings, amounts, percentages
+2. **AI Analysis** – Claude-generated portfolio summary
 3. **Risk Assessment** – Volatility and concentration analysis
-4. **Recommendations** – 5 actionable insights
+4. **Recommendations** – Actionable insights
 5. **Rebalancing Suggestion** – Target allocations with reasoning
+6. **Agent Chat** – Ask follow-up questions in natural language
 
 ---
 
-## 🚀 Next Steps
-
-### Deploy to Vercel (1 click)
-
-```bash
-vercel
-```
-
-### Record Demo Video
-
-Show the app working with a real wallet address.
-
-### Submit to Hackathon
-
-See `SUBMISSION_GUIDE.md` for detailed steps.
-
----
-
-## 🆘 Troubleshooting
+## Troubleshooting
 
 ### "Cannot find module" errors
 ```bash
@@ -105,24 +87,20 @@ npm install
 npm run dev -- -p 3001
 ```
 
-### API key not working
-- Check `.env.local` is created
-- Verify API key is correct
-- Restart dev server
+### "ANTHROPIC_API_KEY is not configured"
+- Check `.env.local` exists and contains a valid key
+- Restart the dev server
 
-### Injective address validation fails
-- Address must start with `inj`
-- Must be 42 characters long
-- Example: `inj1abc123def456ghi789jkl012mno345pqr678stu`
+### Casper address validation fails
+- Must start with `01` (66 chars) or `02` (68 chars)
+- It is a public key in hex, not an account hash
 
 ---
 
-## 📚 Learn More
+## Learn More
 
-- [Injective Docs](https://docs.injective.network)
+- [Casper AI Toolkit](https://www.casper.network/ai)
+- [CSPR.cloud Docs](https://docs.cspr.cloud)
+- [Odra Framework](https://odra.dev)
 - [Claude API Docs](https://docs.anthropic.com)
 - [Next.js Docs](https://nextjs.org/docs)
-
----
-
-**You're all set! Happy analyzing! 🎉**

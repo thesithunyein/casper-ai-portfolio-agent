@@ -190,7 +190,7 @@ export default function Home() {
                   <Zap className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-black mb-1">x402 Payments</h3>
-                <p className="text-gray-600 text-sm">Agent pays 0.01 CSPR per analysis via Casper's micropayment protocol</p>
+                <p className="text-gray-600 text-sm">Agent pays 0.01 CSPR per analysis via Casper&apos;s micropayment protocol</p>
               </div>
               <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-400 to-orange-400 mb-3 flex items-center justify-center shadow-lg">
@@ -313,7 +313,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer hover:opacity-80 transition" onClick={reset}>
             <Logo className="w-8 h-8" />
-            <span className="font-bold text-lg text-black">Injective Agent</span>
+            <span className="font-bold text-lg text-black">Casper Agent</span>
           </div>
           <button
             onClick={reset}

@@ -1,16 +1,5 @@
 import { create } from 'zustand'
-import { Portfolio } from './casper'
-
-interface AIAnalysis {
-  summary: string
-  riskAssessment: string
-  recommendations: string[]
-  rebalancingSuggestion: {
-    action: string
-    targetAllocation: Record<string, number>
-    reasoning: string
-  }
-}
+import { Portfolio, AIAnalysis } from './casper'
 
 interface AppState {
   walletAddress: string | null

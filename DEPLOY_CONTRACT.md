@@ -8,25 +8,25 @@
 ## Deploy Steps
 
 ```bash
-cd contract
+cd odra-project
 
-# Install Odra
-cargo install cargo-odra
-
-# Build WASM
-cargo odra build
+# Build WASM (CI uses this exact command)
+cargo build --release --target wasm32-unknown-unknown
 
 # Generate keys (if needed)
 casper-client keygen -f ./keys
 
 # Deploy
 casper-client put-deploy \
-  --node-address http://188.40.120.12:7777/rpc \
-  --chain-name casper-testnet \
+  --node-address https://node.testnet.casper.network/rpc \
+  --chain-name casper-test \
   --secret-key ./keys/secret_key.pem \
   --payment-amount 10000000000 \
   --session-path ./target/wasm32-unknown-unknown/release/portfolio_agent_contract.wasm
 ```
+
+> Tip: deployment is automated in `.github/workflows/build-and-deploy.yml`.
+> Add a funded Testnet key as the `CSPR_TESTNET_PRIVATE_KEY` repo secret and run the workflow.
 
 ## After Deployment
 1. Save deploy hash from output

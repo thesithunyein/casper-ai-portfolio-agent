@@ -36,5 +36,12 @@ yarn-error.log*
 *.swo
 *~
 
+# Rust / Odra contract build artifacts
+target/
+**/target/
+*.wasm
+build.log
+keys/
+
 # OS
 Thumbs.db

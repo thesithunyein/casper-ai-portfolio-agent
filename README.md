@@ -14,7 +14,7 @@ Analyze your Casper portfolio with Claude AI and get actionable insights, risk a
 4. **Pay via x402** – Agent pays 0.01 CSPR per analysis using Casper's micropayment protocol
 5. **AI analysis** – Claude 3.5 Sonnet analyzes your holdings
 6. **Get insights** – Risk assessment, diversification analysis, and rebalancing suggestions
-7. **Store on-chain** – Analysis results stored on Casper Testnet via smart contract
+7. **Store on-chain** – Analysis results can be stored on Casper Testnet via the Odra smart contract (`odra-project/`)
 
 ---
 
@@ -29,7 +29,7 @@ Analyze your Casper portfolio with Claude AI and get actionable insights, risk a
 ### Casper Integration
 - **CSPR.cloud API** – REST API for fetching live balances from Casper Testnet
 - **x402 Micropayments** – HTTP-native payment protocol for agent-per-request billing
-- **MCP Servers** – Model Context Protocol for AI agent blockchain queries
+- **MCP-ready** – Designed to plug into Casper MCP servers for AI agent blockchain queries (roadmap)
 - **Smart Contract** – Odra-based contract stores analysis results on-chain
 - **Multi-asset support** – CSPR, USDC, USDT, WETH, and more
 
@@ -54,7 +54,7 @@ Analyze your Casper portfolio with Claude AI and get actionable insights, risk a
 
 ### x402 Micropayments
 - **Pay-per-analysis** – 0.01 CSPR per AI analysis request
-- **Cryptographic proof** – Payment verified on-chain before analysis
+- **Cryptographic proof** – Payment intent encoded in an `x402-payment` HTTP header and verified by the API (demo; live Facilitator settlement on the roadmap)
 - **Agent autonomy** – AI agent pays for its own computation
 - **HTTP-native** – Standard HTTP headers for payment (no wallet popup)
 
@@ -88,10 +88,15 @@ This project combines **powerful AI analysis** with a **delightful, approachable
        ┌───────┴────────┐
        │                │
 ┌──────▼──────┐  ┌──────▼──────────┐
-│ Injective   │  │ Claude AI       │
-│ SDK         │  │ (Anthropic)     │
+│ CSPR.cloud  │  │ Claude AI       │
+│ REST API    │  │ (Anthropic)     │
 │ (Testnet)   │  │ 3.5 Sonnet      │
 └─────────────┘  └─────────────────┘
+       │
+┌──────▼─────────────┐
+│ Odra Smart Contract │
+│ (Casper Testnet)    │
+└─────────────────────┘
 ```
 
 ### How AI is Used
@@ -106,16 +111,16 @@ This project combines **powerful AI analysis** with a **delightful, approachable
 **Example AI output:**
 ```json
 {
-  "summary": "Your portfolio is heavily concentrated in INJ (68%) with stable assets (USDC/USDT) making up 32%. This is a growth-focused allocation.",
-  "riskAssessment": "Moderate risk. High INJ concentration exposes you to single-asset volatility, but stablecoins provide downside protection.",
+  "summary": "Your portfolio is concentrated in CSPR (62%) with stable assets (USDC/USDT) making up 38%. This is a growth-focused Casper-native allocation.",
+  "riskAssessment": "Moderate risk. High CSPR concentration exposes you to single-asset volatility, but stablecoins provide downside protection.",
   "recommendations": [
-    "Consider reducing INJ to 50-55% and increasing stablecoin allocation to 45-50%",
-    "Monitor INJ price movements; set stop-losses at -15% from current price",
+    "Consider reducing CSPR to 50-55% and increasing stablecoin allocation to 45-50%",
+    "Monitor CSPR price movements; set stop-losses at -15% from current price",
     "Diversify into WETH (5-10%) for Ethereum ecosystem exposure"
   ],
   "rebalancingSuggestion": {
-    "action": "Rebalance to 50% INJ, 35% USDC, 10% USDT, 5% WETH",
-    "targetAllocation": { "INJ": 50, "USDC": 35, "USDT": 10, "WETH": 5 },
+    "action": "Rebalance to 50% CSPR, 35% USDC, 10% USDT, 5% WETH",
+    "targetAllocation": { "CSPR": 50, "USDC": 35, "USDT": 10, "WETH": 5 },
     "reasoning": "This allocation reduces concentration risk while maintaining growth exposure..."
   }
 }
@@ -128,13 +133,14 @@ This project combines **powerful AI analysis** with a **delightful, approachable
 ### Prerequisites
 - Node.js 18+
 - Anthropic API key (get free credits at [console.anthropic.com](https://console.anthropic.com))
-- An Injective wallet address (testnet or mainnet)
+- A Casper account public key (starts with `01` or `02`). Create and fund one on the [Casper Testnet faucet](https://testnet.cspr.live/tools/faucet)
+- (Optional) A [CSPR.cloud](https://cspr.cloud) API key to read live Testnet balances
 
 ### Installation
 
 ```bash
-git clone https://github.com/thesithunyein/injective-ai-portfolio-agent.git
-cd injective-ai-portfolio-agent
+git clone https://github.com/thesithunyein/casper-ai-portfolio-agent.git
+cd casper-ai-portfolio-agent
 npm install
 ```
 
@@ -146,10 +152,18 @@ cp .env.example .env.local
 
 Edit `.env.local`:
 ```env
-NEXT_PUBLIC_INJECTIVE_NETWORK=testnet
-NEXT_PUBLIC_INJECTIVE_CHAIN_ID=injective-888
-NEXT_PUBLIC_INJECTIVE_ENV=testnet
+# Required for AI analysis (server-side)
 ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxx
+
+# Casper network (defaults to testnet)
+NEXT_PUBLIC_CASPER_NETWORK=testnet
+
+# Optional: live balances from CSPR.cloud (falls back to demo data if unset)
+NEXT_PUBLIC_CSPR_CLOUD_API_KEY=your-cspr-cloud-key
+
+# Optional: deployed contract + x402 recipient
+NEXT_PUBLIC_CONTRACT_HASH=
+NEXT_PUBLIC_X402_RECIPIENT=
 ```
 
 ### Run Locally
@@ -164,7 +178,7 @@ Open [http://localhost:3000](http://localhost:3000) and start analyzing!
 
 ## How to Use
 
-1. **Enter wallet address** – Paste your Injective address (starts with `inj`)
+1. **Enter wallet address** – Paste your Casper public key (starts with `01` or `02`)
 2. **Click "Analyze Portfolio"** – Fetches your holdings and runs AI analysis
 3. **Review results** – See portfolio breakdown, risk assessment, and recommendations
 4. **Take action** – Use insights to rebalance your portfolio
@@ -172,9 +186,9 @@ Open [http://localhost:3000](http://localhost:3000) and start analyzing!
 ### Example Workflow
 
 ```
-Input: inj1abc123...
+Input: 01abc123... (Casper public key)
   |
-Fetch balances from Injective
+Fetch balances from CSPR.cloud (Casper Testnet)
   |
 Send to Claude AI for analysis
   |
@@ -205,18 +219,16 @@ Display results:
 
 ## Casper Buildathon Judging Criteria Alignment
 
-| Criterion | Weight | How We Score |
-|-----------|--------|-------------|
-| **Technical Execution (20%)** | 20% | Clean TypeScript + Rust. Working smart contract on Testnet. Modular architecture. |
-| **Innovation & Originality (15%)** | 15% | First cute-themed agentic AI on Casper. x402 + MCP + Agent Chat combination. |
-| **Use of AI / Agentic Systems (20%)** | 20% | Conversational AI agent with context awareness. Pays via x402. Queries blockchain via MCP. |
-| **Real-World Applicability (15%)** | 15% | DeFi portfolio management is a real problem. Works on Casper Testnet with real data. |
-| **User Experience & Design (10%)** | 10% | Unique cute UI with bear mascot. Stands out in a sea of dark generic DeFi apps. |
-| **Working Smart Contracts (10%)** | 10% | Odra smart contract deployed on Casper Testnet. Stores analysis results on-chain. |
-| **Long-Term Launch Plans (5%)** | 5% | x402 mainnet integration. MCP server expansion. Multi-agent DAO governance. |
-| **Potential for Long-Term Impact (5%)** | 5% | Open-source agent toolkit for Casper ecosystem. Community voting integration. |
-
-**Total: 100/100**
+| Criterion | How this project addresses it |
+|-----------|-------------------------------|
+| **Technical Execution** | TypeScript frontend + Rust/Odra contract, modular `src/lib` integration layer, CI for both web and WASM builds. |
+| **Innovation & Originality** | A friendly, approachable agentic DeFi assistant on Casper combining an AI agent, x402 micropayments, and on-chain analysis storage. |
+| **Use of AI / Agentic Systems** | Claude 3.5 Sonnet powers both the structured portfolio analysis and the conversational agent chat, grounded in live portfolio context. |
+| **Real-World Applicability** | Portfolio risk assessment and rebalancing is a genuine DeFi need; reads live Testnet balances via CSPR.cloud. |
+| **User Experience & Design** | Distinctive, polished cute UI with a bear mascot that stands out from generic dark DeFi dashboards. |
+| **Working Smart Contracts** | Odra contract (`odra-project/`) that stores and retrieves analysis results on Casper Testnet. |
+| **Long-Term Launch Plans** | Roadmap toward live x402 Facilitator settlement, full CEP-18 indexing, and community voting. |
+| **Potential for Long-Term Impact** | Open-source reference for building agentic AI dApps on Casper. |
 
 ---
 
@@ -313,10 +325,10 @@ vercel
 ```
 
 Set environment variables in Vercel dashboard:
-- `ANTHROPIC_API_KEY`
-- `NEXT_PUBLIC_INJECTIVE_NETWORK`
-- `NEXT_PUBLIC_INJECTIVE_CHAIN_ID`
-- `NEXT_PUBLIC_INJECTIVE_ENV`
+- `ANTHROPIC_API_KEY` (required)
+- `NEXT_PUBLIC_CASPER_NETWORK` (`testnet` or `mainnet`)
+- `NEXT_PUBLIC_CSPR_CLOUD_API_KEY` (optional, for live balances)
+- `NEXT_PUBLIC_CONTRACT_HASH` (optional, deployed contract)
 
 ### Deploy to Other Platforms
 
@@ -335,7 +347,8 @@ Works with any Node.js hosting (Netlify, Railway, Heroku, etc.)
 - [ ] Recurring analysis schedules
 - [ ] Export reports (PDF/CSV)
 - [ ] Dark/light theme toggle
-- [ ] Support for more Injective assets
+- [ ] Full CEP-18 token indexing via CSPR.cloud
+- [ ] Live x402 Facilitator settlement on Casper Mainnet
 
 ---
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { Portfolio } from '@/lib/injective'
+import { Portfolio } from '@/lib/casper'
 import { PieChart, Heart, Sparkles } from 'lucide-react'
 
 interface PortfolioDisplayProps {
@@ -45,7 +45,7 @@ export const PortfolioDisplay = ({ portfolio }: PortfolioDisplayProps) => {
                 <div>
                   <p className="font-semibold text-black">{asset.symbol}</p>
                   <p className="text-sm text-gray-600 font-mono">
-                    {(parseFloat(asset.amount) / 1e18).toLocaleString('en-US', { maximumFractionDigits: 4 })} tokens
+                    {asset.balance.toLocaleString('en-US', { maximumFractionDigits: 4 })} tokens
                   </p>
                 </div>
               </div>

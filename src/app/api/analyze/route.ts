@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
+import type { Portfolio } from '@/lib/casper'
 
 const SYSTEM_PROMPT = `You are a professional DeFi portfolio analyst specializing in the Casper Network ecosystem. Analyze the provided portfolio data and return a structured JSON response.
 
@@ -11,7 +12,7 @@ Your analysis should include:
 Return ONLY valid JSON in this exact format:
 {
   "summary": "string",
-  "riskAssessment": "string", 
+  "riskAssessment": "string",
   "recommendations": ["string", "string", "string", "string", "string"],
   "rebalancingSuggestion": {
     "action": "string",
@@ -23,24 +24,34 @@ Return ONLY valid JSON in this exact format:
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const portfolio = body.portfolio
+    const portfolio = body.portfolio as Portfolio
 
-    const apiKey = process.env.ANTHROPIC_API_KEY
-
-    if (!apiKey) {
-      return new Response(
-        JSON.stringify({ error: 'ANTHROPIC_API_KEY is not configured' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+    if (!portfolio || !Array.isArray(portfolio.assets)) {
+      return Response.json(
+        { error: 'Invalid portfolio payload' },
+        { status: 400 }
       )
     }
 
-    // x402 Payment Verification
+    const apiKey = process.env.ANTHROPIC_API_KEY
+    if (!apiKey) {
+      return Response.json(
+        { error: 'ANTHROPIC_API_KEY is not configured' },
+        { status: 500 }
+      )
+    }
+
+    // x402 payment verification (HTTP-native micropayment header)
     const x402Header = request.headers.get('x402-payment')
     let paymentVerified = false
     if (x402Header) {
       try {
-        const paymentData = JSON.parse(atob(x402Header.replace('x402-payment: ', '')))
-        paymentVerified = paymentData.token === 'CSPR' && parseFloat(paymentData.amount) >= 0.01
+        const raw = x402Header.replace(/^x402-payment:\s*/, '')
+        const paymentData = JSON.parse(
+          Buffer.from(raw, 'base64').toString('utf-8')
+        )
+        paymentVerified =
+          paymentData.token === 'CSPR' && parseFloat(paymentData.amount) >= 0.01
       } catch {
         paymentVerified = false
       }
@@ -48,20 +59,34 @@ export async function POST(request: Request) {
 
     const client = new Anthropic({ apiKey })
 
-    const portfolioText = portfolio.assets.map((a: any) =>
-      `- ${a.symbol}: ${a.balance.toFixed(4)} ($${a.value.toFixed(2)}, ${a.percentage.toFixed(1)}%)`
-    ).join('\n')
+    const portfolioText = portfolio.assets
+      .map(
+        (a) =>
+          `- ${a.symbol}: ${a.balance.toLocaleString('en-US', {
+            maximumFractionDigits: 4,
+          })} ($${a.value.toFixed(2)}, ${a.percentage.toFixed(1)}%)`
+      )
+      .join('\n')
 
-    const prompt = `Analyze this Casper Network portfolio:\n\nTotal Value: $${portfolio.totalValue.toFixed(2)}\nWallet: ${portfolio.walletAddress}\n\nAssets:\n${portfolioText}\n\n${paymentVerified ? 'Note: This user has paid 0.01 CSPR via x402 micropayments for premium analysis.' : ''}`
+    const prompt = `Analyze this Casper Network portfolio:
+
+Total Value: $${portfolio.totalValue.toFixed(2)}
+Wallet: ${portfolio.walletAddress}
+
+Assets:
+${portfolioText}
+
+${paymentVerified ? 'Note: This user has paid 0.01 CSPR via x402 micropayments for premium analysis.' : ''}`
 
     const response = await client.messages.create({
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 1500,
       system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: prompt }]
+      messages: [{ role: 'user', content: prompt }],
     })
 
-    const content = response.content[0].type === 'text' ? response.content[0].text : ''
+    const content =
+      response.content[0]?.type === 'text' ? response.content[0].text : ''
     const jsonMatch = content.match(/\{[\s\S]*\}/)
     const analysis = jsonMatch ? JSON.parse(jsonMatch[0]) : null
 
@@ -69,7 +94,7 @@ export async function POST(request: Request) {
       throw new Error('Failed to parse Claude response')
     }
 
-    // Add x402 status and payment-related recommendation
+    analysis.recommendations = analysis.recommendations || []
     analysis.recommendations.push(
       paymentVerified
         ? 'x402 payment verified: Premium AI analysis unlocked'
@@ -77,15 +102,12 @@ export async function POST(request: Request) {
     )
     analysis.x402Status = paymentVerified ? 'verified' : 'optional'
 
-    return new Response(
-      JSON.stringify(analysis),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    )
+    return Response.json(analysis, { status: 200 })
   } catch (error) {
     console.error('Error analyzing portfolio:', error)
-    return new Response(
-      JSON.stringify({ error: 'AI analysis failed. Please try again.' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    return Response.json(
+      { error: 'AI analysis failed. Please try again.' },
+      { status: 500 }
     )
   }
 }

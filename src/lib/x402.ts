@@ -1,7 +1,14 @@
 /**
- * X402 Micropayments Integration
- * X402 is Casper's HTTP-native payment protocol enabling agents to pay per API request
- * This makes our portfolio agent truly "agentic" - it pays for its own analysis
+ * x402 Micropayments Integration
+ *
+ * x402 is Casper's HTTP-native payment protocol that lets agents pay per API
+ * request with cryptographic proof. This module builds and verifies the
+ * `x402-payment` header used by the analysis endpoint.
+ *
+ * NOTE: This is a demo-grade implementation that encodes a signed-style payment
+ * intent. Settling real payments uses the Casper x402 Facilitator
+ * (https://www.casper.network/ai). Wiring the live facilitator is a roadmap
+ * item and requires a funded agent wallet.
  */
 
 export interface X402Payment {
@@ -11,67 +18,57 @@ export interface X402Payment {
   purpose: string
 }
 
+/** Cost of one portfolio analysis, in CSPR. */
+export const ANALYSIS_COST_CSPR = '0.01'
+
 /**
- * Simulate an x402 payment for portfolio analysis
- * In production, this would:
- * 1. Generate an x402 payment header
- * 2. Sign it with the user's Casper wallet
- * 3. Send it with the API request
- * 4. The API verifies the payment on-chain before responding
+ * Recipient address for analysis payments. Configure via
+ * NEXT_PUBLIC_X402_RECIPIENT; falls back to a placeholder for demo flows.
  */
+export const ANALYSIS_RECIPIENT =
+  process.env.NEXT_PUBLIC_X402_RECIPIENT ||
+  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+
+/** Construct an x402 payment intent for portfolio analysis. */
 export const createX402Payment = async (
   amount: string,
   recipient: string,
   purpose: string
-): Promise<X402Payment> => {
-  return {
-    amount,
-    token: 'CSPR',
-    recipient,
-    purpose,
-  }
-}
+): Promise<X402Payment> => ({
+  amount,
+  token: 'CSPR',
+  recipient,
+  purpose,
+})
 
 /**
- * X402 payment header for API requests
- * Format: x402-payment: <base64-encoded-payment-request>
+ * Build the `x402-payment` HTTP header value (base64-encoded payment intent).
  */
 export const buildX402Header = (payment: X402Payment): string => {
-  const paymentJson = JSON.stringify(payment)
-  // In production, this would be properly encoded and signed
-  return `x402-payment: ${btoa(paymentJson)}`
+  const json = JSON.stringify(payment)
+  const encoded =
+    typeof window === 'undefined'
+      ? Buffer.from(json, 'utf-8').toString('base64')
+      : btoa(json)
+  return `x402-payment: ${encoded}`
 }
 
-/**
- * Check if x402 payment is valid
- * In production, this would verify on-chain
- */
+/** Verify the structure of an x402 payment header. */
 export const verifyX402Payment = async (header: string): Promise<boolean> => {
   try {
-    const base64Payment = header.replace('x402-payment: ', '')
-    const paymentJson = atob(base64Payment)
-    const payment: X402Payment = JSON.parse(paymentJson)
-    
-    // Verify payment structure
-    return !!(
+    const raw = header.replace(/^x402-payment:\s*/, '')
+    const json =
+      typeof window === 'undefined'
+        ? Buffer.from(raw, 'base64').toString('utf-8')
+        : atob(raw)
+    const payment: X402Payment = JSON.parse(json)
+    return Boolean(
       payment.amount &&
-      payment.recipient &&
-      payment.token === 'CSPR' &&
-      parseFloat(payment.amount) > 0
+        payment.recipient &&
+        payment.token === 'CSPR' &&
+        parseFloat(payment.amount) > 0
     )
   } catch {
     return false
   }
 }
-
-/**
- * Cost of portfolio analysis in CSPR
- * This is the micropayment amount the agent pays for each analysis
- */
-export const ANALYSIS_COST_CSPR = '0.01'
-
-/**
- * Recipient address for analysis payments
- * In production, this would be the project/team's Casper address
- */
-export const ANALYSIS_RECIPIENT = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'

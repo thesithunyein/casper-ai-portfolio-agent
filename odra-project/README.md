@@ -16,8 +16,8 @@ cargo odra build
 
 ```bash
 casper-client put-deploy \
-  --node-address http://188.40.120.12:7777/rpc \
-  --chain-name casper-testnet \
+  --node-address https://node.testnet.casper.network/rpc \
+  --chain-name casper-test \
   --secret-key ./keys/secret_key.pem \
   --payment-amount 10000000000 \
   --session-path ./target/wasm32-unknown-unknown/release/portfolio_agent_contract.wasm
