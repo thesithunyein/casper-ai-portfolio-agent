@@ -230,4 +230,6 @@ export interface AIAnalysis {
     reasoning: string
   }
   x402Status?: 'verified' | 'optional'
+  /** 'claude' = live Claude 3.5 Sonnet, 'heuristic' = deterministic demo fallback */
+  analysisSource?: 'claude' | 'heuristic'
 }

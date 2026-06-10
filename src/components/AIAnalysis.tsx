@@ -21,7 +21,11 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
               <h2 className="text-xl font-bold text-black">AI Analysis</h2>
               <Sparkles className="w-4 h-4 text-cute-dark animate-pulse" />
             </div>
-            <p className="text-gray-600 text-sm font-semibold">Portfolio summary by Claude AI</p>
+            <p className="text-gray-600 text-sm font-semibold">
+              {analysis.analysisSource === 'heuristic'
+                ? 'Demo mode — set ANTHROPIC_API_KEY for live Claude 3.5 Sonnet'
+                : 'Portfolio summary by Claude 3.5 Sonnet'}
+            </p>
           </div>
         </div>
         <p className="text-gray-800 leading-relaxed text-lg">{analysis.summary}</p>
