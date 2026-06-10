@@ -1,5 +1,11 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { Portfolio } from '@/lib/casper'
+import { settleX402Payment } from '@/lib/x402'
+import {
+  hashAnalysisSummary,
+  isOnChainRecordingConfigured,
+  recordAnalysisOnChain,
+} from '@/lib/casper-agent'
 
 interface AnalysisPayload {
   summary: string
@@ -118,21 +124,12 @@ export async function POST(request: Request) {
 
     const apiKey = process.env.ANTHROPIC_API_KEY
 
-    // x402 payment verification (HTTP-native micropayment header)
+    // x402 payment: verified structurally, and settled on-chain through the
+    // Casper x402 Facilitator when X402_FACILITATOR_URL is configured.
     const x402Header = request.headers.get('x402-payment')
-    let paymentVerified = false
-    if (x402Header) {
-      try {
-        const raw = x402Header.replace(/^x402-payment:\s*/, '')
-        const paymentData = JSON.parse(
-          Buffer.from(raw, 'base64').toString('utf-8')
-        )
-        paymentVerified =
-          paymentData.token === 'CSPR' && parseFloat(paymentData.amount) >= 0.01
-      } catch {
-        paymentVerified = false
-      }
-    }
+    const x402Settlement = await settleX402Payment(x402Header)
+    const paymentVerified =
+      x402Settlement === 'settled' || x402Settlement === 'verified'
 
     let analysis: AnalysisPayload | null = null
     let analysisSource: 'claude' | 'heuristic' = 'heuristic'
@@ -192,11 +189,31 @@ ${paymentVerified ? 'Note: This user has paid 0.01 CSPR via x402 micropayments f
         : 'Upgrade to x402 micropayments for advanced agent features'
     )
 
+    // Agentic on-chain write: persist the analysis record to the
+    // PortfolioAgent contract on Casper Testnet (when agent key configured).
+    let onchain = null
+    if (isOnChainRecordingConfigured()) {
+      const riskMatch = analysis.riskAssessment.match(/\b(high|medium|low)\b/i)
+      onchain = await recordAnalysisOnChain({
+        walletAddress: portfolio.walletAddress,
+        totalValueUsd: portfolio.totalValue,
+        riskLevel: riskMatch ? riskMatch[1].toUpperCase() : 'UNKNOWN',
+        recommendationCount: analysis.recommendations.length,
+        summaryHash: hashAnalysisSummary(analysis),
+      })
+    }
+
     return Response.json(
       {
         ...analysis,
-        x402Status: paymentVerified ? 'verified' : 'optional',
+        x402Status:
+          x402Settlement === 'settled'
+            ? 'settled'
+            : paymentVerified
+              ? 'verified'
+              : 'optional',
         analysisSource,
+        onchain,
       },
       { status: 200 }
     )

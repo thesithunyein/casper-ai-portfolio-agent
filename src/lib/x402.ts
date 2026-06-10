@@ -5,10 +5,13 @@
  * request with cryptographic proof. This module builds and verifies the
  * `x402-payment` header used by the analysis endpoint.
  *
- * NOTE: This is a demo-grade implementation that encodes a signed-style payment
- * intent. Settling real payments uses the Casper x402 Facilitator
- * (https://www.casper.network/ai). Wiring the live facilitator is a roadmap
- * item and requires a funded agent wallet.
+ * Two modes:
+ * - Facilitator mode (set X402_FACILITATOR_URL): payments are verified and
+ *   settled through the Casper x402 Facilitator (https://casper.network/ai)
+ *   via its standard /verify and /settle endpoints, producing a real on-chain
+ *   micropayment.
+ * - Demo mode (no facilitator configured): the payment intent header is
+ *   structurally verified only, clearly reported as 'verified' not 'settled'.
  */
 
 export interface X402Payment {
@@ -45,12 +48,90 @@ export const createX402Payment = async (
  * Build the `x402-payment` HTTP header value (base64-encoded payment intent).
  */
 export const buildX402Header = (payment: X402Payment): string => {
+  return `x402-payment: ${buildX402HeaderValue(payment)}`
+}
+
+/** Base64-encoded payment intent, suitable as a raw HTTP header value. */
+export const buildX402HeaderValue = (payment: X402Payment): string => {
   const json = JSON.stringify(payment)
-  const encoded =
-    typeof window === 'undefined'
-      ? Buffer.from(json, 'utf-8').toString('base64')
-      : btoa(json)
-  return `x402-payment: ${encoded}`
+  return typeof window === 'undefined'
+    ? Buffer.from(json, 'utf-8').toString('base64')
+    : btoa(json)
+}
+
+export type X402SettlementStatus = 'settled' | 'verified' | 'failed' | 'none'
+
+/**
+ * Verify and settle an x402 payment through the configured facilitator
+ * (server-side only). Follows the standard x402 facilitator interface:
+ * POST /verify then POST /settle with the payment payload and requirements.
+ *
+ * Returns:
+ * - 'settled'  - facilitator confirmed and settled the payment on-chain
+ * - 'verified' - no facilitator configured; header is structurally valid
+ * - 'failed'   - facilitator rejected the payment
+ * - 'none'     - no/invalid payment header
+ */
+export const settleX402Payment = async (
+  headerValue: string | null
+): Promise<X402SettlementStatus> => {
+  if (!headerValue) return 'none'
+
+  const raw = headerValue.replace(/^x402-payment:\s*/, '')
+  let payment: X402Payment
+  try {
+    payment = JSON.parse(Buffer.from(raw, 'base64').toString('utf-8'))
+  } catch {
+    return 'none'
+  }
+
+  const structurallyValid = Boolean(
+    payment.amount &&
+      payment.recipient &&
+      payment.token === 'CSPR' &&
+      parseFloat(payment.amount) > 0
+  )
+  if (!structurallyValid) return 'none'
+
+  const facilitatorBase = process.env.X402_FACILITATOR_URL?.replace(/\/$/, '')
+  if (!facilitatorBase) return 'verified'
+
+  const paymentRequirements = {
+    scheme: 'exact',
+    network: process.env.NEXT_PUBLIC_CASPER_NETWORK === 'mainnet' ? 'casper' : 'casper-test',
+    asset: 'CSPR',
+    payTo: payment.recipient,
+    maxAmountRequired: payment.amount,
+    description: payment.purpose,
+  }
+  const body = JSON.stringify({
+    x402Version: 1,
+    paymentPayload: payment,
+    paymentRequirements,
+  })
+  const headers = { 'Content-Type': 'application/json' }
+
+  try {
+    const verifyRes = await fetch(`${facilitatorBase}/verify`, {
+      method: 'POST',
+      headers,
+      body,
+    })
+    if (!verifyRes.ok) return 'failed'
+    const verifyData = await verifyRes.json()
+    if (verifyData?.isValid === false) return 'failed'
+
+    const settleRes = await fetch(`${facilitatorBase}/settle`, {
+      method: 'POST',
+      headers,
+      body,
+    })
+    if (!settleRes.ok) return 'failed'
+    const settleData = await settleRes.json()
+    return settleData?.success === false ? 'failed' : 'settled'
+  } catch {
+    return 'failed'
+  }
 }
 
 /** Verify the structure of an x402 payment header. */

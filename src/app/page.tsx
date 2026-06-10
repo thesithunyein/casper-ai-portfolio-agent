@@ -3,6 +3,12 @@
 import { useCallback } from 'react'
 import { useAppStore } from '@/lib/store'
 import { fetchPortfolio } from '@/lib/casper'
+import {
+  ANALYSIS_COST_CSPR,
+  ANALYSIS_RECIPIENT,
+  buildX402HeaderValue,
+  createX402Payment,
+} from '@/lib/x402'
 import { WalletConnect } from '@/components/WalletConnect'
 import { PortfolioDisplay } from '@/components/PortfolioDisplay'
 import { AIAnalysisComponent } from '@/components/AIAnalysis'
@@ -36,10 +42,18 @@ export default function Home() {
       const portfolioData = await fetchPortfolio(walletAddress)
       setPortfolio(portfolioData)
 
+      // Agent pays for its own analysis via an x402 micropayment header
+      const payment = await createX402Payment(
+        ANALYSIS_COST_CSPR,
+        ANALYSIS_RECIPIENT,
+        'Portfolio AI Analysis'
+      )
+
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x402-payment': buildX402HeaderValue(payment),
         },
         body: JSON.stringify({ portfolio: portfolioData }),
       })

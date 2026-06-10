@@ -216,6 +216,10 @@ export const getCasperExplorerUrl = (address: string): string =>
 export const getDeployExplorerUrl = (deployHash: string): string =>
   `${EXPLORER_BASE_URL}/deploy/${deployHash}`
 
+/** Explorer URL for a Casper 2.0 transaction hash. */
+export const getTransactionExplorerUrl = (transactionHash: string): string =>
+  `${EXPLORER_BASE_URL}/transaction/${transactionHash}`
+
 /** Explorer URL for a contract package hash. */
 export const getContractExplorerUrl = (contractHash: string): string =>
   `${EXPLORER_BASE_URL}/contract/${contractHash}`
@@ -229,7 +233,15 @@ export interface AIAnalysis {
     targetAllocation: Record<string, number>
     reasoning: string
   }
-  x402Status?: 'verified' | 'optional'
+  x402Status?: 'settled' | 'verified' | 'optional'
   /** 'claude' = live Claude 3.5 Sonnet, 'heuristic' = deterministic demo fallback */
   analysisSource?: 'claude' | 'heuristic'
+  /** Present when the agent recorded this analysis on Casper Testnet */
+  onchain?: {
+    transactionHash: string
+    explorerUrl: string
+    contractPackageHash: string
+    network: string
+    entryPoint: string
+  } | null
 }

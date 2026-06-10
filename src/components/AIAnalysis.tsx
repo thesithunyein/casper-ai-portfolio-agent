@@ -1,7 +1,7 @@
 'use client'
 
 import { AIAnalysis } from '@/lib/casper'
-import { Brain, AlertTriangle, Target, Lightbulb, Sparkles, Heart, Star, Zap } from 'lucide-react'
+import { Brain, AlertTriangle, Target, Lightbulb, Sparkles, Heart, Star, Zap, Link2, ExternalLink } from 'lucide-react'
 
 interface AIAnalysisProps {
   analysis: AIAnalysis
@@ -123,6 +123,48 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
           </div>
         </div>
       </div>
+
+      {/* On-chain Record */}
+      {analysis.onchain && (
+        <div className="bg-white border-2 border-green-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-400 flex items-center justify-center shadow-lg">
+              <Link2 className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-xl font-bold text-black">Recorded On-Chain</h3>
+                <Sparkles className="w-4 h-4 text-green-500 animate-pulse" />
+              </div>
+              <p className="text-gray-600 text-sm font-semibold">
+                The agent stored this analysis in the PortfolioAgent contract on{' '}
+                {analysis.onchain.network === 'casper-test' ? 'Casper Testnet' : 'Casper Mainnet'}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="p-4 rounded-2xl bg-green-50 border-2 border-green-100">
+              <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">Transaction Hash</p>
+              <a
+                href={analysis.onchain.explorerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-green-700 font-mono text-sm break-all hover:underline"
+              >
+                {analysis.onchain.transactionHash}
+                <ExternalLink className="w-4 h-4 flex-shrink-0" />
+              </a>
+            </div>
+            <div className="p-4 rounded-2xl bg-gray-50 border-2 border-gray-100">
+              <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">Entry Point</p>
+              <p className="text-black font-mono text-sm">
+                {analysis.onchain.entryPoint} @ {analysis.onchain.contractPackageHash.slice(0, 20)}…
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

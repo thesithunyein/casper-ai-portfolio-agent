@@ -14,7 +14,7 @@ Analyze your Casper portfolio with Claude AI and get actionable insights, risk a
 4. **Pay via x402** – Agent pays 0.01 CSPR per analysis using Casper's micropayment protocol
 5. **AI analysis** – Claude 3.5 Sonnet analyzes your holdings
 6. **Get insights** – Risk assessment, diversification analysis, and rebalancing suggestions
-7. **Store on-chain** – Analysis results can be stored on Casper Testnet via the Odra smart contract (`odra-project/`)
+7. **Store on-chain** – The AI agent autonomously signs and submits a real Casper 2.0 transaction to store the analysis in the PortfolioAgent contract on Testnet
 
 ---
 
@@ -54,8 +54,8 @@ Analyze your Casper portfolio with Claude AI and get actionable insights, risk a
 
 ### x402 Micropayments
 - **Pay-per-analysis** – 0.01 CSPR per AI analysis request
-- **Cryptographic proof** – Payment intent encoded in an `x402-payment` HTTP header and verified by the API (demo; live Facilitator settlement on the roadmap)
-- **Agent autonomy** – AI agent pays for its own computation
+- **Facilitator-ready** – Two modes: (a) **demo** — structurally verified when no facilitator URL configured; (b) **live** — verified & settled on-chain through the Casper x402 Facilitator when `X402_FACILITATOR_URL` is set
+- **Agent autonomy** – AI agent pays for its own computation via an `x402-payment` HTTP header
 - **HTTP-native** – Standard HTTP headers for payment (no wallet popup)
 
 ### Smart Contract (Odra/Rust)
@@ -78,12 +78,12 @@ This project combines **powerful AI analysis** with a **delightful, approachable
 ## Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│   Next.js 14 Frontend (React 18)        │
-│   - Wallet input                        │
-│   - Portfolio display                   │
-│   - AI analysis results                 │
-└──────────────┬──────────────────────────┘
+┌──────────────────────────────────────────┐
+│   Next.js 14 Frontend (React 18)         │
+│   - Wallet input                         │
+│   - Portfolio display                    │
+│   - AI analysis + on-chain proof card    │
+└──────────────┬───────────────────────────┘
                │
        ┌───────┴────────┐
        │                │
@@ -92,11 +92,16 @@ This project combines **powerful AI analysis** with a **delightful, approachable
 │ REST API    │  │ (Anthropic)     │
 │ (Testnet)   │  │ 3.5 Sonnet      │
 └─────────────┘  └─────────────────┘
-       │
-┌──────▼─────────────┐
-│ Odra Smart Contract │
-│ (Casper Testnet)    │
-└─────────────────────┘
+       │                │
+       │  Agent signs & │
+       │  submits TX    │
+       │                │
+┌──────▼──────────────┐│
+│ Casper Testnet      ││
+│ PortfolioAgent      ││
+│ Odra Contract       ││
+│ (store_analysis)    ││
+└─────────────────────┘│
 ```
 
 ### How AI is Used
@@ -107,6 +112,7 @@ This project combines **powerful AI analysis** with a **delightful, approachable
 2. **Prompt engineering** – Specialized prompt for crypto portfolio analysis
 3. **JSON response parsing** – Structured output for summary, risk, recommendations, rebalancing
 4. **Real-time generation** – AI generates insights on-demand (no pre-computed responses)
+5. **Autonomous on-chain write** – The agent signs and submits a `store_analysis` Casper 2.0 transaction via `casper-js-sdk`, producing a real on-chain record with a cspr.live link
 
 **Example AI output:**
 ```json
@@ -161,9 +167,19 @@ NEXT_PUBLIC_CASPER_NETWORK=testnet
 # Optional: live balances from CSPR.cloud (falls back to demo data if unset)
 NEXT_PUBLIC_CSPR_CLOUD_API_KEY=your-cspr-cloud-key
 
-# Optional: deployed contract + x402 recipient
-NEXT_PUBLIC_CONTRACT_HASH=
-NEXT_PUBLIC_X402_RECIPIENT=
+# x402 recipient address (for demo mode verification)
+NEXT_PUBLIC_X402_RECIPIENT=your_casper_wallet_address_here
+
+# x402 Facilitator (set for real on-chain settlement)
+X402_FACILITATOR_URL=
+
+# Contract package hash after deployment (for agent on-chain writes)
+PORTFOLIO_AGENT_PACKAGE_HASH=your_contract_package_hash_here
+
+# Agent signing key — fund a Testnet key, then add its PEM or hex (server-side only)
+CASPER_AGENT_PRIVATE_KEY_PEM=
+# CASPER_AGENT_PRIVATE_KEY_HEX=
+# CASPER_AGENT_KEY_ALGORITHM=ed25519  # or secp256k1
 ```
 
 ### Run Locally
@@ -292,23 +308,28 @@ Display results:
 Total Portfolio Value: $2,450.50
 
 Assets:
-- INJ: 250 tokens (68% of portfolio, $1,667.50)
+- CSPR: 250,000 tokens (68% of portfolio, $1,667.50)
 - USDC: 500 tokens (20% of portfolio, $500.00)
 - USDT: 250 tokens (10% of portfolio, $250.00)
 - WETH: 0.1 tokens (2% of portfolio, $33.00)
 
 AI Analysis:
-Summary: Your portfolio is growth-focused with INJ dominance...
-Risk: Moderate. High concentration in INJ...
+Summary: Your portfolio is growth-focused with CSPR dominance...
+Risk: Moderate. High concentration in CSPR...
 Recommendations:
-1. Reduce INJ to 50-55% for better diversification
+1. Reduce CSPR to 50-55% for better diversification
 2. Increase stablecoin allocation to 45-50%
 3. Add WETH for Ethereum ecosystem exposure
-4. Set stop-loss at -15% from current INJ price
+4. Set stop-loss at -15% from current CSPR price
 5. Monitor market conditions weekly
 
+On-chain Record:
+Transaction: abcdef...1234 (testnet.cspr.live/transaction/...)
+Entry Point: store_analysis
+Contract: PortfolioAgent (Odra)
+
 Rebalancing Target:
-- INJ: 50% (from 68%)
+- CSPR: 50% (from 68%)
 - USDC: 35% (from 20%)
 - USDT: 10% (from 10%)
 - WETH: 5% (from 2%)
@@ -325,10 +346,13 @@ vercel
 ```
 
 Set environment variables in Vercel dashboard:
-- `ANTHROPIC_API_KEY` (required)
+- `ANTHROPIC_API_KEY` (required for live Claude AI)
 - `NEXT_PUBLIC_CASPER_NETWORK` (`testnet` or `mainnet`)
 - `NEXT_PUBLIC_CSPR_CLOUD_API_KEY` (optional, for live balances)
-- `NEXT_PUBLIC_CONTRACT_HASH` (optional, deployed contract)
+- `NEXT_PUBLIC_X402_RECIPIENT` (for x402 demo mode)
+- `X402_FACILITATOR_URL` (for live on-chain x402 settlement)
+- `PORTFOLIO_AGENT_PACKAGE_HASH` (after contract deploy)
+- `CASPER_AGENT_PRIVATE_KEY_PEM` (server-side only — for on-chain writes)
 
 ### Deploy to Other Platforms
 
@@ -340,6 +364,8 @@ Works with any Node.js hosting (Netlify, Railway, Heroku, etc.)
 
 - [x] Cute, friendly UI design with bear mascot
 - [x] Animated decorations and playful interactions
+- [x] Agent autonomously records analysis on-chain via `casper-js-sdk`
+- [x] x402 Facilitator-ready verify/settle flow
 - [ ] Multi-wallet tracking
 - [ ] Portfolio history and performance charts
 - [ ] Price alerts

@@ -7,8 +7,8 @@ use odra::casper_types::U256;
 /// This demonstrates agentic AI with on-chain data persistence
 #[odra::module]
 pub struct PortfolioAgent {
-    /// Map of wallet address -> portfolio analysis result
-    analyses: Mapping<Address, AnalysisResult>,
+    /// Map of wallet public key (hex string) -> portfolio analysis result
+    analyses: Mapping<String, AnalysisResult>,
     /// Count of total analyses performed
     total_analyses: Var<u64>,
     /// Contract owner
@@ -27,7 +27,7 @@ impl PortfolioAgent {
     /// This is called by the AI agent after analysis
     pub fn store_analysis(
         &mut self,
-        wallet_address: Address,
+        wallet_address: String,
         total_value: U256,
         risk_level: String,
         recommendation_count: u8,
@@ -50,12 +50,12 @@ impl PortfolioAgent {
     }
 
     /// Retrieve analysis for a specific wallet
-    pub fn get_analysis(&self, wallet_address: Address) -> Option<AnalysisResult> {
+    pub fn get_analysis(&self, wallet_address: String) -> Option<AnalysisResult> {
         self.analyses.get(&wallet_address)
     }
 
     /// Check if analysis exists for a wallet
-    pub fn has_analysis(&self, wallet_address: Address) -> bool {
+    pub fn has_analysis(&self, wallet_address: String) -> bool {
         self.analyses.get(&wallet_address).is_some()
     }
 
@@ -73,7 +73,7 @@ impl PortfolioAgent {
 /// Represents a portfolio analysis stored on-chain
 #[odra::odra_type]
 pub struct AnalysisResult {
-    pub wallet_address: Address,
+    pub wallet_address: String,
     pub total_value: U256,
     pub risk_level: String,
     pub recommendation_count: u8,
