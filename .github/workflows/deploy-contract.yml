@@ -1,12 +1,16 @@
 name: Deploy Contract to Casper Testnet
 
+# Manual deploy of the Odra PortfolioAgent contract to Casper 2.0 Testnet.
+# Requires a FUNDED Testnet key stored as the repo secret CSPR_TESTNET_PRIVATE_KEY
+# (the full secret_key.pem contents). Fund a key at https://testnet.cspr.live/tools/faucet.
+
 on:
   workflow_dispatch:
     inputs:
-      wasm_artifact_run_id:
-        description: 'GitHub Actions run ID that built the WASM (leave empty for latest successful)'
+      payment_amount_motes:
+        description: 'Gas payment in motes (300000000000 = 300 CSPR)'
         required: false
-        default: ''
+        default: '300000000000'
 
 jobs:
   deploy:
@@ -15,125 +19,70 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download WASM artifact from latest build
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          mkdir -p ./wasm
-          # Get latest successful build-contract workflow run
-          RUN_ID=$(curl -s -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/build-contract.yml/runs?status=success&per_page=1" \
-            | jq -r '.workflow_runs[0].id')
-          echo "Latest build run ID: $RUN_ID"
-          # Download artifact
-          ARTIFACT_URL=$(curl -s -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs/$RUN_ID/artifacts" \
-            | jq -r '.artifacts[] | select(.name=="portfolio-agent-contract") | .archive_download_url')
-          echo "Artifact URL: $ARTIFACT_URL"
-          curl -s -L -H "Authorization: token $GH_TOKEN" -o artifact.zip "$ARTIFACT_URL"
-          unzip -o artifact.zip -d ./wasm/
-          ls -la ./wasm/
-          find ./wasm -name "*.wasm" -type f
+      - name: Install Rust (nightly + wasm target)
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: wasm32-unknown-unknown
 
-      - name: Install Rust and casper-client
+      - name: Build contract WASM
+        working-directory: ./odra-project
+        env:
+          RUSTFLAGS: "-C link-arg=--allow-undefined"
         run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          source $HOME/.cargo/env
-          rustup default stable
+          rm -f Cargo.lock
+          cargo build --release --target wasm32-unknown-unknown
+          ls -la target/wasm32-unknown-unknown/release/*.wasm
+
+      - name: Install casper-client (v5, Casper 2.0)
+        run: |
           cargo install casper-client --locked
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           casper-client --version
 
-      - name: Setup deployer key
+      - name: Write funded deployer key
         env:
           CSPR_TESTNET_PRIVATE_KEY: ${{ secrets.CSPR_TESTNET_PRIVATE_KEY }}
         run: |
+          if [ -z "$CSPR_TESTNET_PRIVATE_KEY" ]; then
+            echo "::error::CSPR_TESTNET_PRIVATE_KEY secret is not set. Add a funded Testnet PEM key under repo Settings → Secrets."
+            exit 1
+          fi
           mkdir -p keys
-          echo "$CSPR_TESTNET_PRIVATE_KEY" > keys/secret_key.pem
+          printf '%s\n' "$CSPR_TESTNET_PRIVATE_KEY" > keys/secret_key.pem
           chmod 600 keys/secret_key.pem
+          head -1 keys/secret_key.pem
 
-      - name: Deploy contract with Node.js
+      - name: Install contract (put-transaction session)
+        id: deploy
         env:
-          CSPR_TESTNET_PRIVATE_KEY: ${{ secrets.CSPR_TESTNET_PRIVATE_KEY }}
+          PAYMENT: ${{ github.event.inputs.payment_amount_motes }}
         run: |
-          # Install Node.js deps for deploy
-          npm install casper-js-sdk@2.15.4
-          cat > deploy.js << 'NODE_SCRIPT'
-          const sdk = require('casper-js-sdk');
-          const fs = require('fs');
-          const NODE_URL = 'https://node.testnet.casper.network/rpc';
-          const CHAIN_NAME = 'casper-test';
-          const WASM_PATH = process.env.WASM_PATH;
-          const KEY_PATH = 'keys/secret_key.pem';
-          
-          async function deploy() {
-            console.log('Loading key pair...');
-            const keyPair = sdk.Keys.Secp256K1.loadKeyPairFromPrivateFile(KEY_PATH);
-            console.log('Deployer:', keyPair.publicKey.toHex());
-          
-            console.log('Loading WASM...');
-            const wasmBuffer = fs.readFileSync(WASM_PATH);
-            console.log('WASM size:', wasmBuffer.length, 'bytes');
-          
-            console.log('Connecting to', NODE_URL);
-            const client = new sdk.CasperClient(NODE_URL);
-          
-            const deployParams = new sdk.DeployUtil.DeployParams(
-              keyPair.publicKey,
-              CHAIN_NAME,
-              1,
-              '30min',
-              [],
-              []
-            );
-            deployParams.timestamp = Date.now();
-          
-            const session = sdk.DeployUtil.ExecutableDeployItem.newModuleBytes(wasmBuffer, sdk.RuntimeArgs.fromMap({}));
-            const payment = sdk.DeployUtil.standardPayment(18000000000);
-          
-            const deploy = sdk.DeployUtil.makeDeploy(deployParams, session, payment);
-            
-            console.log('Signing deploy...');
-            sdk.DeployUtil.signDeploy(deploy, keyPair);
-          
-            console.log('Sending deploy...');
-            const deployHash = await client.putDeploy(deploy);
-            console.log('\n✅ Deploy submitted!');
-            console.log('Deploy Hash:', deployHash);
-            console.log('Explorer:', 'https://testnet.cspr.live/deploy/' + deployHash);
-            
-            fs.writeFileSync('deploy-hash.txt', deployHash);
-            fs.writeFileSync('deploy-output.json', JSON.stringify({ deployHash, explorer: 'https://testnet.cspr.live/deploy/' + deployHash }, null, 2));
-            
-            console.log('\nWaiting 90s for deployment...');
-            await new Promise(r => setTimeout(r, 90000));
-            
-            try {
-              const info = await client.getDeploy(deployHash);
-              fs.writeFileSync('deploy-status.json', JSON.stringify(info, null, 2));
-              console.log('Status saved to deploy-status.json');
-            } catch(e) {
-              console.log('Status check error:', e.message);
-            }
-          }
-          
-          deploy().catch(err => {
-            console.error('Deploy error:', err);
-            fs.writeFileSync('deploy-error.txt', err.message + '\n' + err.stack);
-            process.exit(1);
-          });
-          NODE_SCRIPT
-          WASM_FILE=$(find ./wasm -name "*.wasm" -type f | head -1)
-          export WASM_PATH="$WASM_FILE"
-          node deploy.js
-          echo "=== DEPLOY FILES ==="
-          ls -la deploy-*.txt deploy-*.json 2>/dev/null || echo "No deploy files found"
+          WASM=odra-project/target/wasm32-unknown-unknown/release/portfolio_agent_contract.wasm
+          OUT=$(casper-client put-transaction session \
+            --node-address https://node.testnet.casper.network/rpc \
+            --chain-name casper-test \
+            --secret-key keys/secret_key.pem \
+            --payment-amount "${PAYMENT:-300000000000}" \
+            --gas-price-tolerance 1 \
+            --standard-payment true \
+            --wasm-path "$WASM" \
+            --session-arg "odra_cfg_package_hash_key_name:string:'portfolio_agent_package_hash'" \
+            --session-arg "odra_cfg_allow_key_override:bool:'true'" \
+            --session-arg "odra_cfg_is_upgradable:bool:'true'" \
+            --session-arg "odra_cfg_is_upgrade:bool:'false'")
+          echo "$OUT"
+          HASH=$(echo "$OUT" | grep -oE '"transaction_hash"[^,]*' | head -1 || true)
+          echo "Raw transaction hash line: $HASH"
+          echo "$OUT" > deploy-output.json
 
-      - name: Upload deployment info
+      - name: Upload deploy output
         uses: actions/upload-artifact@v4
         with:
-          name: deployment-info
-          path: |
-            deploy-output.json
-            deploy-status.json
-            deploy-hash.txt
+          name: deploy-output
+          path: deploy-output.json
+          if-no-files-found: warn
+
+      - name: Next steps
+        run: |
+          echo "Deploy submitted. Open the transaction hash above on https://testnet.cspr.live"
+          echo "The contract package hash is stored under named key 'portfolio_agent_package_hash'"
+          echo "on the deploying account: https://testnet.cspr.live/account/<your-public-key>"
