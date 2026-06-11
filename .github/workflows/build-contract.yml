@@ -26,21 +26,20 @@ jobs:
           cargo --version
           rustup target list --installed
 
-      - name: Install cargo-odra
-        run: cargo install cargo-odra
-
-      - name: Build contract WASM (Odra)
+      - name: Build contract WASM
         working-directory: ./odra-project
+        env:
+          RUSTFLAGS: "-C target-feature=-bulk-memory -C link-arg=--allow-undefined"
         run: |
           rm -f Cargo.lock
-          cargo odra build
-          find . -name "*.wasm" -type f
+          cargo build --release --target wasm32-unknown-unknown 2>&1 | tee build.log
+          ls -la target/wasm32-unknown-unknown/release/
 
       - name: Upload WASM artifact
         uses: actions/upload-artifact@v4
         with:
           name: portfolio-agent-contract
-          path: odra-project/**/*.wasm
+          path: odra-project/target/wasm32-unknown-unknown/release/*.wasm
           if-no-files-found: error
 
       - name: Notify success

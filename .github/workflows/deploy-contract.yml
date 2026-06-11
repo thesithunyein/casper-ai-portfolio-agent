@@ -24,15 +24,14 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
-      - name: Install cargo-odra
-        run: cargo install cargo-odra
-
-      - name: Build contract WASM (Odra)
+      - name: Build contract WASM
         working-directory: ./odra-project
+        env:
+          RUSTFLAGS: "-C target-feature=-bulk-memory -C link-arg=--allow-undefined"
         run: |
           rm -f Cargo.lock
-          cargo odra build
-          find . -name "*.wasm" -type f
+          cargo build --release --target wasm32-unknown-unknown
+          ls -la target/wasm32-unknown-unknown/release/*.wasm
 
       - name: Install casper-client (v5, Casper 2.0)
         run: |
@@ -57,12 +56,7 @@ jobs:
         env:
           PAYMENT: ${{ github.event.inputs.payment_amount_motes }}
         run: |
-          WASM=$(find odra-project -name "portfolio_agent_contract.wasm" -type f | head -1)
-          if [ -z "$WASM" ]; then
-            echo "::error::WASM not found. Searching all .wasm files:"
-            find odra-project -name "*.wasm" -type f
-            exit 1
-          fi
+          WASM=odra-project/target/wasm32-unknown-unknown/release/portfolio_agent_contract.wasm
           echo "Using WASM: $WASM"
           OUT=$(casper-client put-transaction session \
             --node-address https://node.testnet.casper.network/rpc \
