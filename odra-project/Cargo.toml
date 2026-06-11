@@ -8,15 +8,21 @@ description = "Agentic AI portfolio analysis on Casper Network"
 [dependencies]
 odra = { version = "2.7.2", default-features = false }
 
+[build-dependencies]
+odra-build = "2.7.2"
+
 [lib]
 name = "portfolio_agent_contract"
 path = "src/lib.rs"
 crate-type = ["cdylib", "lib"]
 
+[[bin]]
+name = "portfolio_agent_odra_build_contract"
+path = "bin/build_contract.rs"
+test = false
+
 [profile.release]
 panic = "abort"
-opt-level = "z"
-lto = true
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ["cfg(odra_module)"] }

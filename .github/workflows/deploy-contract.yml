@@ -23,28 +23,30 @@ jobs:
         uses: dtolnay/rust-toolchain@nightly
         with:
           targets: wasm32-unknown-unknown
+          components: rust-src
 
-      - name: Build contract WASM
-        working-directory: ./odra-project
-        env:
-          RUSTFLAGS: "-C target-feature=-bulk-memory -C link-arg=--allow-undefined"
-        run: |
-          rm -f Cargo.lock
-          cargo build --release --target wasm32-unknown-unknown
-          ls -la target/wasm32-unknown-unknown/release/*.wasm
-
-      - name: Install Binaryen wasm-opt
+      - name: Install binaryen
         run: |
           sudo apt-get update && sudo apt-get install -y binaryen
           wasm-opt --version
 
-      - name: Strip bulk memory ops from WASM
+      - name: Build contract WASM (Odra 2.x style)
+        working-directory: ./odra-project
+        env:
+          ODRA_MODULE: PortfolioAgent
+          RUSTFLAGS: "-C target-cpu=mvp -C link-arg=--allow-undefined -C strip=symbols"
+        run: |
+          rm -f Cargo.lock
+          cargo build --release -Zbuild-std=panic_abort,std --target wasm32-unknown-unknown --bin portfolio_agent_odra_build_contract
+          ls -la target/wasm32-unknown-unknown/release/*.wasm
+          cp target/wasm32-unknown-unknown/release/portfolio_agent_odra_build_contract.wasm contract_raw.wasm
+
+      - name: Strip bulk memory and optimize
         working-directory: ./odra-project
         run: |
-          IN=target/wasm32-unknown-unknown/release/portfolio_agent_contract.wasm
-          OUT=target/wasm32-unknown-unknown/release/portfolio_agent_contract_opt.wasm
-          wasm-opt --disable-bulk-memory "$IN" -o "$OUT"
-          ls -la "$OUT"
+          wasm-opt -Oz --disable-bulk-memory contract_raw.wasm -o contract_opt.wasm
+          ls -la contract_opt.wasm
+          echo "WASM_FILE=contract_opt.wasm" >> "$GITHUB_ENV"
 
       - name: Install casper-client (v5, Casper 2.0)
         run: |
@@ -69,9 +71,10 @@ jobs:
         env:
           PAYMENT: ${{ github.event.inputs.payment_amount_motes }}
         run: |
-          WASM=odra-project/target/wasm32-unknown-unknown/release/portfolio_agent_contract_opt.wasm
+          WASM="odra-project/$WASM_FILE"
           echo "Using WASM: $WASM"
-          OUT=$(casper-client put-transaction session \
+          ls -la "$WASM"
+          casper-client put-transaction session \
             --node-address https://node.testnet.casper.network/rpc \
             --chain-name casper-test \
             --secret-key keys/secret_key.pem \
@@ -82,11 +85,8 @@ jobs:
             --session-arg "odra_cfg_package_hash_key_name:string:'portfolio_agent_package_hash'" \
             --session-arg "odra_cfg_allow_key_override:bool:'true'" \
             --session-arg "odra_cfg_is_upgradable:bool:'true'" \
-            --session-arg "odra_cfg_is_upgrade:bool:'false'")
-          echo "$OUT"
-          HASH=$(echo "$OUT" | grep -oE '"transaction_hash"[^,]*' | head -1 || true)
-          echo "Raw transaction hash line: $HASH"
-          echo "$OUT" > deploy-output.json
+            --session-arg "odra_cfg_is_upgrade:bool:'false'" \
+            2>&1 | tee deploy-output.json
 
       - name: Upload deploy output
         uses: actions/upload-artifact@v4

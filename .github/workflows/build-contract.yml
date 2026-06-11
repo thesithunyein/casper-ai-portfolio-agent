@@ -19,6 +19,7 @@ jobs:
         uses: dtolnay/rust-toolchain@nightly
         with:
           targets: wasm32-unknown-unknown
+          components: rust-src
 
       - name: Verify Rust installation
         run: |
@@ -26,33 +27,26 @@ jobs:
           cargo --version
           rustup target list --installed
 
-      - name: Build contract WASM
-        working-directory: ./odra-project
-        env:
-          RUSTFLAGS: "-C target-feature=-bulk-memory -C link-arg=--allow-undefined"
-        run: |
-          rm -f Cargo.lock
-          cargo build --release --target wasm32-unknown-unknown 2>&1 | tee build.log
-          ls -la target/wasm32-unknown-unknown/release/
-
-      - name: Install Binaryen wasm-opt
+      - name: Install binaryen
         run: |
           sudo apt-get update && sudo apt-get install -y binaryen
           wasm-opt --version
 
-      - name: Strip bulk memory ops from WASM
+      - name: Build contract WASM (Odra 2.x style)
         working-directory: ./odra-project
+        env:
+          ODRA_MODULE: PortfolioAgent
+          RUSTFLAGS: "-C target-cpu=mvp -C link-arg=--allow-undefined -C strip=symbols"
         run: |
-          IN=target/wasm32-unknown-unknown/release/portfolio_agent_contract.wasm
-          OUT=target/wasm32-unknown-unknown/release/portfolio_agent_contract_opt.wasm
-          wasm-opt --disable-bulk-memory "$IN" -o "$OUT"
-          ls -la "$OUT"
+          rm -f Cargo.lock
+          cargo build --release -Zbuild-std=panic_abort,std --target wasm32-unknown-unknown --bin portfolio_agent_odra_build_contract
+          ls -la target/wasm32-unknown-unknown/release/*.wasm
 
       - name: Upload WASM artifact
         uses: actions/upload-artifact@v4
         with:
           name: portfolio-agent-contract
-          path: odra-project/target/wasm32-unknown-unknown/release/portfolio_agent_contract_opt.wasm
+          path: odra-project/target/wasm32-unknown-unknown/release/portfolio_agent_odra_build_contract.wasm
           if-no-files-found: error
 
       - name: Notify success
