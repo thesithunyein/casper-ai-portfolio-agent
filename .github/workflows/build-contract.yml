@@ -35,11 +35,24 @@ jobs:
           cargo build --release --target wasm32-unknown-unknown 2>&1 | tee build.log
           ls -la target/wasm32-unknown-unknown/release/
 
+      - name: Install Binaryen wasm-opt
+        run: |
+          sudo apt-get update && sudo apt-get install -y binaryen
+          wasm-opt --version
+
+      - name: Strip bulk memory ops from WASM
+        working-directory: ./odra-project
+        run: |
+          IN=target/wasm32-unknown-unknown/release/portfolio_agent_contract.wasm
+          OUT=target/wasm32-unknown-unknown/release/portfolio_agent_contract_opt.wasm
+          wasm-opt --disable-bulk-memory "$IN" -o "$OUT"
+          ls -la "$OUT"
+
       - name: Upload WASM artifact
         uses: actions/upload-artifact@v4
         with:
           name: portfolio-agent-contract
-          path: odra-project/target/wasm32-unknown-unknown/release/*.wasm
+          path: odra-project/target/wasm32-unknown-unknown/release/portfolio_agent_contract_opt.wasm
           if-no-files-found: error
 
       - name: Notify success
