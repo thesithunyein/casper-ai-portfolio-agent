@@ -62,9 +62,20 @@ jobs:
             exit 1
           fi
           mkdir -p keys
+          # Write PEM with proper line breaks. The secret must contain literal newlines.
           printf '%s\n' "$CSPR_TESTNET_PRIVATE_KEY" > keys/secret_key.pem
           chmod 600 keys/secret_key.pem
+          echo "--- PEM header (first line) ---"
           head -1 keys/secret_key.pem
+          echo "--- Line count ---"
+          wc -l keys/secret_key.pem
+          echo "--- Checking PEM format ---"
+          if ! grep -q "BEGIN.*PRIVATE KEY" keys/secret_key.pem; then
+            echo "::error::PEM header missing! The secret must contain the full PEM with line breaks."
+            echo "Raw content preview (first 80 chars):"
+            head -c 80 keys/secret_key.pem
+            exit 1
+          fi
 
       - name: Install contract (put-transaction session)
         id: deploy
