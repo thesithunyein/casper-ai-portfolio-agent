@@ -39,8 +39,20 @@ function resolvePublicKey() {
     )
     process.exit(1)
   }
-  const key = PrivateKey.fromPem(fs.readFileSync(resolved, 'utf-8'), ALGO)
-  return key.publicKey.toHex()
+  const pem = fs.readFileSync(resolved, 'utf-8')
+  const candidates =
+    ALGO === KeyAlgorithm.SECP256K1
+      ? [KeyAlgorithm.SECP256K1, KeyAlgorithm.ED25519]
+      : [KeyAlgorithm.ED25519, KeyAlgorithm.SECP256K1]
+  for (const algo of candidates) {
+    try {
+      return PrivateKey.fromPem(pem, algo).publicKey.toHex()
+    } catch {
+      // try next algorithm
+    }
+  }
+  console.error('Failed to parse PEM with either ed25519 or secp256k1.')
+  process.exit(1)
 }
 
 async function rpc(method, params) {

@@ -71,11 +71,25 @@ function loadKey() {
     )
   }
   const pem = fs.readFileSync(resolved, 'utf-8')
-  try {
-    return PrivateKey.fromPem(pem, ALGO)
-  } catch (e) {
-    die(`Failed to parse PEM (${ALGO}): ${e.message}`)
+  // Try the configured algorithm first, then the other one. Casper keys may be
+  // ed25519 (public key prefix 01) or secp256k1 (prefix 02); auto-detect so the
+  // deploy works regardless of which the funded account uses.
+  const candidates =
+    ALGO === KeyAlgorithm.SECP256K1
+      ? [KeyAlgorithm.SECP256K1, KeyAlgorithm.ED25519]
+      : [KeyAlgorithm.ED25519, KeyAlgorithm.SECP256K1]
+  const errors = []
+  for (const algo of candidates) {
+    try {
+      const key = PrivateKey.fromPem(pem, algo)
+      const algoName = algo === KeyAlgorithm.SECP256K1 ? 'secp256k1' : 'ed25519'
+      console.log(`Parsed key as ${algoName}`)
+      return key
+    } catch (e) {
+      errors.push(`${algo === KeyAlgorithm.SECP256K1 ? 'secp256k1' : 'ed25519'}: ${e.message}`)
+    }
   }
+  die(`Failed to parse PEM with either algorithm.\n  ${errors.join('\n  ')}`)
 }
 
 function loadWasm() {
