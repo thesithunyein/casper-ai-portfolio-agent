@@ -48,12 +48,17 @@ jobs:
           ls -la contract_opt.wasm
           echo "WASM_FILE=contract_opt.wasm" >> "$GITHUB_ENV"
 
+      - name: Install casper-client
+        run: |
+          cargo install casper-client --locked
+          casper-client --version
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install JS dependencies (casper-js-sdk)
+      - name: Install JS dependencies (for reading package hash)
         run: npm ci || npm install
 
       - name: Write funded deployer key
@@ -80,18 +85,48 @@ jobs:
             exit 1
           fi
 
-      - name: Deploy contract (legacy Deploy / ModuleBytes)
+      - name: Deploy contract (put-transaction session, install-upgrade)
         id: deploy
-        env:
-          PAYMENT: ${{ github.event.inputs.payment_amount_motes }}
-          CSPR_TESTNET_PRIVATE_KEY_PEM_PATH: keys/secret_key.pem
-          PORTFOLIO_AGENT_WASM_PATH: odra-project/${{ env.WASM_FILE }}
-          DEPLOY_PAYMENT_MOTES: ${{ github.event.inputs.payment_amount_motes }}
-          ODRA_PACKAGE_KEY_NAME: portfolio_agent_package_hash
         run: |
-          echo "Deploying $PORTFOLIO_AGENT_WASM_PATH via legacy Deploy path"
-          ls -la "$PORTFOLIO_AGENT_WASM_PATH"
-          node scripts/deploy-local.mjs 2>&1 | tee deploy-output.txt
+          WASM="odra-project/$WASM_FILE"
+          echo "Installing $WASM via put-transaction session (fixed pricing, install-upgrade)"
+          ls -la "$WASM"
+          casper-client put-transaction session \
+            --node-address https://node.testnet.casper.network/rpc \
+            --chain-name casper-test \
+            --secret-key keys/secret_key.pem \
+            --pricing-mode fixed \
+            --gas-price-tolerance 2 \
+            --transaction-path "$WASM" \
+            --session-entry-point call \
+            --category 'install-upgrade' \
+            --session-arg "odra_cfg_package_hash_key_name:string='portfolio_agent_package_hash'" \
+            --session-arg "odra_cfg_allow_key_override:bool='false'" \
+            --session-arg "odra_cfg_is_upgradable:bool='true'" \
+            2>&1 | tee deploy-output.txt
+
+      - name: Wait for execution
+        if: success()
+        run: |
+          # Extract the transaction hash (Version1) from the put output
+          TXN_HASH=$(grep -oE '"Version1"\s*:\s*"[0-9a-f]{64}"' deploy-output.txt | grep -oE '[0-9a-f]{64}' | head -1)
+          echo "Transaction hash: $TXN_HASH"
+          echo "TXN_HASH=$TXN_HASH" >> "$GITHUB_ENV"
+          echo "Explorer: https://testnet.cspr.live/transaction/$TXN_HASH"
+          if [ -z "$TXN_HASH" ]; then
+            echo "::error::No transaction hash found in output. Install likely rejected."
+            exit 1
+          fi
+          sleep 90
+          casper-client get-transaction \
+            --node-address https://node.testnet.casper.network/rpc \
+            "$TXN_HASH" 2>&1 | tee txn-result.txt
+          if grep -q '"error_message"\s*:\s*"' txn-result.txt && ! grep -q '"error_message"\s*:\s*null' txn-result.txt; then
+            echo "::error::Transaction failed on-chain. See txn-result.txt"
+            grep -oE '"error_message"\s*:\s*"[^"]*"' txn-result.txt | head -1
+            exit 1
+          fi
+          echo "Transaction executed successfully."
 
       - name: Read contract package hash
         if: success()
@@ -102,16 +137,19 @@ jobs:
           node scripts/read-package-hash.mjs 2>&1 | tee package-hash.txt
 
       - name: Upload deploy output
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: deploy-output
           path: |
             deploy-output.txt
+            txn-result.txt
             package-hash.txt
           if-no-files-found: warn
 
       - name: Next steps
+        if: success()
         run: |
-          echo "Deploy submitted via legacy Deploy path. See deploy-output.txt for the deploy hash."
+          echo "Install transaction: https://testnet.cspr.live/transaction/$TXN_HASH"
           echo "The contract package hash is in package-hash.txt (named key 'portfolio_agent_package_hash')."
           echo "Set PORTFOLIO_AGENT_PACKAGE_HASH in Vercel + .env.local with that value."
