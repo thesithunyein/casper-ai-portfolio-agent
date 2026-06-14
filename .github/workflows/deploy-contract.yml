@@ -53,6 +53,11 @@ jobs:
           cargo install casper-client --locked
           casper-client --version
 
+      - name: Dump put-transaction session help (for debugging flags)
+        continue-on-error: true
+        run: |
+          casper-client put-transaction session --help 2>&1 | tee txn-session-help.txt
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -85,11 +90,12 @@ jobs:
             exit 1
           fi
 
-      - name: Deploy contract (put-transaction session, install-upgrade)
+      - name: Deploy contract (put-transaction session)
         id: deploy
         run: |
+          set -o pipefail
           WASM="odra-project/$WASM_FILE"
-          echo "Installing $WASM via put-transaction session (fixed pricing, install-upgrade)"
+          echo "Installing $WASM via put-transaction session (casper-client 5.x, fixed pricing)"
           ls -la "$WASM"
           casper-client put-transaction session \
             --node-address https://node.testnet.casper.network/rpc \
@@ -99,7 +105,7 @@ jobs:
             --gas-price-tolerance 2 \
             --transaction-path "$WASM" \
             --session-entry-point call \
-            --category 'install-upgrade' \
+            --install-upgrade \
             --session-arg "odra_cfg_package_hash_key_name:string='portfolio_agent_package_hash'" \
             --session-arg "odra_cfg_allow_key_override:bool='false'" \
             --session-arg "odra_cfg_is_upgradable:bool='true'" \
@@ -145,6 +151,7 @@ jobs:
             deploy-output.txt
             txn-result.txt
             package-hash.txt
+            txn-session-help.txt
           if-no-files-found: warn
 
       - name: Next steps
