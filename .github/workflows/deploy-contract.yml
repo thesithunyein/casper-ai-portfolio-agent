@@ -103,9 +103,8 @@ jobs:
             --secret-key keys/secret_key.pem \
             --pricing-mode fixed \
             --gas-price-tolerance 2 \
-            --transaction-path "$WASM" \
-            --session-entry-point call \
-            --install-upgrade \
+            --transaction-runtime vm-casper-v1 \
+            --wasm-path "$WASM" \
             --session-arg "odra_cfg_package_hash_key_name:string='portfolio_agent_package_hash'" \
             --session-arg "odra_cfg_allow_key_override:bool='false'" \
             --session-arg "odra_cfg_is_upgradable:bool='true'" \
@@ -114,8 +113,8 @@ jobs:
       - name: Wait for execution
         if: success()
         run: |
-          # Extract the transaction hash (Version1) from the put output
-          TXN_HASH=$(grep -oE '"Version1"\s*:\s*"[0-9a-f]{64}"' deploy-output.txt | grep -oE '[0-9a-f]{64}' | head -1)
+          # Extract the transaction hash (first 64-char hex) from the put output
+          TXN_HASH=$(grep -oE '[0-9a-f]{64}' deploy-output.txt | head -1)
           echo "Transaction hash: $TXN_HASH"
           echo "TXN_HASH=$TXN_HASH" >> "$GITHUB_ENV"
           echo "Explorer: https://testnet.cspr.live/transaction/$TXN_HASH"
@@ -124,15 +123,21 @@ jobs:
             exit 1
           fi
           sleep 90
+          # Best-effort verification; arg shapes vary across client versions.
           casper-client get-transaction \
             --node-address https://node.testnet.casper.network/rpc \
-            "$TXN_HASH" 2>&1 | tee txn-result.txt
-          if grep -q '"error_message"\s*:\s*"' txn-result.txt && ! grep -q '"error_message"\s*:\s*null' txn-result.txt; then
+            "$TXN_HASH" > txn-result.txt 2>&1 \
+            || casper-client get-transaction \
+                 --node-address https://node.testnet.casper.network/rpc \
+                 --transaction-hash "$TXN_HASH" > txn-result.txt 2>&1 \
+            || echo "get-transaction could not be parsed automatically; verify manually." | tee txn-result.txt
+          cat txn-result.txt
+          if grep -q '"error_message"' txn-result.txt && ! grep -q '"error_message": *null' txn-result.txt; then
             echo "::error::Transaction failed on-chain. See txn-result.txt"
-            grep -oE '"error_message"\s*:\s*"[^"]*"' txn-result.txt | head -1
+            grep -oE '"error_message" *: *"[^"]*"' txn-result.txt | head -1
             exit 1
           fi
-          echo "Transaction executed successfully."
+          echo "Transaction submitted (hash above). Verify at the explorer link."
 
       - name: Read contract package hash
         if: success()
