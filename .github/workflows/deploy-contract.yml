@@ -95,15 +95,19 @@ jobs:
         run: |
           set -o pipefail
           WASM="odra-project/$WASM_FILE"
-          echo "Installing $WASM via put-transaction session (casper-client 5.x, fixed pricing)"
+          echo "Installing $WASM via put-transaction session (casper-client 5.x, classic pricing, install-upgrade)"
           ls -la "$WASM"
           casper-client put-transaction session \
             --node-address https://node.testnet.casper.network/rpc \
             --chain-name casper-test \
             --secret-key keys/secret_key.pem \
-            --pricing-mode fixed \
+            --pricing-mode classic \
+            --payment-amount 300000000000 \
+            --standard-payment true \
             --gas-price-tolerance 2 \
             --transaction-runtime vm-casper-v1 \
+            --install-upgrade \
+            --session-entry-point call \
             --wasm-path "$WASM" \
             --session-arg "odra_cfg_package_hash_key_name:string='portfolio_agent_package_hash'" \
             --session-arg "odra_cfg_allow_key_override:bool='false'" \
