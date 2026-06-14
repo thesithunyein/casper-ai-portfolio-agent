@@ -29,10 +29,9 @@ import casperSdk from 'casper-js-sdk'
 const {
   Args,
   CLValue,
-  HttpHandler,
+  Deploy,
   KeyAlgorithm,
   PrivateKey,
-  RpcClient,
   SessionBuilder,
 } = casperSdk
 
@@ -59,6 +58,19 @@ const ALGO =
 function die(msg) {
   console.error(`\nERROR: ${msg}\n`)
   process.exit(1)
+}
+
+async function rpcCall(method, params) {
+  const res = await fetch(RPC_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', method, params, id: 1 }),
+  })
+  const json = await res.json()
+  if (json.error) {
+    throw new Error(`RPC ${method} failed: ${JSON.stringify(json.error)}`)
+  }
+  return json.result
 }
 
 function loadKey() {
@@ -135,45 +147,74 @@ async function main() {
 
   deploy.sign(key)
 
-  const rpc = new RpcClient(new HttpHandler(RPC_URL))
-  console.log('\nSubmitting deploy...')
-  const putResult = await rpc.putDeploy(deploy)
-  const deployHash = putResult.deployHash.toHex()
+  // Serialize the Deploy directly (Deploy.toJSON) and submit via raw JSON-RPC.
+  // The SDK's RpcClient.putDeploy() has a typedjson bug serializing the
+  // PutDeployRequest wrapper ("Could not serialize 'deploy'"), so we bypass it.
+  const deployJson = Deploy.toJSON(deploy)
+
+  console.log('\nSubmitting deploy (account_put_deploy)...')
+  const putResult = await rpcCall('account_put_deploy', { deploy: deployJson })
+  const deployHash =
+    putResult?.deploy_hash || putResult?.deployHash || deploy.hash?.toHex?.()
+  if (!deployHash) {
+    die(`No deploy hash returned. Response: ${JSON.stringify(putResult)}`)
+  }
   console.log(`\nDeploy submitted!`)
   console.log(`Deploy hash: ${deployHash}`)
   console.log(`Explorer:    ${EXPLORER}/deploy/${deployHash}`)
 
   console.log('\nWaiting for execution (up to ~3 min)...')
-  let info
-  try {
-    info = await rpc.waitForDeploy(deploy, 180_000)
-  } catch (e) {
-    console.log(
-      `\nTimed out / poll error. Check status: ${EXPLORER}/deploy/${deployHash}`
-    )
-    console.log(`(${e?.message || e})`)
-    return
-  }
+  const start = Date.now()
+  while (Date.now() - start < 180_000) {
+    await new Promise((r) => setTimeout(r, 8000))
+    let info
+    try {
+      info = await rpcCall('info_get_deploy', { deploy_hash: deployHash })
+    } catch {
+      process.stdout.write('.')
+      continue
+    }
 
-  const execResult = info?.executionInfo?.executionResult
-  const errorMessage = execResult?.errorMessage
-  if (errorMessage) {
-    console.error('\n=== DEPLOY FAILED ON-CHAIN ===')
-    console.error(`Error: ${errorMessage}`)
-    console.error(`Explorer: ${EXPLORER}/deploy/${deployHash}`)
-    process.exit(1)
-  }
+    const exec = info?.execution_info || info?.execution_results
+    const result =
+      info?.execution_info?.execution_result ||
+      (Array.isArray(info?.execution_results)
+        ? info.execution_results[0]?.result
+        : undefined)
+    if (!exec || !result) {
+      process.stdout.write('.')
+      continue
+    }
 
-  console.log('\n=== DEPLOY SUCCEEDED ===')
-  console.log(`Cost/consumed: ${execResult?.cost ?? execResult?.consumed ?? 'n/a'} motes`)
-  console.log(`Deploy hash:   ${deployHash}`)
-  console.log(`Deploy link:   ${EXPLORER}/deploy/${deployHash}`)
-  console.log(`\nContract package stored under named key '${PACKAGE_KEY_NAME}'`)
-  console.log(`Account:       ${EXPLORER}/account/${key.publicKey.toHex()}`)
+    // Casper 2.0 (Version2) or legacy (Success/Failure) shapes
+    const v2 = result.Version2 || result
+    const failure =
+      result.Failure || (v2?.error_message ? { error_message: v2.error_message } : null)
+    const success = result.Success || (!failure && (v2?.cost != null || v2?.consumed != null))
+
+    if (failure) {
+      console.error('\n=== DEPLOY FAILED ON-CHAIN ===')
+      console.error(`Error: ${failure.error_message || JSON.stringify(failure)}`)
+      console.error(`Explorer: ${EXPLORER}/deploy/${deployHash}`)
+      process.exit(1)
+    }
+    if (success) {
+      console.log('\n\n=== DEPLOY SUCCEEDED ===')
+      console.log(`Deploy hash:   ${deployHash}`)
+      console.log(`Deploy link:   ${EXPLORER}/deploy/${deployHash}`)
+      console.log(`\nContract package stored under named key '${PACKAGE_KEY_NAME}'`)
+      console.log(`Account:       ${EXPLORER}/account/${key.publicKey.toHex()}`)
+      console.log(
+        `\nNext: run 'node scripts/read-package-hash.mjs' to fetch the package hash,`
+      )
+      console.log(`then set PORTFOLIO_AGENT_PACKAGE_HASH in Vercel + .env.local.`)
+      return
+    }
+    process.stdout.write('.')
+  }
   console.log(
-    `\nNext: run 'node scripts/read-package-hash.mjs' to fetch the package hash,`
+    `\nTimed out waiting. Check status: ${EXPLORER}/deploy/${deployHash}`
   )
-  console.log(`then set PORTFOLIO_AGENT_PACKAGE_HASH in Vercel + .env.local.`)
 }
 
 main().catch((e) => die(e?.stack || e?.message || String(e)))
