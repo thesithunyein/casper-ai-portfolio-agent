@@ -48,10 +48,13 @@ jobs:
           ls -la contract_opt.wasm
           echo "WASM_FILE=contract_opt.wasm" >> "$GITHUB_ENV"
 
-      - name: Install casper-client (v5, Casper 2.0)
-        run: |
-          cargo install casper-client --locked
-          casper-client --version
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install JS dependencies (casper-js-sdk)
+        run: npm ci || npm install
 
       - name: Write funded deployer key
         env:
@@ -77,37 +80,38 @@ jobs:
             exit 1
           fi
 
-      - name: Install contract (put-transaction session)
+      - name: Deploy contract (legacy Deploy / ModuleBytes)
         id: deploy
         env:
           PAYMENT: ${{ github.event.inputs.payment_amount_motes }}
+          CSPR_TESTNET_PRIVATE_KEY_PEM_PATH: keys/secret_key.pem
+          PORTFOLIO_AGENT_WASM_PATH: odra-project/${{ env.WASM_FILE }}
+          DEPLOY_PAYMENT_MOTES: ${{ github.event.inputs.payment_amount_motes }}
+          ODRA_PACKAGE_KEY_NAME: portfolio_agent_package_hash
         run: |
-          WASM="odra-project/$WASM_FILE"
-          echo "Using WASM: $WASM"
-          ls -la "$WASM"
-          casper-client put-transaction session \
-            --node-address https://node.testnet.casper.network/rpc \
-            --chain-name casper-test \
-            --secret-key keys/secret_key.pem \
-            --payment-amount "${PAYMENT:-300000000000}" \
-            --gas-price-tolerance 1 \
-            --standard-payment true \
-            --wasm-path "$WASM" \
-            --session-arg "odra_cfg_package_hash_key_name:string:'portfolio_agent_$(date +%s)_package_hash'" \
-            --session-arg "odra_cfg_allow_key_override:bool:'false'" \
-            --session-arg "odra_cfg_is_upgradable:bool:'true'" \
-            --session-arg "odra_cfg_is_upgrade:bool:'false'" \
-            2>&1 | tee deploy-output.json
+          echo "Deploying $PORTFOLIO_AGENT_WASM_PATH via legacy Deploy path"
+          ls -la "$PORTFOLIO_AGENT_WASM_PATH"
+          node scripts/deploy-local.mjs 2>&1 | tee deploy-output.txt
+
+      - name: Read contract package hash
+        if: success()
+        env:
+          CSPR_TESTNET_PRIVATE_KEY_PEM_PATH: keys/secret_key.pem
+          ODRA_PACKAGE_KEY_NAME: portfolio_agent_package_hash
+        run: |
+          node scripts/read-package-hash.mjs 2>&1 | tee package-hash.txt
 
       - name: Upload deploy output
         uses: actions/upload-artifact@v4
         with:
           name: deploy-output
-          path: deploy-output.json
+          path: |
+            deploy-output.txt
+            package-hash.txt
           if-no-files-found: warn
 
       - name: Next steps
         run: |
-          echo "Deploy submitted. Open the transaction hash above on https://testnet.cspr.live"
-          echo "The contract package hash is stored under named key 'portfolio_agent_package_hash'"
-          echo "on the deploying account: https://testnet.cspr.live/account/<your-public-key>"
+          echo "Deploy submitted via legacy Deploy path. See deploy-output.txt for the deploy hash."
+          echo "The contract package hash is in package-hash.txt (named key 'portfolio_agent_package_hash')."
+          echo "Set PORTFOLIO_AGENT_PACKAGE_HASH in Vercel + .env.local with that value."
