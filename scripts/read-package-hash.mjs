@@ -12,7 +12,9 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { PrivateKey, KeyAlgorithm } from 'casper-js-sdk'
+import casperSdk from 'casper-js-sdk'
+
+const { PrivateKey, KeyAlgorithm } = casperSdk
 
 const RPC_URL =
   process.env.CASPER_NODE_RPC_URL || 'https://node.testnet.casper.network/rpc'

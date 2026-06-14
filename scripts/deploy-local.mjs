@@ -24,7 +24,9 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import {
+import casperSdk from 'casper-js-sdk'
+
+const {
   Args,
   CLValue,
   HttpHandler,
@@ -32,7 +34,7 @@ import {
   PrivateKey,
   RpcClient,
   SessionBuilder,
-} from 'casper-js-sdk'
+} = casperSdk
 
 const CHAIN_NAME = 'casper-test'
 const RPC_URL =
