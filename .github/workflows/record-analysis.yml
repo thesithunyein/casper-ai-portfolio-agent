@@ -1,0 +1,130 @@
+name: Record Analysis On-Chain (store_analysis)
+
+# Manually invoke the deployed PortfolioAgent contract's `store_analysis` entry
+# point on Casper 2.0 Testnet. This produces a real on-chain transaction that
+# proves the agentic loop (AI analysis -> signed Casper transaction -> on-chain
+# audit record). Uses casper-client (the proven deploy path).
+#
+# Requires the funded Testnet key in repo secret CSPR_TESTNET_PRIVATE_KEY.
+
+on:
+  workflow_dispatch:
+    inputs:
+      wallet_address:
+        description: 'Wallet address analyzed (any string identifier)'
+        required: true
+        default: '020343c494c68ea9929fad760585d3c138241876fbf8bd03f7cef3147eeee33dd4a6'
+      total_value_cents:
+        description: 'Portfolio value in USD cents (U256)'
+        required: true
+        default: '12345'
+      risk_level:
+        description: 'Risk level label'
+        required: true
+        default: 'moderate'
+      recommendation_count:
+        description: 'Number of recommendations (U8, 0-255)'
+        required: true
+        default: '3'
+      summary_hash:
+        description: 'SHA-256 hash of the full analysis summary'
+        required: true
+        default: 'demo0000000000000000000000000000000000000000000000000000000000000'
+      package_hash:
+        description: 'Contract package hash (hex, no prefix)'
+        required: true
+        default: '1786b541e2c353accd37cc3c2811a11947e5f4188cdd3da99da011b50795fe50'
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install casper-client
+        run: |
+          cargo install casper-client --locked
+          casper-client --version
+
+      - name: Dump put-transaction help (for flag verification)
+        continue-on-error: true
+        run: |
+          casper-client put-transaction --help 2>&1 | tee txn-help.txt
+          echo "===== package =====" | tee -a txn-help.txt
+          casper-client put-transaction package --help 2>&1 | tee -a txn-help.txt
+
+      - name: Write funded key
+        env:
+          CSPR_TESTNET_PRIVATE_KEY: ${{ secrets.CSPR_TESTNET_PRIVATE_KEY }}
+        run: |
+          if [ -z "$CSPR_TESTNET_PRIVATE_KEY" ]; then
+            echo "::error::CSPR_TESTNET_PRIVATE_KEY secret is not set."
+            exit 1
+          fi
+          mkdir -p keys
+          printf '%s\n' "$CSPR_TESTNET_PRIVATE_KEY" > keys/secret_key.pem
+          chmod 600 keys/secret_key.pem
+          if ! grep -q "BEGIN.*PRIVATE KEY" keys/secret_key.pem; then
+            echo "::error::PEM header missing in CSPR_TESTNET_PRIVATE_KEY secret."
+            exit 1
+          fi
+
+      - name: Call store_analysis (put-transaction package)
+        id: call
+        run: |
+          set -o pipefail
+          PKG="${{ github.event.inputs.package_hash }}"
+          echo "Calling store_analysis on package $PKG"
+          casper-client put-transaction package \
+            --node-address https://node.testnet.casper.network/rpc \
+            --chain-name casper-test \
+            --secret-key keys/secret_key.pem \
+            --pricing-mode classic \
+            --payment-amount 5000000000 \
+            --standard-payment true \
+            --gas-price-tolerance 2 \
+            --transaction-runtime vm-casper-v1 \
+            --package-address "hash-$PKG" \
+            --session-entry-point store_analysis \
+            --session-arg "wallet_address:string='${{ github.event.inputs.wallet_address }}'" \
+            --session-arg "total_value:u256='${{ github.event.inputs.total_value_cents }}'" \
+            --session-arg "risk_level:string='${{ github.event.inputs.risk_level }}'" \
+            --session-arg "recommendation_count:u8='${{ github.event.inputs.recommendation_count }}'" \
+            --session-arg "summary_hash:string='${{ github.event.inputs.summary_hash }}'" \
+            2>&1 | tee call-output.txt
+
+      - name: Wait and verify
+        if: success()
+        run: |
+          TXN_HASH=$(grep -oE '[0-9a-f]{64}' call-output.txt | head -1)
+          echo "Transaction hash: $TXN_HASH"
+          echo "TXN_HASH=$TXN_HASH" >> "$GITHUB_ENV"
+          echo "Explorer: https://testnet.cspr.live/transaction/$TXN_HASH"
+          if [ -z "$TXN_HASH" ]; then
+            echo "::error::No transaction hash found. The call was rejected."
+            exit 1
+          fi
+          sleep 90
+          casper-client get-transaction \
+            --node-address https://node.testnet.casper.network/rpc \
+            "$TXN_HASH" > call-result.txt 2>&1 \
+            || echo "get-transaction could not be parsed automatically; verify manually." | tee call-result.txt
+          cat call-result.txt
+          if grep -q '"error_message"' call-result.txt && ! grep -q '"error_message": *null' call-result.txt; then
+            echo "::error::store_analysis failed on-chain. See call-result.txt"
+            grep -oE '"error_message" *: *"[^"]*"' call-result.txt | head -1
+            exit 1
+          fi
+          echo "store_analysis recorded on-chain. Verify at the explorer link."
+
+      - name: Upload output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: record-analysis-output
+          path: |
+            txn-help.txt
+            call-output.txt
+            call-result.txt
+          if-no-files-found: warn
