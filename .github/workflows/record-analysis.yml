@@ -81,11 +81,11 @@ jobs:
             --chain-name casper-test \
             --secret-key keys/secret_key.pem \
             --pricing-mode classic \
-            --payment-amount 5000000000 \
+            --payment-amount 10000000000 \
             --standard-payment true \
             --gas-price-tolerance 2 \
             --transaction-runtime vm-casper-v1 \
-            --package-address "hash-$PKG" \
+            --package-address "package-$PKG" \
             --session-entry-point store_analysis \
             --session-arg "wallet_address:string='${{ github.event.inputs.wallet_address }}'" \
             --session-arg "total_value:u256='${{ github.event.inputs.total_value_cents }}'" \
