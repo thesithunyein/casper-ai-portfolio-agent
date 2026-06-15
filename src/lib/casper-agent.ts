@@ -145,3 +145,43 @@ export const recordAnalysisOnChain = async (params: {
     return null
   }
 }
+
+/**
+ * Safe, secret-free diagnostics for the on-chain agent configuration.
+ * Reports which env vars are present and whether the key actually loads,
+ * without ever returning the private key material.
+ */
+export const getAgentDiagnostics = () => {
+  const hasPem = Boolean(process.env.CASPER_AGENT_PRIVATE_KEY_PEM)
+  const hasHex = Boolean(process.env.CASPER_AGENT_PRIVATE_KEY_HEX)
+  const hasPackageHash = Boolean(process.env.PORTFOLIO_AGENT_PACKAGE_HASH)
+  const algorithm = (
+    process.env.CASPER_AGENT_KEY_ALGORITHM || 'ed25519'
+  ).toLowerCase()
+
+  let keyLoads = false
+  let publicKey: string | null = null
+  let keyError: string | null = null
+  try {
+    const pk = loadAgentPrivateKey()
+    if (pk) {
+      keyLoads = true
+      publicKey = pk.publicKey.toHex()
+    }
+  } catch (error) {
+    keyError = error instanceof Error ? error.message : String(error)
+  }
+
+  return {
+    isConfigured: isOnChainRecordingConfigured(),
+    hasPem,
+    hasHex,
+    hasPackageHash,
+    algorithm,
+    keyLoads,
+    publicKey,
+    keyError,
+    chainName: CASPER_CHAIN_NAME,
+    nodeRpcUrl: CASPER_NODE_RPC_URL,
+  }
+}
