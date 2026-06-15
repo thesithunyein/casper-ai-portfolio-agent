@@ -99,16 +99,19 @@ export const recordAnalysisOnChain = async (params: {
   riskLevel: string
   recommendationCount: number
   summaryHash: string
-}): Promise<OnChainRecord | null> => {
+}): Promise<{ record: OnChainRecord | null; error: string | null }> => {
   const packageHash = process.env.PORTFOLIO_AGENT_PACKAGE_HASH
   const privateKey = loadAgentPrivateKey()
-  if (!packageHash || !privateKey) return null
+  if (!packageHash || !privateKey) {
+    return { record: null, error: 'on-chain recording not configured' }
+  }
 
-  try {
-    // U256 on-chain value: USD cents, avoids floats
-    const totalValueCents = Math.max(0, Math.round(params.totalValueUsd * 100))
+  // U256 on-chain value: USD cents, avoids floats
+  const totalValueCents = Math.max(0, Math.round(params.totalValueUsd * 100))
 
-    const args = Args.fromMap({
+  // Build args once; a fresh transaction (new timestamp) is built per attempt.
+  const buildArgs = () =>
+    Args.fromMap({
       wallet_address: CLValue.newCLString(params.walletAddress),
       total_value: CLValue.newCLUInt256(totalValueCents),
       risk_level: CLValue.newCLString(params.riskLevel),
@@ -118,32 +121,52 @@ export const recordAnalysisOnChain = async (params: {
       summary_hash: CLValue.newCLString(params.summaryHash),
     })
 
-    const transaction = new ContractCallBuilder()
-      .from(privateKey.publicKey)
-      .byPackageHash(normalizeHash(packageHash))
-      .entryPoint('store_analysis')
-      .runtimeArgs(args)
-      .chainName(CASPER_CHAIN_NAME)
-      .payment(STORE_ANALYSIS_PAYMENT_MOTES, GAS_PRICE_TOLERANCE)
-      .build()
+  // Retry across attempts: the public RPC node can intermittently reject or
+  // time out, so a couple of attempts greatly improves reliability.
+  const MAX_ATTEMPTS = 3
+  let lastError: string | null = null
 
-    transaction.sign(privateKey)
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      const transaction = new ContractCallBuilder()
+        .from(privateKey.publicKey)
+        .byPackageHash(normalizeHash(packageHash))
+        .entryPoint('store_analysis')
+        .runtimeArgs(buildArgs())
+        .chainName(CASPER_CHAIN_NAME)
+        .payment(STORE_ANALYSIS_PAYMENT_MOTES, GAS_PRICE_TOLERANCE)
+        .build()
 
-    const rpcClient = new RpcClient(new HttpHandler(CASPER_NODE_RPC_URL))
-    const result = await rpcClient.putTransaction(transaction)
-    const transactionHash = result.transactionHash.toHex()
+      transaction.sign(privateKey)
 
-    return {
-      transactionHash,
-      explorerUrl: getTransactionExplorerUrl(transactionHash),
-      contractPackageHash: packageHash,
-      network: CASPER_CHAIN_NAME,
-      entryPoint: 'store_analysis',
+      const rpcClient = new RpcClient(new HttpHandler(CASPER_NODE_RPC_URL))
+      const result = await rpcClient.putTransaction(transaction)
+      const transactionHash = result.transactionHash.toHex()
+
+      return {
+        record: {
+          transactionHash,
+          explorerUrl: getTransactionExplorerUrl(transactionHash),
+          contractPackageHash: packageHash,
+          network: CASPER_CHAIN_NAME,
+          entryPoint: 'store_analysis',
+        },
+        error: null,
+      }
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : String(error)
+      console.error(
+        `On-chain analysis recording failed (attempt ${attempt}/${MAX_ATTEMPTS}):`,
+        error
+      )
+      // brief backoff before retrying
+      if (attempt < MAX_ATTEMPTS) {
+        await new Promise((resolve) => setTimeout(resolve, 600))
+      }
     }
-  } catch (error) {
-    console.error('On-chain analysis recording failed:', error)
-    return null
   }
+
+  return { record: null, error: lastError }
 }
 
 /**

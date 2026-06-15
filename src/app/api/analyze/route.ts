@@ -192,15 +192,18 @@ ${paymentVerified ? 'Note: This user has paid 0.01 CSPR via x402 micropayments f
     // Agentic on-chain write: persist the analysis record to the
     // PortfolioAgent contract on Casper Testnet (when agent key configured).
     let onchain = null
+    let onchainError = null
     if (isOnChainRecordingConfigured()) {
       const riskMatch = analysis.riskAssessment.match(/\b(high|medium|low)\b/i)
-      onchain = await recordAnalysisOnChain({
+      const result = await recordAnalysisOnChain({
         walletAddress: portfolio.walletAddress,
         totalValueUsd: portfolio.totalValue,
         riskLevel: riskMatch ? riskMatch[1].toUpperCase() : 'UNKNOWN',
         recommendationCount: analysis.recommendations.length,
         summaryHash: hashAnalysisSummary(analysis),
       })
+      onchain = result.record
+      onchainError = result.error
     }
 
     return Response.json(
@@ -214,6 +217,7 @@ ${paymentVerified ? 'Note: This user has paid 0.01 CSPR via x402 micropayments f
               : 'optional',
         analysisSource,
         onchain,
+        onchainError,
       },
       { status: 200 }
     )
