@@ -39,8 +39,16 @@ export interface OnChainRecord {
   entryPoint: string
 }
 
-/** Gas budget for a store_analysis call (motes). 5 CSPR is comfortable. */
-const STORE_ANALYSIS_PAYMENT_MOTES = 5_000_000_000
+/** Gas budget for a store_analysis call (motes). 10 CSPR gives comfortable headroom. */
+const STORE_ANALYSIS_PAYMENT_MOTES = Number(
+  process.env.STORE_ANALYSIS_PAYMENT_MOTES || 10_000_000_000
+)
+
+/**
+ * Gas price tolerance for classic/PaymentLimited pricing. Testnet currently
+ * requires >= 2 (matches the successful contract install).
+ */
+const GAS_PRICE_TOLERANCE = 2
 
 const normalizeHash = (hash: string): string =>
   hash.replace(/^(hash-|contract-package-wasm|contract-package-)/, '')
@@ -116,7 +124,7 @@ export const recordAnalysisOnChain = async (params: {
       .entryPoint('store_analysis')
       .runtimeArgs(args)
       .chainName(CASPER_CHAIN_NAME)
-      .payment(STORE_ANALYSIS_PAYMENT_MOTES)
+      .payment(STORE_ANALYSIS_PAYMENT_MOTES, GAS_PRICE_TOLERANCE)
       .build()
 
     transaction.sign(privateKey)

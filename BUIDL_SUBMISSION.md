@@ -67,6 +67,31 @@ The submission includes an **Odra 2.7 smart contract** (`odra-project/`) with a 
 - **Explorer (transaction):** https://testnet.cspr.live/transaction/9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a
 - **Explorer (contract):** https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6
 
+## Agentic Loop Architecture
+
+The core differentiator is a closed agentic loop that ends on-chain:
+
+```
+  User wallet ──▶ CSPR.cloud REST API ──▶ live portfolio context
+                                              │
+                                              ▼
+                            Claude 3.5 Sonnet (/api/analyze, /api/chat)
+                                              │  structured analysis
+                                              ▼
+                        x402 micropayment (verify → settle)  ── pays for the analysis
+                                              │
+                                              ▼
+                   Agent signs a Casper 2.0 transaction (casper-js-sdk)
+                                              │  store_analysis(...)
+                                              ▼
+                 PortfolioAgent Odra contract on Casper Testnet (on-chain audit)
+```
+
+- **Autonomous, not manual:** the server-side agent (`src/lib/casper-agent.ts`) loads its own key, builds a `ContractCallBuilder` transaction, signs it, and submits it via the node RPC — no human signs.
+- **Auditable:** every analysis is hashed (SHA-256) and persisted via `store_analysis`, callable back via `get_analysis` / `has_analysis` / `get_total_analyses`.
+- **Resilient:** the on-chain write never blocks the user-facing analysis; failures degrade gracefully.
+- **Reproducible proof:** the `Record Analysis On-Chain` GitHub workflow invokes `store_analysis` via `casper-client`, producing a verifiable transaction independent of the app.
+
 ## Demo Video
 📺 YouTube: (Link to be added after recording — follow DEMO_SCRIPT.md)
 

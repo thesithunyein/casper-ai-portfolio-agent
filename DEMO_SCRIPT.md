@@ -30,13 +30,24 @@
 - "Claude AI generates personalized recommendations based on actual portfolio data"
 - Point to x402 badge: "And it supports x402 micropayments — agents that pay for their own analysis"
 
-## Smart Contract (5s)
-- Switch to code view or terminal
-- "Behind the scenes, an Odra smart contract stores analysis results on Casper Testnet"
+## On-Chain Agentic Loop — THE KEY MOMENT (20s)
+- "Here's what makes this agentic: after the AI analyzes, the agent autonomously signs and submits a real Casper 2.0 transaction to store the result on-chain."
+- Open the live contract on the explorer:
+  https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6
+  (deployed PortfolioAgent — show the `store_analysis` entry point)
+- Open the install transaction (proof the contract is live):
+  https://testnet.cspr.live/transaction/9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a
+- Then open the latest `store_analysis` transaction and show `Success` + the stored args (wallet, value, risk, recommendation count, summary hash).
+- "No human clicked submit — the agent did. Every analysis is now auditable on-chain."
 
 ## Closing (5s)
 - Back to homepage
-- "Casper AI Portfolio Agent — cute design, serious agentic AI. Vote for us on CSPR.fans!"
+- "Casper AI Portfolio Agent — cute design, real agentic AI, proven on-chain. Vote for us on CSPR.fans!"
+
+## Deployed Contract (for reference while recording)
+- Contract Package Hash: `1786b541e2c353accd37cc3c2811a11947e5f4188cdd3da99da011b50795fe50`
+- Contract Hash (v1): `0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6`
+- Install Txn: `9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a`
 
 ## Recording Tips
 - Use screen recorder (OBS or Loom)
