@@ -126,21 +126,21 @@ export default function Home() {
         </div>
 
         {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 animate-fade-in">
-          <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3 group cursor-pointer hover:opacity-80 transition">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-200/60 shadow-soft animate-fade-in">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-3.5 flex items-center justify-between">
+            <div className="flex items-center gap-2.5 group cursor-pointer transition-spring hover:opacity-80">
               <Logo className="w-8 h-8" />
-              <span className="font-bold text-lg text-black">Casper Agent</span>
+              <span className="font-extrabold text-lg text-black tracking-tight">Casper Agent</span>
             </div>
-            <div className="flex items-center gap-6">
-              <a href="#features" className="text-sm text-gray-600 hover:text-black transition">Features</a>
-              <a href="#how-it-works" className="text-sm text-gray-600 hover:text-black transition">How It Works</a>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <a href="#features" className="hidden sm:block px-3 py-2 text-sm font-semibold text-gray-500 hover:text-black rounded-full hover:bg-gray-100 transition-spring">Features</a>
+              <a href="#how-it-works" className="hidden sm:block px-3 py-2 text-sm font-semibold text-gray-500 hover:text-black rounded-full hover:bg-gray-100 transition-spring">How It Works</a>
               <button
                 onClick={() => {
                   const element = document.getElementById('wallet-section')
                   element?.scrollIntoView({ behavior: 'smooth' })
                 }}
-                className="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition"
+                className="ml-1 px-5 py-2.5 bg-black text-white rounded-full text-sm font-semibold transition-spring hover:scale-[1.03] hover:bg-gray-900 active:scale-95"
               >
                 Get Started
               </button>
@@ -152,53 +152,62 @@ export default function Home() {
         <section className="relative z-10 pt-32 pb-20 px-4 md:px-8">
           <div className="max-w-4xl mx-auto text-center">
             {/* Hackathon Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-200 rounded-2xl mb-6 animate-pulse">
-              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-sm font-bold text-red-600">Casper Agentic Buildathon 2026</span>
-              <span className="text-xs text-red-400 font-semibold">$150,000 Prize Pool</span>
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 bg-white/80 backdrop-blur border border-gray-200/80 rounded-full mb-8 shadow-soft animate-rise" style={{ animationDelay: '0.05s' }}>
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 animate-ping" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+              </span>
+              <span className="text-sm font-bold text-gray-800">Casper Agentic Buildathon 2026</span>
+              <span className="text-xs font-semibold text-gray-400">·</span>
+              <span className="text-xs font-semibold text-gray-500">$150,000 Prize Pool</span>
             </div>
             <div className="relative inline-block mb-6 pb-4">
-              <Sparkles className="absolute -top-4 -left-8 w-6 h-6 text-yellow-400 animate-bounce" style={{ animationDelay: '0s' }} />
-              <Sparkles className="absolute -top-2 -right-6 w-5 h-5 text-pink-400 animate-bounce" style={{ animationDelay: '0.5s' }} />
-              <Star className="absolute top-1/2 -left-12 w-4 h-4 text-cyan-400 animate-pulse" />
-              <Heart className="absolute bottom-4 -right-8 w-5 h-5 text-red-400 animate-bounce" style={{ animationDelay: '1s' }} />
-              <h1 className="text-5xl md:text-7xl font-extrabold text-black mb-3 leading-normal">
+              <Sparkles className="absolute -top-4 -left-8 w-6 h-6 text-yellow-400/80 animate-float" style={{ animationDelay: '0s' }} />
+              <Sparkles className="absolute -top-2 -right-6 w-5 h-5 text-pink-400/80 animate-float" style={{ animationDelay: '0.8s' }} />
+              <Star className="absolute top-1/2 -left-12 w-4 h-4 text-cyan-400/70 animate-pulse" />
+              <Heart className="absolute bottom-4 -right-8 w-5 h-5 text-red-400/70 animate-float" style={{ animationDelay: '1.2s' }} />
+              <h1 className="text-5xl md:text-[5.5rem] font-extrabold text-black mb-2 leading-[1.05] tracking-tight animate-rise" style={{ animationDelay: '0.12s' }}>
                 Your portfolio agent
               </h1>
-              <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary via-cute-dark to-secondary bg-clip-text text-transparent leading-normal pb-2">
+              <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary via-cute-dark to-secondary bg-clip-text text-transparent leading-[1.15] tracking-tight pb-2 animate-rise" style={{ animationDelay: '0.2s' }}>
                 Always watching, always caring
               </h2>
             </div>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed animate-rise" style={{ animationDelay: '0.28s' }}>
               AI-powered portfolio analysis with cute bear-powered recommendations for the Casper ecosystem
             </p>
-            <button
-              onClick={() => {
-                const element = document.getElementById('wallet-section')
-                element?.scrollIntoView({ behavior: 'smooth' })
-              }}
-              className="px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white rounded-2xl font-bold hover:shadow-lg transition transform hover:scale-105 flex items-center gap-2 mx-auto"
-            >
-              <Zap className="w-5 h-5" />
-              Start Analyzing
-            </button>
+            <div className="animate-rise" style={{ animationDelay: '0.36s' }}>
+              <button
+                onClick={() => {
+                  const element = document.getElementById('wallet-section')
+                  element?.scrollIntoView({ behavior: 'smooth' })
+                }}
+                className="group px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white rounded-full font-bold text-lg shadow-glow-primary transition-spring hover:scale-[1.04] active:scale-95 flex items-center gap-2.5 mx-auto"
+              >
+                <Zap className="w-5 h-5 transition-spring group-hover:rotate-12" />
+                Start Analyzing
+              </button>
+            </div>
 
             {/* Live on-chain trust badges */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 animate-rise" style={{ animationDelay: '0.44s' }}>
               <a
                 href="https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-green-200 rounded-2xl text-sm font-bold text-green-700 hover:border-green-400 hover:shadow-md transition"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-bold text-green-700 shadow-soft transition-spring hover:scale-[1.03] hover:border-green-300"
               >
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+                </span>
                 Live on Casper Testnet
               </a>
               <a
                 href="https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-cute/40 rounded-2xl text-sm font-bold text-cute-dark hover:border-cute hover:shadow-md transition"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-bold text-cute-dark shadow-soft transition-spring hover:scale-[1.03] hover:border-cute"
               >
                 <Link2 className="w-4 h-4" />
                 View on-chain proof
@@ -210,35 +219,38 @@ export default function Home() {
         {/* Features Section */}
         <section id="features" className="relative z-10 py-20 px-4 md:px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <div className="flex items-center justify-center gap-3 mb-12">
-              <Rainbow className="w-8 h-8 text-cute-dark animate-bounce" />
-              <h2 className="text-4xl font-bold text-black">Cute Features</h2>
-              <Rainbow className="w-8 h-8 text-cute-dark animate-bounce" style={{ animationDelay: '0.5s' }} />
+            <div className="flex flex-col items-center text-center mb-14">
+              <div className="flex items-center justify-center gap-2.5 mb-3">
+                <Rainbow className="w-7 h-7 text-cute-dark animate-float" />
+                <h2 className="text-3xl md:text-5xl font-extrabold text-black tracking-tight">Cute Features</h2>
+                <Rainbow className="w-7 h-7 text-cute-dark animate-float" style={{ animationDelay: '0.6s' }} />
+              </div>
+              <p className="text-gray-500 text-lg max-w-xl">Powerful agentic AI, wrapped in a friendly experience.</p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-3 flex items-center justify-center shadow-lg">
+              <div className="group bg-white p-6 rounded-3xl border border-gray-100 shadow-soft transition-spring hover:-translate-y-1.5 hover:shadow-float">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-4 flex items-center justify-center shadow-soft transition-spring group-hover:scale-110 group-hover:-rotate-3">
                   <Brain className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-black mb-1">AI Analysis</h3>
                 <p className="text-gray-600 text-sm">Claude AI analyzes your portfolio and provides actionable insights in seconds</p>
               </div>
-              <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary to-primary mb-3 flex items-center justify-center shadow-lg">
+              <div className="group bg-white p-6 rounded-3xl border border-gray-100 shadow-soft transition-spring hover:-translate-y-1.5 hover:shadow-float">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary to-primary mb-4 flex items-center justify-center shadow-soft transition-spring group-hover:scale-110 group-hover:-rotate-3">
                   <Bot className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-black mb-1">Agent Chat</h3>
                 <p className="text-gray-600 text-sm">Conversational AI agent that answers questions and takes actions for your portfolio</p>
               </div>
-              <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cute-dark to-secondary mb-3 flex items-center justify-center shadow-lg">
+              <div className="group bg-white p-6 rounded-3xl border border-gray-100 shadow-soft transition-spring hover:-translate-y-1.5 hover:shadow-float">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cute-dark to-secondary mb-4 flex items-center justify-center shadow-soft transition-spring group-hover:scale-110 group-hover:-rotate-3">
                   <Zap className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-black mb-1">x402 Payments</h3>
                 <p className="text-gray-600 text-sm">Agent pays 0.01 CSPR per analysis via Casper&apos;s micropayment protocol</p>
               </div>
-              <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 hover:border-cute/50 transition-all hover:shadow-xl hover:shadow-cute/10 transform hover:-translate-y-1">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-400 to-orange-400 mb-3 flex items-center justify-center shadow-lg">
+              <div className="group bg-white p-6 rounded-3xl border border-gray-100 shadow-soft transition-spring hover:-translate-y-1.5 hover:shadow-float">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-400 to-orange-400 mb-4 flex items-center justify-center shadow-soft transition-spring group-hover:scale-110 group-hover:-rotate-3">
                   <Shield className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-black mb-1">On-Chain Storage</h3>
