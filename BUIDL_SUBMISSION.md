@@ -53,15 +53,19 @@ The submission includes an **Odra 2.7 smart contract** (`odra-project/`) with a 
 
 | Step | Status | Details |
 |------|--------|---------|
-| Build WASM | Ready | `odra-project/` builds in CI (`.github/workflows/ci.yml`) |
-| Deploy Contract | **Needs funded key** | Run `.github/workflows/deploy-contract.yml` after adding `CSPR_TESTNET_PRIVATE_KEY` secret |
+| Build WASM | Done | `odra-project/` builds in CI (`.github/workflows/ci.yml`) |
+| Deploy Contract | **Deployed** | Installed on Casper Testnet via `.github/workflows/deploy-contract.yml` (block height 8185068) |
 | On-chain agent writes | **Ready** | `src/lib/casper-agent.ts` uses `casper-js-sdk` `ContractCallBuilder` to submit signed `store_analysis` transactions |
 
-**Post-deployment fill-in:**
-- **Deploy Hash:** (fill after running deploy-contract workflow)
-- **Contract Package Hash:** (fill after running deploy-contract workflow)
+**Deployed contract (Casper Testnet, protocol 2.2.1):**
+- **Install Transaction Hash:** `9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a`
+- **Contract Package Hash:** `1786b541e2c353accd37cc3c2811a11947e5f4188cdd3da99da011b50795fe50`
+- **Contract Hash (v1):** `0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6`
+- **Block:** height `8185068`, hash `d30b313e98cc16ed26ac4de3e050e434429292096bf2cb0f3c78d12f73386933`
+- **Deployer Account:** `020343c494c68ea9929fad760585d3c138241876fbf8bd03f7cef3147eeee33dd4a6`
 - **Transaction Hash (first store_analysis):** (fill after first on-chain write)
-- **Explorer:** https://testnet.cspr.live/contract/[contract-hash]
+- **Explorer (transaction):** https://testnet.cspr.live/transaction/9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a
+- **Explorer (contract):** https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6
 
 ## Demo Video
 📺 YouTube: (Link to be added after recording — follow DEMO_SCRIPT.md)
