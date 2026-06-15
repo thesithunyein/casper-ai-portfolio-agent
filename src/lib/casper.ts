@@ -14,9 +14,16 @@ export const CSPR_CLOUD_BASE_URL = IS_MAINNET
   ? 'https://api.cspr.cloud'
   : 'https://api.testnet.cspr.cloud'
 
-export const CASPER_NODE_RPC_URL = IS_MAINNET
-  ? 'https://node.cspr.cloud/rpc'
-  : 'https://node.testnet.cspr.cloud/rpc'
+// Node RPC for submitting transactions. Defaults to the PUBLIC Casper node,
+// which requires no auth header. The cspr.cloud node endpoint
+// (node.testnet.cspr.cloud) needs an Authorization token, which the SDK's
+// HttpHandler does not send — so we avoid it for putTransaction. Override with
+// CASPER_NODE_RPC_URL if you have an authenticated endpoint.
+export const CASPER_NODE_RPC_URL =
+  process.env.CASPER_NODE_RPC_URL ||
+  (IS_MAINNET
+    ? 'https://node.mainnet.casper.network/rpc'
+    : 'https://node.testnet.casper.network/rpc')
 
 export const CASPER_CHAIN_NAME = IS_MAINNET ? 'casper' : 'casper-test'
 
