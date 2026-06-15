@@ -37,7 +37,8 @@
   (deployed PortfolioAgent — show the `store_analysis` entry point)
 - Open the install transaction (proof the contract is live):
   https://testnet.cspr.live/transaction/9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a
-- Then open the latest `store_analysis` transaction and show `Success` + the stored args (wallet, value, risk, recommendation count, summary hash).
+- Open the live `store_analysis` transaction (Success) and show the stored args (wallet, value, risk, recommendation count, summary hash):
+  https://testnet.cspr.live/transaction/bca8c90f0326424745efb591a748c5d2e93ca3ce0a42c6e2580c69781239136a
 - "No human clicked submit — the agent did. Every analysis is now auditable on-chain."
 
 ## Closing (5s)

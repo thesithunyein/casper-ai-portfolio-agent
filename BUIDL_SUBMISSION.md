@@ -55,7 +55,7 @@ The submission includes an **Odra 2.7 smart contract** (`odra-project/`) with a 
 |------|--------|---------|
 | Build WASM | Done | `odra-project/` builds in CI (`.github/workflows/ci.yml`) |
 | Deploy Contract | **Deployed** | Installed on Casper Testnet via `.github/workflows/deploy-contract.yml` (block height 8185068) |
-| On-chain agent writes | **Ready** | `src/lib/casper-agent.ts` uses `casper-js-sdk` `ContractCallBuilder` to submit signed `store_analysis` transactions |
+| On-chain agent writes | **Verified** | `store_analysis` executed successfully on Testnet (block 8187293); `src/lib/casper-agent.ts` submits signed calls via `casper-js-sdk` `ContractCallBuilder` |
 
 **Deployed contract (Casper Testnet, protocol 2.2.1):**
 - **Install Transaction Hash:** `9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a`
@@ -63,8 +63,9 @@ The submission includes an **Odra 2.7 smart contract** (`odra-project/`) with a 
 - **Contract Hash (v1):** `0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6`
 - **Block:** height `8185068`, hash `d30b313e98cc16ed26ac4de3e050e434429292096bf2cb0f3c78d12f73386933`
 - **Deployer Account:** `020343c494c68ea9929fad760585d3c138241876fbf8bd03f7cef3147eeee33dd4a6`
-- **Transaction Hash (first store_analysis):** (fill after first on-chain write)
-- **Explorer (transaction):** https://testnet.cspr.live/transaction/9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a
+- **Transaction Hash (first store_analysis):** `bca8c90f0326424745efb591a748c5d2e93ca3ce0a42c6e2580c69781239136a` (Success, block 8187293)
+- **Explorer (install txn):** https://testnet.cspr.live/transaction/9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a
+- **Explorer (store_analysis txn):** https://testnet.cspr.live/transaction/bca8c90f0326424745efb591a748c5d2e93ca3ce0a42c6e2580c69781239136a
 - **Explorer (contract):** https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6
 
 ## Agentic Loop Architecture
