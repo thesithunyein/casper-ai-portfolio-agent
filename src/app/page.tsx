@@ -2,7 +2,6 @@
 
 import { useCallback } from 'react'
 import { useAppStore } from '@/lib/store'
-import { fetchPortfolio } from '@/lib/casper'
 import {
   ANALYSIS_COST_CSPR,
   ANALYSIS_RECIPIENT,
@@ -39,7 +38,17 @@ export default function Home() {
     setError(null)
 
     try {
-      const portfolioData = await fetchPortfolio(walletAddress)
+      // Fetch portfolio via our server route (CSPR.cloud blocks browser CORS)
+      const portfolioRes = await fetch(
+        `/api/portfolio?address=${encodeURIComponent(walletAddress)}`
+      )
+      if (!portfolioRes.ok) {
+        const err = await portfolioRes.json()
+        throw new Error(err.error || 'Failed to fetch portfolio')
+      }
+      const portfolioData = await portfolioRes.json()
+      // Re-hydrate the Date that was serialized to a string over JSON
+      portfolioData.lastUpdated = new Date(portfolioData.lastUpdated)
       setPortfolio(portfolioData)
 
       // Agent pays for its own analysis via an x402 micropayment header
