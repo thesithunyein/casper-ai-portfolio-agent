@@ -6,6 +6,22 @@ Analyze your Casper portfolio with Claude AI and get actionable insights, risk a
 
 ---
 
+## ✅ Live & Verified On-Chain (Casper Testnet)
+
+This is a **working, deployed product** — not a mockup. The AI agent autonomously signs and submits real Casper 2.0 transactions on every analysis.
+
+| | |
+|---|---|
+| 🌐 **Live App** | https://casper-ai-portfolio-agent.vercel.app |
+| 📜 **Deployed Contract** | [`PortfolioAgent` on Testnet](https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6) |
+| 🤖 **Autonomous on-chain write (from the live app)** | [`cc648f7d…1307b779`](https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779) |
+| 🧱 **Contract install txn** | [`9460c0d3…b22a2dc0a`](https://testnet.cspr.live/transaction/9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a) |
+| 📦 **Package Hash** | `1786b541e2c353accd37cc3c2811a11947e5f4188cdd3da99da011b50795fe50` |
+
+**The agentic loop:** `live portfolio (CSPR.cloud)` → `Claude 3.5 Sonnet analysis` → `x402 micropayment` → `agent signs & submits store_analysis` → `auditable record on Casper Testnet`. No human signs the transaction — the agent does.
+
+---
+
 ## What This Does
 
 1. **Connect your Casper wallet** – Enter your wallet address (no private keys needed)

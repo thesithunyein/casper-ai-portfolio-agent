@@ -16,7 +16,7 @@ import { LoadingState } from '@/components/LoadingState'
 import { ErrorState } from '@/components/ErrorState'
 import { Logo } from '@/components/Logo'
 import { AgentChat } from '@/components/AgentChat'
-import { Brain, Shield, Sparkles, Heart, Star, Zap, Rainbow, Bot } from 'lucide-react'
+import { Brain, Shield, Sparkles, Heart, Star, Zap, Rainbow, Bot, Link2 } from 'lucide-react'
 
 export default function Home() {
   const {
@@ -173,6 +173,28 @@ export default function Home() {
               <Zap className="w-5 h-5" />
               Start Analyzing
             </button>
+
+            {/* Live on-chain trust badges */}
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href="https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-green-200 rounded-2xl text-sm font-bold text-green-700 hover:border-green-400 hover:shadow-md transition"
+              >
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                Live on Casper Testnet
+              </a>
+              <a
+                href="https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-cute/40 rounded-2xl text-sm font-bold text-cute-dark hover:border-cute hover:shadow-md transition"
+              >
+                <Link2 className="w-4 h-4" />
+                View on-chain proof
+              </a>
+            </div>
           </div>
         </section>
 
