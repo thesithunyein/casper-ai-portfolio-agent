@@ -1,16 +1,22 @@
 import type { Metadata, Viewport } from 'next'
-import { Nunito } from 'next/font/google'
+import { Inter, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 
-const nunito = Nunito({
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '600', '700', '800', '900'],
-  variable: '--font-nunito',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter',
+})
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-ibm-plex-mono',
 })
 
 export const metadata: Metadata = {
-  title: 'Casper Agent - AI Portfolio Analysis',
-  description: 'Agentic AI-powered portfolio analysis with cute design for Casper Network',
+  title: 'Casper Agent — AI Portfolio Analysis',
+  description: 'Agentic AI-powered portfolio analysis for Casper Network',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32' },
@@ -22,7 +28,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#06b6d4',
+  themeColor: '#0a0a0a',
 }
 
 export default function RootLayout({
@@ -32,7 +38,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${nunito.variable} font-sans bg-white text-black antialiased`}>
+      <body className={`${inter.variable} ${ibmPlexMono.variable} font-sans bg-[#fafafa] text-black antialiased`}>
         {children}
       </body>
     </html>

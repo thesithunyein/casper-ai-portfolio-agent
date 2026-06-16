@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Portfolio } from '@/lib/casper'
 import { generateAgentResponse, ChatMessage, AgentAction } from '@/lib/agent-chat'
 import { createX402Payment, ANALYSIS_COST_CSPR, ANALYSIS_RECIPIENT } from '@/lib/x402'
-import { Send, Bot, User, Sparkles, Zap, Heart, Wallet } from 'lucide-react'
+import { Send } from 'lucide-react'
 
 interface AgentChatProps {
   portfolio: Portfolio | null
@@ -110,60 +110,43 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
   }
 
   return (
-    <div className="bg-white border-2 border-gray-100 rounded-3xl shadow-xl overflow-hidden flex flex-col h-[500px]">
+    <div className="bg-surface border border-border flex flex-col h-[420px]">
       {/* Header */}
-      <div className="px-6 py-4 bg-gradient-to-r from-primary to-secondary border-b border-gray-100">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
-            <Bot className="w-5 h-5 text-white" />
-          </div>
+      <div className="px-4 py-3 bg-black border-b border-border">
+        <div className="flex items-center gap-2">
+          <span className="w-5 h-5 bg-white text-black flex items-center justify-center text-[10px] font-mono font-bold">AI</span>
           <div>
-            <h3 className="font-bold text-white">Casper AI Agent</h3>
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs text-white/80 font-semibold">Online • x402 Enabled</span>
-            </div>
+            <h3 className="text-xs font-semibold text-white">Agent</h3>
+            <p className="text-[10px] font-mono text-gray-400">Online • x402</p>
           </div>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-3 space-y-3">
         {messages.map((msg) => (
-          <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-            <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${
-              msg.role === 'agent' 
-                ? 'bg-gradient-to-br from-primary to-secondary' 
-                : 'bg-gray-100'
+          <div key={msg.id} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+            <div className={`w-6 h-6 flex items-center justify-center flex-shrink-0 text-[10px] font-mono font-bold ${
+              msg.role === 'agent' ? 'bg-black text-white' : 'bg-surface-alt border border-border text-black'
             }`}>
-              {msg.role === 'agent' ? (
-                <Bot className="w-4 h-4 text-white" />
-              ) : (
-                <User className="w-4 h-4 text-gray-600" />
-              )}
+              {msg.role === 'agent' ? 'AI' : 'U'}
             </div>
-            
-            <div className={`max-w-[80%] space-y-2 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-              <div className={`px-4 py-3 rounded-2xl ${
+            <div className={`max-w-[80%] space-y-1.5 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+              <div className={`px-3 py-2 text-sm ${
                 msg.role === 'agent'
-                  ? 'bg-gray-50 text-gray-800 rounded-tl-sm'
-                  : 'bg-gradient-to-r from-primary to-secondary text-white rounded-tr-sm'
+                  ? 'bg-surface-alt border border-border text-black'
+                  : 'bg-black text-white'
               }`}>
-                <p className="text-sm whitespace-pre-line font-medium">{msg.content}</p>
+                <p className="whitespace-pre-line leading-relaxed">{msg.content}</p>
               </div>
-              
               {msg.actions && msg.actions.length > 0 && (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {msg.actions.map((action, idx) => (
                     <button
                       key={idx}
                       onClick={() => handleAction(action)}
-                      className="px-3 py-1.5 bg-white border-2 border-primary/20 rounded-xl text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all transform hover:scale-105 flex items-center gap-1"
+                      className="px-2 py-1 bg-surface border border-border text-xs font-medium text-black hover:bg-black hover:text-white transition-colors"
                     >
-                      {action.type === 'analyze' && <Sparkles className="w-3 h-3" />}
-                      {action.type === 'pay' && <Zap className="w-3 h-3" />}
-                      {action.type === 'rebalance' && <Wallet className="w-3 h-3" />}
-                      {action.type === 'explore' && <Heart className="w-3 h-3" />}
                       {action.label}
                     </button>
                   ))}
@@ -172,41 +155,33 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
             </div>
           </div>
         ))}
-        
         {isTyping && (
-          <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-              <Bot className="w-4 h-4 text-white" />
-            </div>
-            <div className="bg-gray-50 px-4 py-3 rounded-2xl rounded-tl-sm">
-              <div className="flex gap-1">
-                <div className="w-2 h-2 rounded-full bg-primary animate-bounce" />
-                <div className="w-2 h-2 rounded-full bg-secondary animate-bounce" style={{ animationDelay: '0.2s' }} />
-                <div className="w-2 h-2 rounded-full bg-cute-dark animate-bounce" style={{ animationDelay: '0.4s' }} />
-              </div>
+          <div className="flex gap-2">
+            <span className="w-6 h-6 bg-black text-white flex items-center justify-center text-[10px] font-mono font-bold">AI</span>
+            <div className="bg-surface-alt border border-border px-3 py-2 text-xs text-muted">
+              Thinking<span className="terminal-cursor">_</span>
             </div>
           </div>
         )}
-        
         <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-gray-100 bg-white">
+      <div className="p-3 border-t border-border bg-surface">
         <div className="flex gap-2">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Ask your agent anything..."
-            className="flex-1 px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-2xl text-sm text-black placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+            placeholder="Ask anything..."
+            className="flex-1 px-3 py-2 bg-surface-alt border border-border text-sm text-black placeholder-muted focus:outline-none focus:border-black transition-colors"
           />
           <button
             onClick={handleSend}
-            className="px-4 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-2xl hover:shadow-lg transition-all transform hover:scale-105"
+            className="px-3 py-2 bg-black text-white hover:bg-gray-800 transition-colors"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-3 h-3" />
           </button>
         </div>
       </div>

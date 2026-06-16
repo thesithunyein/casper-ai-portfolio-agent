@@ -1,166 +1,104 @@
 'use client'
 
 import { AIAnalysis } from '@/lib/casper'
-import { Brain, AlertTriangle, Target, Lightbulb, Sparkles, Heart, Star, Zap, Link2, ExternalLink, Activity } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 
 interface AIAnalysisProps {
   analysis: AIAnalysis
 }
 
 export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
+  const sourceLabel =
+    analysis.analysisSource === 'openai'
+      ? 'OpenAI GPT-4o'
+      : analysis.analysisSource === 'claude'
+        ? 'Claude 3.5 Sonnet'
+        : 'Heuristic fallback'
+
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Summary Card */}
-      <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
-            <Brain className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-black">AI Analysis</h2>
-              <Sparkles className="w-4 h-4 text-cute-dark animate-pulse" />
-            </div>
-            <p className="text-gray-600 text-sm font-semibold">
-              {analysis.analysisSource === 'openai'
-                ? 'Portfolio summary by OpenAI GPT-4o'
-                : analysis.analysisSource === 'claude'
-                  ? 'Portfolio summary by Claude 3.5 Sonnet'
-                  : 'Demo mode — set OPENAI_API_KEY or ANTHROPIC_API_KEY for live AI'}
-            </p>
-          </div>
+    <div className="space-y-4 animate-fade-in">
+      {/* Summary */}
+      <div className="bg-surface border border-border p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-black">Analysis</h2>
+          <span className="text-xs font-mono text-muted bg-surface-alt border border-border px-1.5 py-0.5">{sourceLabel}</span>
         </div>
-        <p className="text-gray-800 leading-relaxed text-lg">{analysis.summary}</p>
+        <p className="text-sm text-black leading-relaxed">{analysis.summary}</p>
       </div>
 
       {/* Risk Assessment */}
-      <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center shadow-lg">
-            <AlertTriangle className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-xl font-bold text-black">Risk Assessment</h3>
-              <Heart className="w-4 h-4 text-cute-dark animate-pulse" />
-            </div>
-            <p className="text-gray-600 text-sm font-semibold">Current portfolio risk profile</p>
-          </div>
-        </div>
-        <p className="text-gray-800 leading-relaxed">{analysis.riskAssessment}</p>
+      <div className="bg-surface border border-border p-4">
+        <h2 className="text-sm font-semibold text-black mb-2">Risk Assessment</h2>
+        <p className="text-sm text-black leading-relaxed">{analysis.riskAssessment}</p>
       </div>
 
       {/* Recommendations */}
-      <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-400 to-primary flex items-center justify-center shadow-lg">
-            <Lightbulb className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-xl font-bold text-black">Recommendations</h3>
-              <Star className="w-4 h-4 text-cute-dark animate-bounce" />
-            </div>
-            <p className="text-gray-600 text-sm font-semibold">AI-generated actionable insights</p>
-          </div>
-        </div>
-
-        <div className="space-y-3">
+      <div className="bg-surface border border-border p-4">
+        <h2 className="text-sm font-semibold text-black mb-3">Recommendations</h2>
+        <div className="space-y-2">
           {analysis.recommendations.map((rec, idx) => (
-            <div
-              key={idx}
-              className="flex gap-4 p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 hover:border-cute/30 hover:bg-white transition-all hover:shadow-md"
-            >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
-                <span className="text-xs font-mono text-white font-bold">{idx + 1}</span>
-              </div>
-              <p className="text-gray-800 leading-relaxed">{rec}</p>
+            <div key={idx} className="flex gap-3 p-3 bg-surface-alt border border-border">
+              <span className="flex-shrink-0 w-5 h-5 bg-black text-white flex items-center justify-center text-[10px] font-mono font-bold mt-0.5">{idx + 1}</span>
+              <p className="text-sm text-black leading-relaxed">{rec}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Rebalancing */}
-      <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
-            <Target className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-xl font-bold text-black">Rebalancing Suggestion</h3>
-              <Zap className="w-4 h-4 text-cute-dark animate-pulse" />
-            </div>
-            <p className="text-gray-600 text-sm font-semibold">Optimal target allocation</p>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <div className="p-4 rounded-2xl bg-gray-50 border-2 border-gray-100">
-            <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">Action</p>
-            <p className="text-black font-bold">{analysis.rebalancingSuggestion.action}</p>
+      <div className="bg-surface border border-border p-4">
+        <h2 className="text-sm font-semibold text-black mb-3">Rebalancing</h2>
+        <div className="space-y-3">
+          <div className="p-3 bg-surface-alt border border-border">
+            <p className="text-[10px] font-mono text-muted uppercase mb-1">Action</p>
+            <p className="text-sm text-black font-medium">{analysis.rebalancingSuggestion.action}</p>
           </div>
 
           <div>
-            <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-4 font-semibold">Target Allocation</p>
-            <div className="space-y-3">
+            <p className="text-[10px] font-mono text-muted uppercase mb-2">Target Allocation</p>
+            <div className="space-y-2">
               {Object.entries(analysis.rebalancingSuggestion.targetAllocation).map(([asset, percentage]) => (
-                <div key={asset} className="flex items-center gap-4">
-                  <span className="text-black font-bold w-16">{asset}</span>
-                  <div className="flex-1 bg-gray-200 rounded-full h-3 overflow-hidden">
-                    <div
-                      className="bg-gradient-to-r from-primary via-cute-dark to-secondary h-full rounded-full transition-all"
-                      style={{ width: `${percentage}%` }}
-                    />
+                <div key={asset} className="flex items-center gap-3">
+                  <span className="text-sm text-black font-medium w-12">{asset}</span>
+                  <div className="flex-1 bg-surface-alt border border-border h-2 overflow-hidden">
+                    <div className="bg-black h-full" style={{ width: `${percentage}%` }} />
                   </div>
-                  <span className="text-primary font-mono w-12 text-right font-bold">{percentage}%</span>
+                  <span className="text-xs font-mono w-10 text-right">{percentage}%</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-gray-50 border-2 border-gray-100">
-            <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">Reasoning</p>
-            <p className="text-gray-800 leading-relaxed">{analysis.rebalancingSuggestion.reasoning}</p>
+          <div className="p-3 bg-surface-alt border border-border">
+            <p className="text-[10px] font-mono text-muted uppercase mb-1">Reasoning</p>
+            <p className="text-sm text-black leading-relaxed">{analysis.rebalancingSuggestion.reasoning}</p>
           </div>
         </div>
       </div>
 
       {/* On-chain Record */}
       {analysis.onchain && (
-        <div className="bg-white border-2 border-green-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-400 flex items-center justify-center shadow-lg">
-              <Link2 className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-xl font-bold text-black">Recorded On-Chain</h3>
-                <Sparkles className="w-4 h-4 text-green-500 animate-pulse" />
-              </div>
-              <p className="text-gray-600 text-sm font-semibold">
-                The agent stored this analysis in the PortfolioAgent contract on{' '}
-                {analysis.onchain.network === 'casper-test' ? 'Casper Testnet' : 'Casper Mainnet'}
-              </p>
-            </div>
+        <div className="bg-surface border border-green-600/30 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-black">On-Chain Record</h2>
+            <span className="text-[10px] font-mono text-muted">{analysis.onchain.network}</span>
           </div>
-
-          <div className="space-y-3">
-            <div className="p-4 rounded-2xl bg-green-50 border-2 border-green-100">
-              <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">Transaction Hash</p>
+          <div className="space-y-2">
+            <div className="p-3 bg-surface-alt border border-border">
+              <p className="text-[10px] font-mono text-muted uppercase mb-1">Transaction</p>
               <a
                 href={analysis.onchain.explorerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-green-700 font-mono text-sm break-all hover:underline"
+                className="inline-flex items-center gap-1.5 text-green-700 font-mono text-xs break-all hover:underline"
               >
                 {analysis.onchain.transactionHash}
-                <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                <ExternalLink className="w-3 h-3 flex-shrink-0" />
               </a>
             </div>
-            <div className="p-4 rounded-2xl bg-gray-50 border-2 border-gray-100">
-              <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">Entry Point</p>
-              <p className="text-black font-mono text-sm">
+            <div className="p-3 bg-surface-alt border border-border">
+              <p className="text-[10px] font-mono text-muted uppercase mb-1">Entry Point</p>
+              <p className="text-xs font-mono text-black">
                 {analysis.onchain.entryPoint} @ {analysis.onchain.contractPackageHash.slice(0, 20)}…
               </p>
             </div>
@@ -170,38 +108,24 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
 
       {/* Autonomous Action */}
       {analysis.autonomousAction && (
-        <div className="bg-white border-2 border-purple-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg">
-              <Activity className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-xl font-bold text-black">Autonomous Action</h3>
-                <Zap className="w-4 h-4 text-purple-500 animate-pulse" />
-              </div>
-              <p className="text-gray-600 text-sm font-semibold">
-                The agent autonomously executed a rebalancing transfer on Casper Testnet
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <div className="p-4 rounded-2xl bg-purple-50 border-2 border-purple-100">
-              <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">Transaction Hash</p>
+        <div className="bg-surface border border-purple-600/30 p-4">
+          <h2 className="text-sm font-semibold text-black mb-3">Autonomous Action</h2>
+          <div className="space-y-2">
+            <div className="p-3 bg-surface-alt border border-border">
+              <p className="text-[10px] font-mono text-muted uppercase mb-1">Transaction</p>
               <a
                 href={analysis.autonomousAction.explorerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-purple-700 font-mono text-sm break-all hover:underline"
+                className="inline-flex items-center gap-1.5 text-purple-700 font-mono text-xs break-all hover:underline"
               >
                 {analysis.autonomousAction.transactionHash}
-                <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                <ExternalLink className="w-3 h-3 flex-shrink-0" />
               </a>
             </div>
-            <div className="p-4 rounded-2xl bg-gray-50 border-2 border-gray-100">
-              <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">Action</p>
-              <p className="text-black font-mono text-sm">Native CSPR transfer (1 CSPR)</p>
+            <div className="p-3 bg-surface-alt border border-border">
+              <p className="text-[10px] font-mono text-muted uppercase mb-1">Action</p>
+              <p className="text-xs font-mono text-black">Native CSPR transfer (1 CSPR)</p>
             </div>
           </div>
         </div>

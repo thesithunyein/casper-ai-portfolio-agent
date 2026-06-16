@@ -15,7 +15,6 @@ import { LoadingState } from '@/components/LoadingState'
 import { ErrorState } from '@/components/ErrorState'
 import { Logo } from '@/components/Logo'
 import { AgentChat } from '@/components/AgentChat'
-import { Brain, Shield, Sparkles, Heart, Star, Zap, Rainbow, Bot, Link2 } from 'lucide-react'
 
 export default function Home() {
   const {
@@ -101,219 +100,151 @@ export default function Home() {
 
   if (!walletAddress) {
     return (
-      <main className="min-h-screen bg-white relative overflow-hidden">
-        {/* Cool Animated Background */}
-        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-          {/* Gradient mesh background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-50 via-white to-blue-50" />
-          
-          {/* Floating gradient orbs */}
-          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-primary/20 to-secondary/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-secondary/15 to-primary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-          <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-gradient-to-br from-primary/10 to-cyan-200/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
-          
-          {/* Animated floating particles */}
-          <div className="absolute top-20 left-10 w-2 h-2 bg-primary/30 rounded-full animate-bounce" style={{ animationDuration: '3s' }} />
-          <div className="absolute top-40 right-20 w-1.5 h-1.5 bg-secondary/40 rounded-full animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }} />
-          <div className="absolute bottom-32 left-1/3 w-2 h-2 bg-primary/25 rounded-full animate-bounce" style={{ animationDuration: '5s', animationDelay: '2s' }} />
-          <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-secondary/30 rounded-full animate-bounce" style={{ animationDuration: '3.5s', animationDelay: '0.5s' }} />
-          <div className="absolute bottom-1/4 right-1/4 w-2.5 h-2.5 bg-primary/20 rounded-full animate-bounce" style={{ animationDuration: '6s', animationDelay: '1.5s' }} />
-          <div className="absolute top-1/4 left-1/2 w-1.5 h-1.5 bg-cyan-400/30 rounded-full animate-bounce" style={{ animationDuration: '4.5s', animationDelay: '3s' }} />
-          
-          {/* Diagonal gradient lines */}
-          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-bl from-primary/[0.03] to-transparent transform rotate-12" />
-          <div className="absolute bottom-0 left-0 w-1/3 h-full bg-gradient-to-tr from-secondary/[0.03] to-transparent transform -rotate-12" />
-        </div>
-
+      <main className="min-h-screen bg-[#fafafa]">
         {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-200/60 shadow-soft animate-fade-in">
-          <div className="max-w-7xl mx-auto px-4 md:px-8 py-3.5 flex items-center justify-between">
-            <div className="flex items-center gap-2.5 group cursor-pointer transition-spring hover:opacity-80">
-              <Logo className="w-8 h-8" />
-              <span className="font-extrabold text-lg text-black tracking-tight">Casper Agent</span>
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#fafafa] border-b border-border">
+          <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity" onClick={reset}>
+              <Logo className="w-6 h-6" />
+              <span className="font-semibold text-sm text-black tracking-tight">Casper Agent</span>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2">
-              <a href="#features" className="hidden sm:block px-3 py-2 text-sm font-semibold text-gray-500 hover:text-black rounded-full hover:bg-gray-100 transition-spring">Features</a>
-              <a href="#how-it-works" className="hidden sm:block px-3 py-2 text-sm font-semibold text-gray-500 hover:text-black rounded-full hover:bg-gray-100 transition-spring">How It Works</a>
+            <div className="flex items-center gap-4">
+              <a href="#features" className="hidden sm:block text-sm font-medium text-muted hover:text-black transition-colors">Features</a>
+              <a href="#how-it-works" className="hidden sm:block text-sm font-medium text-muted hover:text-black transition-colors">How It Works</a>
               <button
                 onClick={() => {
                   const element = document.getElementById('wallet-section')
                   element?.scrollIntoView({ behavior: 'smooth' })
                 }}
-                className="ml-1 px-5 py-2.5 bg-black text-white rounded-full text-sm font-semibold transition-spring hover:scale-[1.03] hover:bg-gray-900 active:scale-95"
+                className="px-3 py-1.5 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors"
               >
-                Get Started
+                Connect
               </button>
             </div>
           </div>
         </nav>
 
-        {/* Hero Section */}
-        <section className="relative z-10 pt-32 pb-20 px-4 md:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* Hackathon Badge */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 bg-white/80 backdrop-blur border border-gray-200/80 rounded-full mb-8 shadow-soft animate-rise" style={{ animationDelay: '0.05s' }}>
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 animate-ping" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
-              </span>
-              <span className="text-sm font-bold text-gray-800">Casper Agentic Buildathon 2026</span>
-              <span className="text-xs font-semibold text-gray-400">·</span>
-              <span className="text-xs font-semibold text-gray-500">$150,000 Prize Pool</span>
-            </div>
-            <div className="relative inline-block mb-6 pb-4">
-              <Sparkles className="absolute -top-4 -left-8 w-6 h-6 text-yellow-400/80 animate-float" style={{ animationDelay: '0s' }} />
-              <Sparkles className="absolute -top-2 -right-6 w-5 h-5 text-pink-400/80 animate-float" style={{ animationDelay: '0.8s' }} />
-              <Star className="absolute top-1/2 -left-12 w-4 h-4 text-cyan-400/70 animate-pulse" />
-              <Heart className="absolute bottom-4 -right-8 w-5 h-5 text-red-400/70 animate-float" style={{ animationDelay: '1.2s' }} />
-              <h1 className="text-5xl md:text-[5.5rem] font-extrabold text-black mb-2 leading-[1.05] tracking-tight animate-rise" style={{ animationDelay: '0.12s' }}>
-                Your portfolio agent
+        {/* Hero Section — left-aligned, dense, functional */}
+        <section className="pt-24 pb-16 px-4 md:px-6">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
+            <div className="pt-8">
+              <div className="inline-flex items-center gap-2 px-2 py-1 bg-white border border-border text-xs font-mono text-muted mb-6">
+                <span className="w-1.5 h-1.5 bg-green-500" />
+                Casper Agentic Buildathon 2026 — $150K Prize Pool
+              </div>
+              <h1 className="text-4xl md:text-5xl font-semibold text-black mb-4 leading-tight">
+                Autonomous portfolio agent for Casper Network
               </h1>
-              <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary via-cute-dark to-secondary bg-clip-text text-transparent leading-[1.15] tracking-tight pb-2 animate-rise" style={{ animationDelay: '0.2s' }}>
-                Always watching, always caring
-              </h2>
-            </div>
-            <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed animate-rise" style={{ animationDelay: '0.28s' }}>
-              AI-powered portfolio analysis with cute bear-powered recommendations for the Casper ecosystem
-            </p>
-            <div className="animate-rise" style={{ animationDelay: '0.36s' }}>
-              <button
-                onClick={() => {
-                  const element = document.getElementById('wallet-section')
-                  element?.scrollIntoView({ behavior: 'smooth' })
-                }}
-                className="group px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white rounded-full font-bold text-lg shadow-glow-primary transition-spring hover:scale-[1.04] active:scale-95 flex items-center gap-2.5 mx-auto"
-              >
-                <Zap className="w-5 h-5 transition-spring group-hover:rotate-12" />
-                Start Analyzing
-              </button>
+              <p className="text-base text-muted mb-8 max-w-md leading-relaxed">
+                AI-powered analysis with autonomous on-chain rebalancing. The agent reads your portfolio, thinks, and acts — all on Casper Testnet.
+              </p>
+              <div className="flex flex-wrap items-center gap-4 mb-8">
+                <button
+                  onClick={() => {
+                    const element = document.getElementById('wallet-section')
+                    element?.scrollIntoView({ behavior: 'smooth' })
+                  }}
+                  className="px-4 py-2 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+                >
+                  Start Analyzing
+                </button>
+                <a
+                  href="https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  View contract →
+                </a>
+              </div>
+              <div className="flex items-center gap-4 text-xs font-mono text-muted">
+                <span>Live on Testnet</span>
+                <span className="text-border">|</span>
+                <a href="https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">Proof of write →</a>
+              </div>
             </div>
 
-            {/* Live on-chain trust badges */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 animate-rise" style={{ animationDelay: '0.44s' }}>
-              <a
-                href="https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-bold text-green-700 shadow-soft transition-spring hover:scale-[1.03] hover:border-green-300"
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-                </span>
-                Live on Casper Testnet
-              </a>
-              <a
-                href="https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-bold text-cute-dark shadow-soft transition-spring hover:scale-[1.03] hover:border-cute"
-              >
-                <Link2 className="w-4 h-4" />
-                View on-chain proof
-              </a>
+            {/* Terminal activity log — the unique human-feeling element */}
+            <div className="bg-black text-green-400 p-4 font-mono text-xs leading-relaxed border border-gray-800 mt-8 md:mt-0">
+              <div className="flex items-center gap-2 mb-3 text-gray-500 border-b border-gray-800 pb-2">
+                <span>agent.log</span>
+                <span className="ml-auto">_</span>
+              </div>
+              <div className="space-y-1">
+                <p><span className="text-gray-500">14:32:01</span> <span className="text-blue-400">INFO</span> Portfolio fetch initiated</p>
+                <p><span className="text-gray-500">14:32:02</span> <span className="text-blue-400">INFO</span> Connected to CSPR.cloud API</p>
+                <p><span className="text-gray-500">14:32:03</span> <span className="text-yellow-400">WARN</span> CSPR concentration 78% — above threshold</p>
+                <p><span className="text-gray-500">14:32:04</span> <span className="text-blue-400">INFO</span> AI analysis: OpenAI GPT-4o</p>
+                <p><span className="text-gray-500">14:32:05</span> <span className="text-green-400">OK</span> store_analysis recorded on-chain</p>
+                <p><span className="text-gray-500">14:32:06</span> <span className="text-purple-400">ACT</span> Autonomous rebalance executed</p>
+                <p><span className="text-gray-500">14:32:07</span> <span className="text-green-400">OK</span> Native transfer: 1 CSPR → user</p>
+                <p className="text-gray-600 mt-2"><span className="terminal-cursor">_</span></p>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Features Section */}
-        <section id="features" className="relative z-10 py-20 px-4 md:px-8 bg-gray-50">
+        <section id="features" className="py-16 px-4 md:px-6 border-t border-border">
           <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col items-center text-center mb-14">
-              <div className="flex items-center justify-center gap-2.5 mb-3">
-                <Rainbow className="w-7 h-7 text-cute-dark animate-float" />
-                <h2 className="text-3xl md:text-5xl font-extrabold text-black tracking-tight">Cute Features</h2>
-                <Rainbow className="w-7 h-7 text-cute-dark animate-float" style={{ animationDelay: '0.6s' }} />
+            <h2 className="text-2xl font-semibold text-black mb-2">Capabilities</h2>
+            <p className="text-sm text-muted mb-8">What the agent does on your behalf.</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-surface border border-border p-4 hover:border-border-strong transition-colors">
+                <div className="w-8 h-8 bg-black text-white flex items-center justify-center text-xs font-mono font-bold mb-3">AI</div>
+                <h3 className="text-sm font-semibold text-black mb-1">Portfolio Analysis</h3>
+                <p className="text-xs text-muted leading-relaxed">OpenAI GPT-4o analyzes holdings and generates risk assessments in real-time.</p>
               </div>
-              <p className="text-gray-500 text-lg max-w-xl">Powerful agentic AI, wrapped in a friendly experience.</p>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="group bg-white p-6 rounded-3xl border border-gray-100 shadow-soft transition-spring hover:-translate-y-1.5 hover:shadow-float">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary mb-4 flex items-center justify-center shadow-soft transition-spring group-hover:scale-110 group-hover:-rotate-3">
-                  <Brain className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-black mb-1">AI Analysis</h3>
-                <p className="text-gray-600 text-sm">Claude AI analyzes your portfolio and provides actionable insights in seconds</p>
+              <div className="bg-surface border border-border p-4 hover:border-border-strong transition-colors">
+                <div className="w-8 h-8 bg-black text-white flex items-center justify-center text-xs font-mono font-bold mb-3">AG</div>
+                <h3 className="text-sm font-semibold text-black mb-1">Agent Chat</h3>
+                <p className="text-xs text-muted leading-relaxed">Conversational interface for portfolio queries and agent-directed actions.</p>
               </div>
-              <div className="group bg-white p-6 rounded-3xl border border-gray-100 shadow-soft transition-spring hover:-translate-y-1.5 hover:shadow-float">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary to-primary mb-4 flex items-center justify-center shadow-soft transition-spring group-hover:scale-110 group-hover:-rotate-3">
-                  <Bot className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-black mb-1">Agent Chat</h3>
-                <p className="text-gray-600 text-sm">Conversational AI agent that answers questions and takes actions for your portfolio</p>
+              <div className="bg-surface border border-border p-4 hover:border-border-strong transition-colors">
+                <div className="w-8 h-8 bg-black text-white flex items-center justify-center text-xs font-mono font-bold mb-3">$0</div>
+                <h3 className="text-sm font-semibold text-black mb-1">x402 Micropayments</h3>
+                <p className="text-xs text-muted leading-relaxed">Agent pays per-analysis fees via Casper&apos;s x402 payment protocol.</p>
               </div>
-              <div className="group bg-white p-6 rounded-3xl border border-gray-100 shadow-soft transition-spring hover:-translate-y-1.5 hover:shadow-float">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cute-dark to-secondary mb-4 flex items-center justify-center shadow-soft transition-spring group-hover:scale-110 group-hover:-rotate-3">
-                  <Zap className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-black mb-1">x402 Payments</h3>
-                <p className="text-gray-600 text-sm">Agent pays 0.01 CSPR per analysis via Casper&apos;s micropayment protocol</p>
-              </div>
-              <div className="group bg-white p-6 rounded-3xl border border-gray-100 shadow-soft transition-spring hover:-translate-y-1.5 hover:shadow-float">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-400 to-orange-400 mb-4 flex items-center justify-center shadow-soft transition-spring group-hover:scale-110 group-hover:-rotate-3">
-                  <Shield className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-black mb-1">On-Chain Storage</h3>
-                <p className="text-gray-600 text-sm">Analysis results stored on Casper Testnet via Odra smart contract</p>
+              <div className="bg-surface border border-border p-4 hover:border-border-strong transition-colors">
+                <div className="w-8 h-8 bg-black text-white flex items-center justify-center text-xs font-mono font-bold mb-3">CH</div>
+                <h3 className="text-sm font-semibold text-black mb-1">On-Chain Storage</h3>
+                <p className="text-xs text-muted leading-relaxed">Analysis records persisted to Casper Testnet via Odra smart contract.</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* How It Works */}
-        <section id="how-it-works" className="relative z-10 py-20 px-4 md:px-8">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-16 text-center">How It Works</h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition duration-300" />
-                <div className="relative bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-primary/50 transition duration-300">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xl">1</div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-black mb-2">Connect Wallet</h3>
-                      <p className="text-gray-600 leading-relaxed">Enter your Casper wallet address securely. No private keys needed, just your public address.</p>
-                    </div>
-                  </div>
+        <section id="how-it-works" className="py-16 px-4 md:px-6 border-t border-border">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl font-semibold text-black mb-8">How It Works</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-surface border border-border p-5 flex items-start gap-4 hover:border-border-strong transition-colors">
+                <span className="flex-shrink-0 w-8 h-8 bg-surface-alt border border-border flex items-center justify-center text-sm font-mono font-semibold">01</span>
+                <div>
+                  <h3 className="text-sm font-semibold text-black mb-1">Connect Wallet</h3>
+                  <p className="text-xs text-muted leading-relaxed">Enter your Casper public key. No private keys required.</p>
                 </div>
               </div>
-
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition duration-300" />
-                <div className="relative bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-primary/50 transition duration-300">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xl">2</div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-black mb-2">Fetch Portfolio</h3>
-                      <p className="text-gray-600 leading-relaxed">We retrieve your real-time balance data directly from the Casper blockchain via CSPR.cloud API in seconds.</p>
-                    </div>
-                  </div>
+              <div className="bg-surface border border-border p-5 flex items-start gap-4 hover:border-border-strong transition-colors">
+                <span className="flex-shrink-0 w-8 h-8 bg-surface-alt border border-border flex items-center justify-center text-sm font-mono font-semibold">02</span>
+                <div>
+                  <h3 className="text-sm font-semibold text-black mb-1">Fetch Balances</h3>
+                  <p className="text-xs text-muted leading-relaxed">Real-time portfolio data from CSPR.cloud API.</p>
                 </div>
               </div>
-
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition duration-300" />
-                <div className="relative bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-primary/50 transition duration-300">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xl">3</div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-black mb-2">AI Analysis</h3>
-                      <p className="text-gray-600 leading-relaxed">Claude AI analyzes your holdings and generates comprehensive insights in real-time.</p>
-                    </div>
-                  </div>
+              <div className="bg-surface border border-border p-5 flex items-start gap-4 hover:border-border-strong transition-colors">
+                <span className="flex-shrink-0 w-8 h-8 bg-surface-alt border border-border flex items-center justify-center text-sm font-mono font-semibold">03</span>
+                <div>
+                  <h3 className="text-sm font-semibold text-black mb-1">AI Analysis</h3>
+                  <p className="text-xs text-muted leading-relaxed">GPT-4o generates risk profile and rebalancing suggestions.</p>
                 </div>
               </div>
-
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition duration-300" />
-                <div className="relative bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-primary/50 transition duration-300">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xl">4</div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-black mb-2">Get Recommendations</h3>
-                      <p className="text-gray-600 leading-relaxed">Receive actionable recommendations to optimize your portfolio and manage risk effectively.</p>
-                    </div>
-                  </div>
+              <div className="bg-surface border border-border p-5 flex items-start gap-4 hover:border-border-strong transition-colors">
+                <span className="flex-shrink-0 w-8 h-8 bg-surface-alt border border-border flex items-center justify-center text-sm font-mono font-semibold">04</span>
+                <div>
+                  <h3 className="text-sm font-semibold text-black mb-1">On-Chain Action</h3>
+                  <p className="text-xs text-muted leading-relaxed">Agent records analysis and optionally executes rebalancing transfers.</p>
                 </div>
               </div>
             </div>
@@ -321,31 +252,27 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section id="wallet-section" className="relative z-10 py-20 px-4 md:px-8 bg-gray-50">
-          <div className="max-w-2xl mx-auto">
-            <div className="flex items-center justify-center gap-2 mb-8">
-              <Heart className="w-6 h-6 text-cute-dark animate-pulse" />
-              <h2 className="text-4xl font-bold text-black text-center">Ready to Analyze?</h2>
-              <Heart className="w-6 h-6 text-cute-dark animate-pulse" style={{ animationDelay: '0.5s' }} />
-            </div>
+        <section id="wallet-section" className="py-16 px-4 md:px-6 border-t border-border">
+          <div className="max-w-md">
+            <h2 className="text-2xl font-semibold text-black mb-2">Connect Wallet</h2>
+            <p className="text-sm text-muted mb-6">Enter your Casper address to begin analysis.</p>
             <WalletConnect />
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="relative z-10 bg-gradient-to-r from-gray-900 to-gray-800 text-white py-12 px-4 md:px-8 rounded-t-3xl">
-          <div className="max-w-6xl mx-auto text-center">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Heart className="w-5 h-5 text-cute-dark animate-pulse" />
-              <p className="text-gray-300 text-sm font-semibold">Casper Agentic Buildathon 2026 Submission</p>
-              <Heart className="w-5 h-5 text-cute-dark animate-pulse" style={{ animationDelay: '0.5s' }} />
+        <footer className="bg-accent text-white py-8 px-4 md:px-6">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-medium text-gray-300">Casper Agentic Buildathon 2026</p>
+              <p className="text-xs text-gray-500 mt-1">Powered by OpenAI, x402, and Casper Network</p>
             </div>
-            <p className="text-gray-500 text-xs">Powered by Claude AI, x402, and Casper Network</p>
-            <div className="mt-4 flex items-center justify-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <div className="w-2 h-2 rounded-full bg-secondary animate-pulse" style={{ animationDelay: '0.2s' }} />
-              <div className="w-2 h-2 rounded-full bg-cute-dark animate-pulse" style={{ animationDelay: '0.4s' }} />
-              <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" style={{ animationDelay: '0.6s' }} />
+            <div className="flex items-center gap-3 text-xs font-mono text-gray-500">
+              <span>Testnet</span>
+              <span className="text-gray-700">|</span>
+              <a href="https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors">Contract</a>
+              <span className="text-gray-700">|</span>
+              <a href="https://github.com/thesithunyein/casper-ai-portfolio-agent" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors">GitHub</a>
             </div>
           </div>
         </footer>
@@ -354,58 +281,41 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-white relative overflow-hidden">
-      {/* Cute Animated Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 right-0 w-96 h-96 bg-cute/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-20 right-20 w-4 h-4 bg-cute rounded-full animate-float" />
-        <div className="absolute bottom-40 left-20 w-3 h-3 bg-primary/40 rounded-full animate-float" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/3 left-10 w-2 h-2 bg-secondary/40 rounded-full animate-float" style={{ animationDelay: '2s' }} />
-      </div>
-
+    <main className="min-h-screen bg-[#fafafa]">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 animate-fade-in">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 group cursor-pointer hover:opacity-80 transition" onClick={reset}>
-            <Logo className="w-8 h-8" />
-            <span className="font-bold text-lg text-black">Casper Agent</span>
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#fafafa] border-b border-border">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity" onClick={reset}>
+            <Logo className="w-6 h-6" />
+            <span className="font-semibold text-sm text-black tracking-tight">Casper Agent</span>
           </div>
           <button
             onClick={reset}
-            className="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-xl text-sm font-bold hover:shadow-lg transition transform hover:scale-105"
+            className="px-3 py-1.5 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors"
           >
             Back to Home
           </button>
         </div>
       </nav>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 py-24">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 pt-16 pb-12">
         {!portfolio ? (
-          <div className="max-w-md mx-auto mt-12">
-            <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all">
-              <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
-                  <Sparkles className="w-8 h-8 text-white" />
-                </div>
+          <div className="max-w-md mt-8">
+            <div className="bg-surface border border-border p-5">
+              <div className="mb-4">
+                <p className="text-xs font-mono text-muted uppercase mb-1">Connected Wallet</p>
+                <p className="font-mono text-xs text-black break-all bg-surface-alt border border-border p-2">{walletAddress}</p>
               </div>
-              <div className="mb-6 text-center">
-                <p className="text-sm text-gray-500 uppercase tracking-wider mb-2 font-semibold">Connected Wallet</p>
-                <p className="text-primary font-mono text-sm break-all bg-gray-50 rounded-xl p-3">{walletAddress}</p>
-              </div>
-              
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <button
                   onClick={handleAnalyze}
-                  className="w-full px-6 py-4 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-2xl hover:shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+                  className="w-full px-4 py-2.5 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors"
                 >
-                  <Zap className="w-5 h-5" />
                   Analyze Portfolio
                 </button>
                 <button
                   onClick={reset}
-                  className="w-full px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-2xl hover:bg-gray-200 transition-all border-2 border-gray-200"
+                  className="w-full px-4 py-2.5 bg-surface-alt text-black text-sm font-medium border border-border hover:border-border-strong transition-colors"
                 >
                   Disconnect
                 </button>
@@ -413,31 +323,26 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <div className="space-y-8">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="w-6 h-6 text-cute-dark animate-bounce" />
-                  <h1 className="text-4xl font-bold text-black">Analysis Results</h1>
-                  <Sparkles className="w-6 h-6 text-cute-dark animate-bounce" style={{ animationDelay: '0.5s' }} />
-                </div>
-                <p className="text-gray-600 text-lg">Portfolio overview and AI insights</p>
+          <div className="space-y-6 mt-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-border">
+              <div>
+                <h1 className="text-xl font-semibold text-black">Analysis Results</h1>
+                <p className="text-sm text-muted">Portfolio overview and AI insights</p>
               </div>
               <button
                 onClick={reset}
-                className="px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-2xl hover:shadow-lg transition-all font-bold transform hover:scale-105 flex items-center gap-2"
+                className="px-3 py-1.5 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors"
               >
-                <Star className="w-4 h-4" />
                 New Analysis
               </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-6">
                 <PortfolioDisplay portfolio={portfolio} />
                 {analysis && <AIAnalysisComponent analysis={analysis} />}
               </div>
-              <div className="lg:sticky lg:top-24">
+              <div className="lg:sticky lg:top-20">
                 <AgentChat 
                   portfolio={portfolio} 
                   analysis={analysis} 
