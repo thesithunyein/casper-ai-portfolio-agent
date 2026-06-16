@@ -4,17 +4,27 @@ import { useState, useEffect } from 'react'
 import { useAppStore } from '@/lib/store'
 import { validateCasperAddress } from '@/lib/casper'
 
-type WalletProvider = {
-  isConnected: () => Promise<boolean>
-  requestConnection: () => Promise<void>
-  getActivePublicKey: () => Promise<string>
-  disconnectFromSite: () => Promise<void>
+interface CasperWalletProvider {
+  isConnected?: () => Promise<boolean>
+  requestConnection?: () => Promise<void>
+  getActivePublicKey?: () => Promise<string>
+  disconnectFromSite?: () => Promise<void>
 }
 
 declare global {
   interface Window {
-    CasperWalletProvider?: WalletProvider
+    CasperWalletProvider?: CasperWalletProvider
+    casperWalletProvider?: CasperWalletProvider
   }
+}
+
+function getProvider(): CasperWalletProvider | undefined {
+  return window.CasperWalletProvider || window.casperWalletProvider
+}
+
+function isProviderAvailable(): boolean {
+  const p = getProvider()
+  return !!p && typeof p === 'object'
 }
 
 export const WalletConnect = () => {
@@ -24,18 +34,16 @@ export const WalletConnect = () => {
   const { setWalletAddress, setError } = useAppStore()
 
   useEffect(() => {
-    // Detect Casper Wallet extension
     const check = () => {
-      setHasExtension(!!window.CasperWalletProvider)
+      setHasExtension(isProviderAvailable())
     }
     check()
-    // Some extensions inject after page load
-    const timer = setTimeout(check, 1000)
+    const timer = setTimeout(check, 1500)
     return () => clearTimeout(timer)
   }, [])
 
   const handleExtensionConnect = async () => {
-    const provider = window.CasperWalletProvider
+    const provider = getProvider()
     if (!provider) {
       setError('Casper Wallet extension not found. Please install it first.')
       return
@@ -43,15 +51,31 @@ export const WalletConnect = () => {
     setConnecting(true)
     setError(null)
     try {
-      const connected = await provider.isConnected()
-      if (!connected) {
+      // Check if connected - if method doesn't exist, assume not connected
+      let isConnected = false
+      if (typeof provider.isConnected === 'function') {
+        try {
+          isConnected = await provider.isConnected()
+        } catch {
+          isConnected = false
+        }
+      }
+
+      // Request connection if not connected
+      if (!isConnected && typeof provider.requestConnection === 'function') {
         await provider.requestConnection()
       }
-      const publicKey = await provider.getActivePublicKey()
-      if (publicKey && validateCasperAddress(publicKey)) {
-        setWalletAddress(publicKey)
+
+      // Get public key
+      if (typeof provider.getActivePublicKey === 'function') {
+        const publicKey = await provider.getActivePublicKey()
+        if (publicKey && validateCasperAddress(publicKey)) {
+          setWalletAddress(publicKey)
+        } else {
+          setError('Could not get a valid public key from the wallet.')
+        }
       } else {
-        setError('Could not get a valid public key from the wallet.')
+        setError('Wallet provider does not support public key retrieval. Please connect manually.')
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Wallet connection failed'
