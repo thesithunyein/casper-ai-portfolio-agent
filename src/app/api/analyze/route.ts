@@ -2,7 +2,9 @@ import Anthropic from '@anthropic-ai/sdk'
 import type { Portfolio } from '@/lib/casper'
 import { settleX402Payment } from '@/lib/x402'
 import {
+  executeAutonomousRebalance,
   hashAnalysisSummary,
+  isAutonomousRebalanceEnabled,
   isOnChainRecordingConfigured,
   recordAnalysisOnChain,
 } from '@/lib/casper-agent'
@@ -269,6 +271,20 @@ export async function POST(request: Request) {
       onchainError = result.error
     }
 
+    // Autonomous on-chain action: when the AI recommends rebalancing, the
+    // agent autonomously executes a native CSPR transfer to the user's
+    // wallet — proving the agent doesn't just analyze, it *acts* on-chain.
+    let autonomousAction = null
+    const shouldRebalance =
+      isAutonomousRebalanceEnabled() &&
+      !/hold current allocation/i.test(analysis.rebalancingSuggestion.action)
+    if (shouldRebalance) {
+      autonomousAction = await executeAutonomousRebalance(
+        portfolio.walletAddress,
+        analysis.rebalancingSuggestion.action
+      )
+    }
+
     return Response.json(
       {
         ...analysis,
@@ -281,6 +297,7 @@ export async function POST(request: Request) {
         analysisSource,
         onchain,
         onchainError,
+        autonomousAction,
       },
       { status: 200 }
     )

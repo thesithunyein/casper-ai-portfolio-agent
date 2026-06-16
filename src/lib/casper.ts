@@ -251,4 +251,9 @@ export interface AIAnalysis {
     network: string
     entryPoint: string
   } | null
+  /** Present when the agent autonomously executed a rebalancing action */
+  autonomousAction?: {
+    transactionHash: string
+    explorerUrl: string
+  } | null
 }

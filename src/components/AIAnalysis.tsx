@@ -1,7 +1,7 @@
 'use client'
 
 import { AIAnalysis } from '@/lib/casper'
-import { Brain, AlertTriangle, Target, Lightbulb, Sparkles, Heart, Star, Zap, Link2, ExternalLink } from 'lucide-react'
+import { Brain, AlertTriangle, Target, Lightbulb, Sparkles, Heart, Star, Zap, Link2, ExternalLink, Activity } from 'lucide-react'
 
 interface AIAnalysisProps {
   analysis: AIAnalysis
@@ -163,6 +163,45 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
               <p className="text-black font-mono text-sm">
                 {analysis.onchain.entryPoint} @ {analysis.onchain.contractPackageHash.slice(0, 20)}…
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Autonomous Action */}
+      {analysis.autonomousAction && (
+        <div className="bg-white border-2 border-purple-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg">
+              <Activity className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-xl font-bold text-black">Autonomous Action</h3>
+                <Zap className="w-4 h-4 text-purple-500 animate-pulse" />
+              </div>
+              <p className="text-gray-600 text-sm font-semibold">
+                The agent autonomously executed a rebalancing transfer on Casper Testnet
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="p-4 rounded-2xl bg-purple-50 border-2 border-purple-100">
+              <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">Transaction Hash</p>
+              <a
+                href={analysis.autonomousAction.explorerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-purple-700 font-mono text-sm break-all hover:underline"
+              >
+                {analysis.autonomousAction.transactionHash}
+                <ExternalLink className="w-4 h-4 flex-shrink-0" />
+              </a>
+            </div>
+            <div className="p-4 rounded-2xl bg-gray-50 border-2 border-gray-100">
+              <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">Action</p>
+              <p className="text-black font-mono text-sm">Native CSPR transfer (1 CSPR)</p>
             </div>
           </div>
         </div>

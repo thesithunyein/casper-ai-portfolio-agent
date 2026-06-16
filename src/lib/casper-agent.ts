@@ -20,7 +20,9 @@ import {
   HttpHandler,
   KeyAlgorithm,
   PrivateKey,
+  PublicKey,
   RpcClient,
+  NativeTransferBuilder,
 } from 'casper-js-sdk'
 import {
   CASPER_CHAIN_NAME,
@@ -87,6 +89,71 @@ export const isOnChainRecordingConfigured = (): boolean =>
 /** SHA-256 content hash of the full analysis, stored on-chain for audit. */
 export const hashAnalysisSummary = (analysis: unknown): string =>
   createHash('sha256').update(JSON.stringify(analysis)).digest('hex')
+
+/** Whether autonomous rebalancing is enabled via env. */
+export const isAutonomousRebalanceEnabled = (): boolean =>
+  process.env.ENABLE_AUTONOMOUS_REBALANCE === '1' ||
+  process.env.ENABLE_AUTONOMOUS_REBALANCE === 'true'
+
+/** 1 CSPR in motes — tiny enough for demos, non-zero for a real tx. */
+const REBALANCE_AMOUNT_MOTES = 1_000_000_000
+
+/**
+ * Autonomous on-chain action: transfer a small amount of CSPR to a
+ * configured vault (or back to the user wallet) when the AI recommends
+ * rebalancing. This produces a real Casper transaction signed by the agent,
+ * proving the agent doesn't just analyze — it *acts* on-chain.
+ *
+ * Returns the transaction record, or null when not configured.
+ */
+export const executeAutonomousRebalance = async (
+  targetAddress: string,
+  note: string = 'AI rebalancing action'
+): Promise<{ transactionHash: string; explorerUrl: string } | null> => {
+  const privateKey = loadAgentPrivateKey()
+  if (!privateKey) return null
+
+  const MAX_ATTEMPTS = 3
+  let lastError: string | null = null
+
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      const targetPublicKey = PublicKey.fromHex(targetAddress)
+      const transaction = new NativeTransferBuilder()
+        .from(privateKey.publicKey)
+        .target(targetPublicKey)
+        .amount(String(REBALANCE_AMOUNT_MOTES))
+        .chainName(CASPER_CHAIN_NAME)
+        .payment(STORE_ANALYSIS_PAYMENT_MOTES, GAS_PRICE_TOLERANCE)
+        .build()
+
+      transaction.sign(privateKey)
+
+      const rpcClient = new RpcClient(new HttpHandler(CASPER_NODE_RPC_URL))
+      const result = await rpcClient.putTransaction(transaction)
+      const transactionHash = result.transactionHash.toHex()
+
+      console.log(`Autonomous rebalance tx (${note}):`, transactionHash)
+
+      return {
+        transactionHash,
+        explorerUrl: getTransactionExplorerUrl(transactionHash),
+      }
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : String(error)
+      console.error(
+        `Autonomous rebalance failed (attempt ${attempt}/${MAX_ATTEMPTS}):`,
+        error
+      )
+      if (attempt < MAX_ATTEMPTS) {
+        await new Promise((resolve) => setTimeout(resolve, 600))
+      }
+    }
+  }
+
+  console.error('Autonomous rebalance ultimately failed:', lastError)
+  return null
+}
 
 /**
  * Submit a `store_analysis` transaction to the PortfolioAgent contract.
@@ -206,5 +273,9 @@ export const getAgentDiagnostics = () => {
     keyError,
     chainName: CASPER_CHAIN_NAME,
     nodeRpcUrl: CASPER_NODE_RPC_URL,
+    hasOpenAI: Boolean(process.env.OPENAI_API_KEY),
+    hasAnthropic: Boolean(process.env.ANTHROPIC_API_KEY),
+    openAIModel: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+    autonomousRebalanceEnabled: isAutonomousRebalanceEnabled(),
   }
 }
