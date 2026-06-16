@@ -22,9 +22,11 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
               <Sparkles className="w-4 h-4 text-cute-dark animate-pulse" />
             </div>
             <p className="text-gray-600 text-sm font-semibold">
-              {analysis.analysisSource === 'heuristic'
-                ? 'Demo mode — set ANTHROPIC_API_KEY for live Claude 3.5 Sonnet'
-                : 'Portfolio summary by Claude 3.5 Sonnet'}
+              {analysis.analysisSource === 'openai'
+                ? 'Portfolio summary by OpenAI GPT-4o'
+                : analysis.analysisSource === 'claude'
+                  ? 'Portfolio summary by Claude 3.5 Sonnet'
+                  : 'Demo mode — set OPENAI_API_KEY or ANTHROPIC_API_KEY for live AI'}
             </p>
           </div>
         </div>

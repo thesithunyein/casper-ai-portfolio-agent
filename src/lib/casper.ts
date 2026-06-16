@@ -241,8 +241,8 @@ export interface AIAnalysis {
     reasoning: string
   }
   x402Status?: 'settled' | 'verified' | 'optional'
-  /** 'claude' = live Claude 3.5 Sonnet, 'heuristic' = deterministic demo fallback */
-  analysisSource?: 'claude' | 'heuristic'
+  /** 'openai' = live OpenAI, 'claude' = live Claude, 'heuristic' = deterministic demo fallback */
+  analysisSource?: 'openai' | 'claude' | 'heuristic'
   /** Present when the agent recorded this analysis on Casper Testnet */
   onchain?: {
     transactionHash: string

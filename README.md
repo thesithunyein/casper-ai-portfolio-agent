@@ -174,7 +174,10 @@ cp .env.example .env.local
 
 Edit `.env.local`:
 ```env
-# Required for AI analysis (server-side)
+# AI analysis (server-side). Set EITHER OpenAI or Anthropic for live AI.
+# Provider priority: OpenAI -> Claude -> deterministic heuristic demo.
+OPENAI_API_KEY=sk-xxxxxxxxxxxxx
+OPENAI_MODEL=gpt-4o-mini
 ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxx
 
 # Casper network (defaults to testnet)

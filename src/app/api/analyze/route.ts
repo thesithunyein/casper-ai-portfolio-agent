@@ -110,6 +110,94 @@ Return ONLY valid JSON in this exact format:
   }
 }`
 
+/** Shared user prompt describing the portfolio for any LLM provider. */
+function buildUserPrompt(portfolio: Portfolio, paymentVerified: boolean): string {
+  const portfolioText = portfolio.assets
+    .map(
+      (a) =>
+        `- ${a.symbol}: ${a.balance.toLocaleString('en-US', {
+          maximumFractionDigits: 4,
+        })} ($${a.value.toFixed(2)}, ${a.percentage.toFixed(1)}%)`
+    )
+    .join('\n')
+
+  return `Analyze this Casper Network portfolio:
+
+Total Value: $${portfolio.totalValue.toFixed(2)}
+Wallet: ${portfolio.walletAddress}
+
+Assets:
+${portfolioText}
+
+${paymentVerified ? 'Note: This user has paid 0.01 CSPR via x402 micropayments for premium analysis.' : ''}`
+}
+
+/** Pull the JSON object out of an LLM text response. */
+function extractAnalysisJson(content: string): AnalysisPayload | null {
+  const jsonMatch = content.match(/\{[\s\S]*\}/)
+  if (!jsonMatch) return null
+  return JSON.parse(jsonMatch[0]) as AnalysisPayload
+}
+
+/**
+ * OpenAI analysis via the REST API (no SDK dependency). Uses JSON mode for
+ * reliable structured output. Model configurable via OPENAI_MODEL.
+ */
+async function getOpenAIAnalysis(
+  prompt: string
+): Promise<AnalysisPayload | null> {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) return null
+  const model = process.env.OPENAI_MODEL || 'gpt-4o-mini'
+
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 1500,
+      temperature: 0.4,
+      response_format: { type: 'json_object' },
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: prompt },
+      ],
+    }),
+  })
+
+  if (!res.ok) {
+    const detail = (await res.text()).slice(0, 200)
+    throw new Error(`OpenAI API error ${res.status}: ${detail}`)
+  }
+
+  const data = await res.json()
+  const content = data?.choices?.[0]?.message?.content ?? ''
+  return extractAnalysisJson(content)
+}
+
+/** Anthropic Claude analysis. */
+async function getClaudeAnalysis(
+  prompt: string
+): Promise<AnalysisPayload | null> {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) return null
+  const client = new Anthropic({ apiKey })
+
+  const response = await client.messages.create({
+    model: 'claude-3-5-sonnet-20241022',
+    max_tokens: 1500,
+    system: SYSTEM_PROMPT,
+    messages: [{ role: 'user', content: prompt }],
+  })
+
+  const content =
+    response.content[0]?.type === 'text' ? response.content[0].text : ''
+  return extractAnalysisJson(content)
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json()
@@ -122,8 +210,6 @@ export async function POST(request: Request) {
       )
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY
-
     // x402 payment: verified structurally, and settled on-chain through the
     // Casper x402 Facilitator when X402_FACILITATOR_URL is configured.
     const x402Header = request.headers.get('x402-payment')
@@ -132,48 +218,25 @@ export async function POST(request: Request) {
       x402Settlement === 'settled' || x402Settlement === 'verified'
 
     let analysis: AnalysisPayload | null = null
-    let analysisSource: 'claude' | 'heuristic' = 'heuristic'
+    let analysisSource: 'openai' | 'claude' | 'heuristic' = 'heuristic'
+    const userPrompt = buildUserPrompt(portfolio, paymentVerified)
 
-    if (apiKey) {
+    // Provider priority: OpenAI -> Claude -> deterministic heuristic.
+    if (process.env.OPENAI_API_KEY) {
       try {
-        const client = new Anthropic({ apiKey })
+        analysis = await getOpenAIAnalysis(userPrompt)
+        if (analysis) analysisSource = 'openai'
+      } catch (openAiError) {
+        console.error('OpenAI analysis failed:', openAiError)
+      }
+    }
 
-        const portfolioText = portfolio.assets
-          .map(
-            (a) =>
-              `- ${a.symbol}: ${a.balance.toLocaleString('en-US', {
-                maximumFractionDigits: 4,
-              })} ($${a.value.toFixed(2)}, ${a.percentage.toFixed(1)}%)`
-          )
-          .join('\n')
-
-        const prompt = `Analyze this Casper Network portfolio:
-
-Total Value: $${portfolio.totalValue.toFixed(2)}
-Wallet: ${portfolio.walletAddress}
-
-Assets:
-${portfolioText}
-
-${paymentVerified ? 'Note: This user has paid 0.01 CSPR via x402 micropayments for premium analysis.' : ''}`
-
-        const response = await client.messages.create({
-          model: 'claude-3-5-sonnet-20241022',
-          max_tokens: 1500,
-          system: SYSTEM_PROMPT,
-          messages: [{ role: 'user', content: prompt }],
-        })
-
-        const content =
-          response.content[0]?.type === 'text' ? response.content[0].text : ''
-        const jsonMatch = content.match(/\{[\s\S]*\}/)
-        if (jsonMatch) {
-          analysis = JSON.parse(jsonMatch[0]) as AnalysisPayload
-          analysisSource = 'claude'
-        }
+    if (!analysis && process.env.ANTHROPIC_API_KEY) {
+      try {
+        analysis = await getClaudeAnalysis(userPrompt)
+        if (analysis) analysisSource = 'claude'
       } catch (claudeError) {
-        // Fall back to heuristic analysis so the demo stays functional.
-        console.error('Claude analysis failed, using heuristic:', claudeError)
+        console.error('Claude analysis failed:', claudeError)
       }
     }
 
