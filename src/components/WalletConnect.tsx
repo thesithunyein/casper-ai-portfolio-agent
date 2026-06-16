@@ -4,35 +4,67 @@ import { useState, useEffect } from 'react'
 import { useAppStore } from '@/lib/store'
 import { validateCasperAddress } from '@/lib/casper'
 
-type AnyProvider = Record<string, unknown>
+/* eslint-disable */
 
 declare global {
   interface Window {
-    CasperWalletProvider?: AnyProvider
-    casperWalletProvider?: AnyProvider
-    CasperSigner?: AnyProvider
-    casperlabsHelper?: AnyProvider
+    CasperWalletProvider?: any
+    casperWalletProvider?: any
+    CasperSigner?: any
+    casperlabsHelper?: any
   }
 }
 
-function getProvider(): AnyProvider | undefined {
-  return window.CasperWalletProvider || window.casperWalletProvider || window.CasperSigner || window.casperlabsHelper
+function findProvider(): any {
+  const candidates = [
+    'CasperWalletProvider',
+    'casperWalletProvider',
+    'CasperSigner',
+    'casperlabsHelper',
+  ] as const
+
+  for (const name of candidates) {
+    const val = (window as any)[name]
+    if (val) return val
+  }
+  return undefined
 }
 
 function isProviderAvailable(): boolean {
-  const p = getProvider()
-  return !!p && typeof p === 'object'
+  return !!findProvider()
 }
 
-function getProviderMethods(provider: AnyProvider): string {
-  return Object.keys(provider).filter(k => typeof provider[k] === 'function').join(', ')
+function getAllMethods(obj: any): string[] {
+  const methods = new Set<string>()
+  let current = obj
+  while (current && current !== Object.prototype) {
+    for (const key of Object.getOwnPropertyNames(current)) {
+      if (typeof current[key] === 'function' && key !== 'constructor') {
+        methods.add(key)
+      }
+    }
+    current = Object.getPrototypeOf(current)
+  }
+  return Array.from(methods)
 }
 
-async function tryMethod<T>(provider: AnyProvider, names: string[]): Promise<T | undefined> {
+function instantiateProvider(raw: any): any {
+  // Some wallets expose a class that needs `new`
+  if (typeof raw === 'function') {
+    try {
+      return new raw()
+    } catch {
+      // maybe it's already a singleton with static methods
+      return raw
+    }
+  }
+  return raw
+}
+
+async function tryMethod<T>(provider: any, names: string[]): Promise<T | undefined> {
   for (const name of names) {
-    const fn = provider[name]
-    if (typeof fn === 'function') {
-      return await (fn as () => Promise<T>).call(provider)
+    if (typeof provider[name] === 'function') {
+      return await provider[name]()
     }
   }
   return undefined
@@ -54,11 +86,24 @@ export const WalletConnect = () => {
   }, [])
 
   const handleExtensionConnect = async () => {
-    const provider = getProvider()
-    if (!provider) {
+    const raw = findProvider()
+    if (!raw) {
       setError('Casper Wallet extension not found. Please install it first.')
       return
     }
+
+    const provider = instantiateProvider(raw)
+
+    // Debug: log provider details to browser console
+    // eslint-disable-next-line no-console
+    console.log('[Casper Wallet] raw provider:', raw)
+    // eslint-disable-next-line no-console
+    console.log('[Casper Wallet] instantiated provider:', provider)
+    // eslint-disable-next-line no-console
+    console.log('[Casper Wallet] provider type:', typeof raw, '| is function:', typeof raw === 'function')
+    // eslint-disable-next-line no-console
+    console.log('[Casper Wallet] all methods:', getAllMethods(provider))
+
     setConnecting(true)
     setError(null)
     try {
@@ -73,7 +118,8 @@ export const WalletConnect = () => {
       if (!isConnected) {
         const connectResult = await tryMethod<void>(provider, ['requestConnection', 'requestConnect', 'connect', 'requestConnectionToActiveKey'])
         if (connectResult === undefined) {
-          setError(`Could not find a connection method on the wallet. Available methods: ${getProviderMethods(provider)}`)
+          const methods = getAllMethods(provider).join(', ')
+          setError(`Could not find a connection method. Available methods: ${methods || 'none'}. Raw type: ${typeof raw}. Please connect manually.`)
           setConnecting(false)
           return
         }
@@ -87,7 +133,8 @@ export const WalletConnect = () => {
       } else if (publicKey) {
         setError(`Wallet returned an invalid public key: ${publicKey.slice(0, 20)}...`)
       } else {
-        setError(`Wallet connected but could not retrieve public key. Available methods: ${getProviderMethods(provider)}`)
+        const methods = getAllMethods(provider).join(', ')
+        setError(`Wallet connected but could not retrieve public key. Available methods: ${methods || 'none'}.`)
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Wallet connection failed'
