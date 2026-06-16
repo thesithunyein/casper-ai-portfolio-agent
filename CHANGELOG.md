@@ -78,3 +78,30 @@ Removed all generic "AI SaaS" design smells: gradients, glassmorphism, backdrop-
 #### `src/components/Logo.tsx`
 - **Removed**: cute bear SVG, gradient background, glass overlay, glow, rounded-3xl, shadow
 - **Added**: intentionally imperfect hand-coded geometric mark — an asymmetric composition of overlapping rectangles that feels human-crafted rather than AI-generated
+
+## 2026-06-17 — Galaxy theme, FAQ, Docs, Casper Wallet integration
+
+### New Features
+- **Live moving galaxy background**: CSS-only starfield with drifting stars, twinkling layers, shooting stars, and nebula color gradients (purple/blue/pink). Fully performant using only `transform` and `opacity` animations.
+- **FAQ Section**: 5-item accordion with smooth open/close transitions, added to landing page.
+- **Docs Section**: 3-card grid linking to Smart Contract, API Reference, and GitHub Repository.
+- **Casper Wallet Browser Extension Integration**: Auto-detects `window.CasperWalletProvider`, supports one-click connect, and falls back to manual public key input.
+- **Mobile wallet deep link**: "Get Casper Wallet" link for users without the extension.
+
+### Theme Changes
+- **Complete dark theme shift**: Background changed from `#fafafa` to `#050510` deep space black.
+- **New color palette**: Added `galaxy-900` through `galaxy-500`, `neon-cyan`, `neon-purple`, `neon-pink`, `neon-blue` to Tailwind config.
+- **Glass morphism cards**: All cards now use `bg-galaxy-800/60 backdrop-blur-sm border border-white/10` for a premium space feel.
+- **Gradient glow borders**: Every card has a subtle gradient glow on hover (`from-neon-cyan/20 to-neon-purple/20`).
+- **Smooth transitions**: Added `slide-up`, `float`, and `pulse-slow` animations. All interactive elements have `hover:-translate-y-0.5` and `duration-300` transitions.
+- **Neon progress bars**: Portfolio and allocation bars use `from-neon-cyan to-neon-purple` gradients.
+
+### Updated Components
+- `page.tsx`: Full dark theme with galaxy background wrapper on all views (landing, loading, error, dashboard).
+- `WalletConnect.tsx`: Centered card with gradient glow, Casper Wallet extension detection, neon status indicators, and manual input fallback.
+- `PortfolioDisplay.tsx`: Glass card with neon gradient progress bars and glow hover effect.
+- `AIAnalysis.tsx`: Glass cards with neon badges, colored borders for on-chain records.
+- `AgentChat.tsx`: Glass chat panel with gradient header, neon avatar badges, and gradient user message bubbles.
+- `LoadingState.tsx`: Glass spinner card with neon-cyan spinning border.
+- `ErrorState.tsx`: Glass error card with red gradient glow and neon retry button.
+- `tailwind.config.ts`: Added `darkMode: 'class'`, new galaxy and neon colors, rounded-xl radius tokens, new animations.

@@ -110,79 +110,82 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
   }
 
   return (
-    <div className="bg-surface border border-border flex flex-col h-[420px]">
-      {/* Header */}
-      <div className="px-4 py-3 bg-black border-b border-border">
-        <div className="flex items-center gap-2">
-          <span className="w-5 h-5 bg-white text-black flex items-center justify-center text-[10px] font-mono font-bold">AI</span>
-          <div>
-            <h3 className="text-xs font-semibold text-white">Agent</h3>
-            <p className="text-[10px] font-mono text-gray-400">Online • x402</p>
+    <div className="relative group">
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan/20 to-neon-purple/20 rounded-xl blur opacity-50 group-hover:opacity-80 transition duration-500" />
+      <div className="relative bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl flex flex-col h-[420px]">
+        {/* Header */}
+        <div className="px-4 py-3 bg-gradient-to-r from-galaxy-800 to-galaxy-700 border-b border-white/10 rounded-t-xl">
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-6 bg-gradient-to-br from-neon-cyan to-neon-purple text-white flex items-center justify-center text-[10px] font-mono font-bold rounded">AI</span>
+            <div>
+              <h3 className="text-xs font-semibold text-white">Agent</h3>
+              <p className="text-[10px] font-mono text-neon-cyan">Online • x402</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3">
-        {messages.map((msg) => (
-          <div key={msg.id} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-            <div className={`w-6 h-6 flex items-center justify-center flex-shrink-0 text-[10px] font-mono font-bold ${
-              msg.role === 'agent' ? 'bg-black text-white' : 'bg-surface-alt border border-border text-black'
-            }`}>
-              {msg.role === 'agent' ? 'AI' : 'U'}
-            </div>
-            <div className={`max-w-[80%] space-y-1.5 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-              <div className={`px-3 py-2 text-sm ${
-                msg.role === 'agent'
-                  ? 'bg-surface-alt border border-border text-black'
-                  : 'bg-black text-white'
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-3 space-y-3">
+          {messages.map((msg) => (
+            <div key={msg.id} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+              <div className={`w-6 h-6 flex items-center justify-center flex-shrink-0 text-[10px] font-mono font-bold rounded ${
+                msg.role === 'agent' ? 'bg-gradient-to-br from-neon-cyan to-neon-purple text-white' : 'bg-white/10 border border-white/10 text-white'
               }`}>
-                <p className="whitespace-pre-line leading-relaxed">{msg.content}</p>
+                {msg.role === 'agent' ? 'AI' : 'U'}
               </div>
-              {msg.actions && msg.actions.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {msg.actions.map((action, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleAction(action)}
-                      className="px-2 py-1 bg-surface border border-border text-xs font-medium text-black hover:bg-black hover:text-white transition-colors"
-                    >
-                      {action.label}
-                    </button>
-                  ))}
+              <div className={`max-w-[80%] space-y-1.5 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                <div className={`px-3 py-2 text-sm rounded-lg ${
+                  msg.role === 'agent'
+                    ? 'bg-white/5 border border-white/10 text-gray-300'
+                    : 'bg-gradient-to-r from-neon-cyan to-neon-blue text-white'
+                }`}>
+                  <p className="whitespace-pre-line leading-relaxed">{msg.content}</p>
                 </div>
-              )}
+                {msg.actions && msg.actions.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {msg.actions.map((action, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleAction(action)}
+                        className="px-2 py-1 bg-white/5 border border-white/10 text-xs font-medium text-gray-300 hover:bg-neon-cyan/20 hover:border-neon-cyan/30 hover:text-white transition-all duration-300 rounded"
+                      >
+                        {action.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-        {isTyping && (
-          <div className="flex gap-2">
-            <span className="w-6 h-6 bg-black text-white flex items-center justify-center text-[10px] font-mono font-bold">AI</span>
-            <div className="bg-surface-alt border border-border px-3 py-2 text-xs text-muted">
-              Thinking<span className="terminal-cursor">_</span>
+          ))}
+          {isTyping && (
+            <div className="flex gap-2">
+              <span className="w-6 h-6 bg-gradient-to-br from-neon-cyan to-neon-purple text-white flex items-center justify-center text-[10px] font-mono font-bold rounded">AI</span>
+              <div className="bg-white/5 border border-white/10 px-3 py-2 text-xs text-muted rounded-lg">
+                Thinking<span className="terminal-cursor">_</span>
+              </div>
             </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
 
-      {/* Input */}
-      <div className="p-3 border-t border-border bg-surface">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Ask anything..."
-            className="flex-1 px-3 py-2 bg-surface-alt border border-border text-sm text-black placeholder-muted focus:outline-none focus:border-black transition-colors"
-          />
-          <button
-            onClick={handleSend}
-            className="px-3 py-2 bg-black text-white hover:bg-gray-800 transition-colors"
-          >
-            <Send className="w-3 h-3" />
-          </button>
+        {/* Input */}
+        <div className="p-3 border-t border-white/10 bg-galaxy-800/50 rounded-b-xl">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Ask anything..."
+              className="flex-1 px-3 py-2 bg-white/5 border border-white/10 text-sm text-white placeholder-white/20 focus:outline-none focus:border-neon-cyan/50 focus:ring-1 focus:ring-neon-cyan/20 transition-all duration-300 rounded-lg"
+            />
+            <button
+              onClick={handleSend}
+              className="px-3 py-2 bg-gradient-to-r from-neon-cyan to-neon-blue text-white hover:opacity-90 transition-opacity rounded-lg"
+            >
+              <Send className="w-3 h-3" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

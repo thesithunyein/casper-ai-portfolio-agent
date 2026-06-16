@@ -10,7 +10,7 @@
 
 html {
   scroll-behavior: smooth;
-  background: #fafafa;
+  background: #050510;
   scroll-padding-top: 4rem;
 }
 
@@ -19,8 +19,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  background: #fafafa;
-  color: #0a0a0a;
+  background: #050510;
+  color: #e2e8f0;
 }
 
 /* Dense, sharp typography */
@@ -29,7 +29,7 @@ h1, h2, h3, h4 {
   font-weight: 600;
 }
 
-/* Functional scrollbar - sharp, minimal */
+/* Functional scrollbar - dark theme */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -38,31 +38,31 @@ h1, h2, h3, h4 {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.18);
-  border: 2px solid #fafafa;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid #050510;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.3);
 }
 
-/* Focus ring - sharp, functional */
+/* Focus ring */
 :focus-visible {
   outline: 2px solid #06b6d4;
   outline-offset: 1px;
   border-radius: 2px;
 }
 
-/* Minimal, purposeful fade */
+/* Minimal fade */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.2s ease-out forwards;
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* Terminal cursor blink - the one human-feeling element */
+/* Terminal cursor blink */
 @keyframes cursorBlink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -72,10 +72,117 @@ h1, h2, h3, h4 {
   animation: cursorBlink 1s step-end infinite;
 }
 
+/* ===== GALAXY STARFIELD ===== */
+.galaxy-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(120, 50, 180, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(50, 100, 200, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(180, 60, 120, 0.08) 0%, transparent 50%),
+    linear-gradient(180deg, #050510 0%, #0a0a1a 50%, #050510 100%);
+  overflow: hidden;
+}
+
+.galaxy-bg::before,
+.galaxy-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20px 30px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 50px 100px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 120px 80px, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1px 1px at 180px 40px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 250px 150px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 300px 60px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 350px 120px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 400px 200px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 450px 90px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 500px 250px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 550px 30px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 600px 180px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 650px 70px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 700px 220px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 750px 110px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 800px 280px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 850px 50px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 900px 160px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 950px 240px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 1000px 80px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 1050px 190px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 1100px 130px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 1150px 270px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 1200px 40px, rgba(255,255,255,0.5), transparent);
+  background-size: 1200px 300px;
+  background-repeat: repeat;
+}
+
+.galaxy-bg::before {
+  animation: starfieldDrift 120s linear infinite;
+}
+
+.galaxy-bg::after {
+  background-size: 800px 200px;
+  opacity: 0.5;
+  animation: starfieldDrift 80s linear infinite reverse;
+}
+
+@keyframes starfieldDrift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-300px); }
+}
+
+/* Twinkling stars overlay */
+.twinkle-layer {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 100px 50px, rgba(200,180,255,0.9), transparent),
+    radial-gradient(1.5px 1.5px at 300px 150px, rgba(180,220,255,0.8), transparent),
+    radial-gradient(1px 1px at 500px 80px, rgba(220,180,255,0.7), transparent),
+    radial-gradient(2px 2px at 700px 200px, rgba(180,200,255,0.9), transparent),
+    radial-gradient(1px 1px at 900px 120px, rgba(200,200,255,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 1100px 250px, rgba(180,180,255,0.8), transparent);
+  background-size: 1200px 300px;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+/* Shooting star */
+.shooting-star {
+  position: absolute;
+  width: 100px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.8), rgba(255,255,255,0));
+  animation: shoot 8s linear infinite;
+  opacity: 0;
+}
+
+.shooting-star:nth-child(1) { top: 20%; left: -10%; animation-delay: 0s; }
+.shooting-star:nth-child(2) { top: 60%; left: -10%; animation-delay: 3s; }
+.shooting-star:nth-child(3) { top: 40%; left: -10%; animation-delay: 6s; }
+
+@keyframes shoot {
+  0% { transform: translateX(0) rotate(-25deg); opacity: 0; }
+  10% { opacity: 1; }
+  20% { transform: translateX(120vw) rotate(-25deg); opacity: 0; }
+  100% { opacity: 0; }
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
-  .terminal-cursor {
+  .terminal-cursor,
+  .galaxy-bg::before,
+  .galaxy-bg::after,
+  .twinkle-layer,
+  .shooting-star {
     animation: none;
   }
 }
