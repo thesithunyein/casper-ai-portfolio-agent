@@ -4,27 +4,38 @@ import { useState, useEffect } from 'react'
 import { useAppStore } from '@/lib/store'
 import { validateCasperAddress } from '@/lib/casper'
 
-interface CasperWalletProvider {
-  isConnected?: () => Promise<boolean>
-  requestConnection?: () => Promise<void>
-  getActivePublicKey?: () => Promise<string>
-  disconnectFromSite?: () => Promise<void>
-}
+type AnyProvider = Record<string, unknown>
 
 declare global {
   interface Window {
-    CasperWalletProvider?: CasperWalletProvider
-    casperWalletProvider?: CasperWalletProvider
+    CasperWalletProvider?: AnyProvider
+    casperWalletProvider?: AnyProvider
+    CasperSigner?: AnyProvider
+    casperlabsHelper?: AnyProvider
   }
 }
 
-function getProvider(): CasperWalletProvider | undefined {
-  return window.CasperWalletProvider || window.casperWalletProvider
+function getProvider(): AnyProvider | undefined {
+  return window.CasperWalletProvider || window.casperWalletProvider || window.CasperSigner || window.casperlabsHelper
 }
 
 function isProviderAvailable(): boolean {
   const p = getProvider()
   return !!p && typeof p === 'object'
+}
+
+function getProviderMethods(provider: AnyProvider): string {
+  return Object.keys(provider).filter(k => typeof provider[k] === 'function').join(', ')
+}
+
+async function tryMethod<T>(provider: AnyProvider, names: string[]): Promise<T | undefined> {
+  for (const name of names) {
+    const fn = provider[name]
+    if (typeof fn === 'function') {
+      return await (fn as () => Promise<T>).call(provider)
+    }
+  }
+  return undefined
 }
 
 export const WalletConnect = () => {
@@ -51,31 +62,32 @@ export const WalletConnect = () => {
     setConnecting(true)
     setError(null)
     try {
-      // Check if connected - if method doesn't exist, assume not connected
+      // Try to check if already connected
       let isConnected = false
-      if (typeof provider.isConnected === 'function') {
-        try {
-          isConnected = await provider.isConnected()
-        } catch {
-          isConnected = false
-        }
+      const connectedResult = await tryMethod<boolean>(provider, ['isConnected', 'isActive', 'hasConnected'])
+      if (connectedResult !== undefined) {
+        isConnected = connectedResult
       }
 
       // Request connection if not connected
-      if (!isConnected && typeof provider.requestConnection === 'function') {
-        await provider.requestConnection()
+      if (!isConnected) {
+        const connectResult = await tryMethod<void>(provider, ['requestConnection', 'requestConnect', 'connect', 'requestConnectionToActiveKey'])
+        if (connectResult === undefined) {
+          setError(`Could not find a connection method on the wallet. Available methods: ${getProviderMethods(provider)}`)
+          setConnecting(false)
+          return
+        }
       }
 
-      // Get public key
-      if (typeof provider.getActivePublicKey === 'function') {
-        const publicKey = await provider.getActivePublicKey()
-        if (publicKey && validateCasperAddress(publicKey)) {
-          setWalletAddress(publicKey)
-        } else {
-          setError('Could not get a valid public key from the wallet.')
-        }
+      // Get public key - try multiple method names
+      const publicKey = await tryMethod<string>(provider, ['getActivePublicKey', 'getPublicKey', 'getActiveKey', 'publicKey', 'getSelectedKey'])
+
+      if (publicKey && validateCasperAddress(publicKey)) {
+        setWalletAddress(publicKey)
+      } else if (publicKey) {
+        setError(`Wallet returned an invalid public key: ${publicKey.slice(0, 20)}...`)
       } else {
-        setError('Wallet provider does not support public key retrieval. Please connect manually.')
+        setError(`Wallet connected but could not retrieve public key. Available methods: ${getProviderMethods(provider)}`)
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Wallet connection failed'
