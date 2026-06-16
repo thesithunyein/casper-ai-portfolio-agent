@@ -105,3 +105,16 @@ Removed all generic "AI SaaS" design smells: gradients, glassmorphism, backdrop-
 - `LoadingState.tsx`: Glass spinner card with neon-cyan spinning border.
 - `ErrorState.tsx`: Glass error card with red gradient glow and neon retry button.
 - `tailwind.config.ts`: Added `darkMode: 'class'`, new galaxy and neon colors, rounded-xl radius tokens, new animations.
+
+## 2026-06-17 — Premium logo, Casper icon, MIT license, 404 & Coming Soon
+
+### New Files
+- `LICENSE`: MIT License added to repository.
+- `src/app/not-found.tsx`: Custom 404 page with galaxy background, neon badge, and gradient CTA button.
+- `src/app/coming-soon/page.tsx`: Standalone Coming Soon page with galaxy background, nav bar, status badges, and GitHub link.
+
+### Updated Components
+- `src/components/Logo.tsx`: Replaced hand-coded rectangles with a premium geometric diamond mark — outer diamond frame, inner filled diamond, center vertical line and dot, all using a cyan-to-purple gradient. Scales cleanly from 32px to 64px.
+- `public/icon.svg`: Updated favicon/app icon to match the new premium diamond logo.
+- `src/components/WalletConnect.tsx`: Replaced generic Lucide wallet icon with a custom stylized Casper "C" with dot, using the same cyan-to-purple gradient.
+- `src/app/layout.tsx`: Fixed body background from `bg-[#fafafa] text-black` to `bg-galaxy-900 text-white` for galaxy theme consistency.

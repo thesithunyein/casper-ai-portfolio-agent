@@ -83,8 +83,16 @@ export const WalletConnect = () => {
           {/* Header */}
           <div className="text-center mb-6">
             <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 border border-neon-cyan/30 flex items-center justify-center">
-              <svg className="w-6 h-6 text-neon-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 12m18 0a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12m0 0l5.25-5.25M3 12l5.25 5.25M21 12l-5.25-5.25M21 12l-5.25 5.25" />
+              {/* Stylized Casper C with dot */}
+              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
+                <path d="M19 8.5C17.5 5.5 14.5 4 12 4C7.5 4 4 7.5 4 12C4 16.5 7.5 20 12 20C14.5 20 17.5 18.5 19 15.5" stroke="url(#casperGrad)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="20" cy="5" r="2.2" fill="#06b6d4"/>
+                <defs>
+                  <linearGradient id="casperGrad" x1="4" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#06b6d4"/>
+                    <stop offset="100%" stopColor="#a855f7"/>
+                  </linearGradient>
+                </defs>
               </svg>
             </div>
             <h2 className="text-lg font-semibold text-white mb-1">Connect Wallet</h2>
