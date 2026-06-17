@@ -29,11 +29,9 @@ export const AgentActivityLog = ({ steps }: AgentActivityLogProps) => {
   }, [steps])
 
   return (
-    <div className="relative group">
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan/20 to-neon-purple/20 rounded-xl blur opacity-50 group-hover:opacity-80 transition duration-500" />
-      <div className="relative bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl p-5">
+    <div className="relative bg-galaxy-800 border border-border rounded-xl p-5">
         <div className="flex items-center gap-2 mb-4">
-          <Terminal className="w-4 h-4 text-neon-cyan" />
+          <Terminal className="w-4 h-4 text-primary" />
           <h2 className="text-sm font-semibold text-white">Agent Activity Log</h2>
           <Activity className="w-3 h-3 text-green-400 animate-pulse ml-auto" />
         </div>
@@ -90,6 +88,5 @@ export const AgentActivityLog = ({ steps }: AgentActivityLogProps) => {
           })}
         </div>
       </div>
-    </div>
   )
 }

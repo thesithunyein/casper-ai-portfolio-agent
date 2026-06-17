@@ -18,52 +18,49 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
   return (
     <div className="space-y-4 animate-fade-in">
       {/* Summary */}
-      <div className="relative group">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan/20 to-neon-purple/20 rounded-xl blur opacity-50 group-hover:opacity-80 transition duration-500" />
-        <div className="relative bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl p-5">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-white">Analysis</h2>
-            <span className="text-xs font-mono text-neon-cyan bg-neon-cyan/10 border border-neon-cyan/20 px-1.5 py-0.5 rounded">{sourceLabel}</span>
-          </div>
-          <p className="text-sm text-gray-300 leading-relaxed">{analysis.summary}</p>
-
-          {/* RWA Exposure Badge */}
-          {typeof analysis.rwaExposurePercent === 'number' && (
-            <div className="mt-4 p-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-amber-400">RWA</span>
-                  <span className="text-xs text-gray-400">Recommended allocation</span>
-                </div>
-                <span className="text-sm font-semibold text-amber-300">{analysis.rwaExposurePercent}%</span>
-              </div>
-              <div className="mt-2 w-full bg-white/10 rounded h-1.5 overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-amber-400 to-orange-400 h-full rounded transition-all duration-500"
-                  style={{ width: `${analysis.rwaExposurePercent}%` }}
-                />
-              </div>
-              <p className="mt-2 text-[10px] text-gray-500">
-                Simulated RWA feed: tokenized T-bills, gold, and equities for uncorrelated exposure.
-              </p>
-            </div>
-          )}
+      <div className="relative bg-galaxy-800 border border-border rounded-xl p-5">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-white">Analysis</h2>
+          <span className="text-xs font-mono text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded">{sourceLabel}</span>
         </div>
+        <p className="text-sm text-gray-300 leading-relaxed">{analysis.summary}</p>
+
+        {/* RWA Exposure Badge */}
+        {typeof analysis.rwaExposurePercent === 'number' && (
+          <div className="mt-4 p-3 bg-amber-500/5 border border-amber-500/20 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono text-amber-400">RWA</span>
+                <span className="text-xs text-gray-400">Recommended allocation</span>
+              </div>
+              <span className="text-sm font-semibold text-amber-300">{analysis.rwaExposurePercent}%</span>
+            </div>
+            <div className="mt-2 w-full bg-surface rounded h-1.5 overflow-hidden">
+              <div
+                className="bg-amber-400 h-full rounded transition-all duration-500"
+                style={{ width: `${analysis.rwaExposurePercent}%` }}
+              />
+            </div>
+            <p className="mt-2 text-[10px] text-gray-500">
+              Simulated RWA feed: tokenized T-bills, gold, and equities for uncorrelated exposure.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Risk Assessment */}
-      <div className="bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl p-5">
+      <div className="bg-galaxy-800 border border-border rounded-xl p-5">
         <h2 className="text-sm font-semibold text-white mb-2">Risk Assessment</h2>
         <p className="text-sm text-gray-300 leading-relaxed">{analysis.riskAssessment}</p>
       </div>
 
       {/* Recommendations */}
-      <div className="bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl p-5">
+      <div className="bg-galaxy-800 border border-border rounded-xl p-5">
         <h2 className="text-sm font-semibold text-white mb-3">Recommendations</h2>
         <div className="space-y-2">
           {analysis.recommendations.map((rec, idx) => (
-            <div key={idx} className="flex gap-3 p-3 bg-white/5 border border-white/10 rounded-lg">
-              <span className="flex-shrink-0 w-5 h-5 bg-gradient-to-br from-neon-cyan/30 to-neon-purple/30 text-white flex items-center justify-center text-[10px] font-mono font-bold mt-0.5 rounded">{idx + 1}</span>
+            <div key={idx} className="flex gap-3 p-3 bg-surface border border-border rounded-lg">
+              <span className="flex-shrink-0 w-5 h-5 bg-primary/10 text-primary flex items-center justify-center text-[10px] font-mono font-bold mt-0.5 rounded">{idx + 1}</span>
               <p className="text-sm text-gray-300 leading-relaxed">{rec}</p>
             </div>
           ))}
@@ -71,10 +68,10 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
       </div>
 
       {/* Rebalancing */}
-      <div className="bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl p-5">
+      <div className="bg-galaxy-800 border border-border rounded-xl p-5">
         <h2 className="text-sm font-semibold text-white mb-3">Rebalancing</h2>
         <div className="space-y-3">
-          <div className="p-3 bg-white/5 border border-white/10 rounded-lg">
+          <div className="p-3 bg-surface border border-border rounded-lg">
             <p className="text-[10px] font-mono text-muted uppercase mb-1">Action</p>
             <p className="text-sm text-white font-medium">{analysis.rebalancingSuggestion.action}</p>
           </div>
@@ -85,8 +82,8 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
               {Object.entries(analysis.rebalancingSuggestion.targetAllocation).map(([asset, percentage]) => (
                 <div key={asset} className="flex items-center gap-3">
                   <span className="text-sm text-white font-medium w-12">{asset}</span>
-                  <div className="flex-1 bg-white/10 rounded h-2 overflow-hidden">
-                    <div className="bg-gradient-to-r from-neon-cyan to-neon-purple h-full rounded transition-all duration-500" style={{ width: `${percentage}%` }} />
+                  <div className="flex-1 bg-surface rounded h-2 overflow-hidden">
+                    <div className="bg-primary h-full rounded transition-all duration-500" style={{ width: `${percentage}%` }} />
                   </div>
                   <span className="text-xs font-mono w-10 text-right">{percentage}%</span>
                 </div>
@@ -94,7 +91,7 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
             </div>
           </div>
 
-          <div className="p-3 bg-white/5 border border-white/10 rounded-lg">
+          <div className="p-3 bg-surface border border-border rounded-lg">
             <p className="text-[10px] font-mono text-muted uppercase mb-1">Reasoning</p>
             <p className="text-sm text-gray-300 leading-relaxed">{analysis.rebalancingSuggestion.reasoning}</p>
           </div>
@@ -103,13 +100,13 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
 
       {/* On-chain Record */}
       {analysis.onchain && (
-        <div className="bg-galaxy-800/80 backdrop-blur-md border border-green-500/30 rounded-xl p-5">
+        <div className="bg-galaxy-800 border border-green-500/20 rounded-xl p-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold text-white">On-Chain Record</h2>
             <span className="text-[10px] font-mono text-green-400">{analysis.onchain.network}</span>
           </div>
           <div className="space-y-2">
-            <div className="p-3 bg-white/5 border border-white/10 rounded-lg">
+            <div className="p-3 bg-surface border border-border rounded-lg">
               <p className="text-[10px] font-mono text-muted uppercase mb-1">Transaction</p>
               <a
                 href={analysis.onchain.explorerUrl}
@@ -121,7 +118,7 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
                 <ExternalLink className="w-3 h-3 flex-shrink-0" />
               </a>
             </div>
-            <div className="p-3 bg-white/5 border border-white/10 rounded-lg">
+            <div className="p-3 bg-surface border border-border rounded-lg">
               <p className="text-[10px] font-mono text-muted uppercase mb-1">Entry Point</p>
               <p className="text-xs font-mono text-gray-300">
                 {analysis.onchain.entryPoint} @ {analysis.onchain.contractPackageHash.slice(0, 20)}…
@@ -133,10 +130,10 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
 
       {/* Autonomous Action */}
       {analysis.autonomousAction && (
-        <div className="bg-galaxy-800/80 backdrop-blur-md border border-neon-purple/30 rounded-xl p-5">
+        <div className="bg-galaxy-800 border border-neon-purple/20 rounded-xl p-5">
           <h2 className="text-sm font-semibold text-white mb-3">Autonomous Action</h2>
           <div className="space-y-2">
-            <div className="p-3 bg-white/5 border border-white/10 rounded-lg">
+            <div className="p-3 bg-surface border border-border rounded-lg">
               <p className="text-[10px] font-mono text-muted uppercase mb-1">Transaction</p>
               <a
                 href={analysis.autonomousAction.explorerUrl}
@@ -148,7 +145,7 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
                 <ExternalLink className="w-3 h-3 flex-shrink-0" />
               </a>
             </div>
-            <div className="p-3 bg-white/5 border border-white/10 rounded-lg">
+            <div className="p-3 bg-surface border border-border rounded-lg">
               <p className="text-[10px] font-mono text-muted uppercase mb-1">Action</p>
               <p className="text-xs font-mono text-gray-300">Native CSPR transfer (1 CSPR)</p>
             </div>

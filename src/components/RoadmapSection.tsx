@@ -44,7 +44,7 @@ const ROADMAP: RoadmapItem[] = [
 
 export const RoadmapSection = () => {
   return (
-    <section id="roadmap" className="relative z-10 py-20 px-4 md:px-6 border-t border-white/10">
+    <section id="roadmap" className="relative z-10 py-24 px-4 md:px-6 border-t border-border">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-white mb-3">Roadmap</h2>
@@ -53,15 +53,14 @@ export const RoadmapSection = () => {
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {ROADMAP.map((item, i) => (
             <div
               key={i}
               className="group relative animate-fade-in"
               style={{ animationDelay: `${i * 100}ms` }}
             >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan/10 to-neon-purple/10 rounded-xl blur opacity-0 group-hover:opacity-50 transition duration-500" />
-              <div className="relative flex items-start gap-4 bg-galaxy-800/60 backdrop-blur-sm border border-white/10 rounded-xl p-5 hover:border-white/20 transition-all duration-300">
+              <div className="relative flex items-start gap-4 bg-galaxy-800 border border-border rounded-xl p-5 hover:border-border-strong transition-all duration-300">
                 <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
                   item.status === 'done'
                     ? 'bg-green-500/20 border border-green-500/30'
