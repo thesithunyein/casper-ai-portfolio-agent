@@ -46,10 +46,12 @@ export const WalletConnect = () => {
           <div className="text-center mb-6">
             <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 border border-neon-cyan/30 flex items-center justify-center">
               <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none">
-                <path d="M19 8.5C17.5 5.5 14.5 4 12 4C7.5 4 4 7.5 4 12C4 16.5 7.5 20 12 20C14.5 20 17.5 18.5 19 15.5" stroke="url(#wcGrad)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="20" cy="5" r="2.2" fill="#06b6d4"/>
+                {/* Casper Network diamond logo */}
+                <path d="M12 2L22 12L12 22L2 12Z" fill="url(#wcGrad)" opacity="0.9"/>
+                <path d="M12 6L18 12L12 18L6 12Z" fill="#0B0B1A"/>
+                <path d="M12 8L16 12L12 16L8 12Z" fill="url(#wcGrad)"/>
                 <defs>
-                  <linearGradient id="wcGrad" x1="4" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+                  <linearGradient id="wcGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
                     <stop offset="0%" stopColor="#06b6d4"/>
                     <stop offset="100%" stopColor="#a855f7"/>
                   </linearGradient>
