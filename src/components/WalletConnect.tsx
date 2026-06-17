@@ -1,244 +1,137 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { useAppStore } from '@/lib/store'
 import { validateCasperAddress } from '@/lib/casper'
 
-/* eslint-disable */
-
-declare global {
-  interface Window {
-    CasperWalletProvider?: any
-    casperWalletProvider?: any
-    CasperSigner?: any
-    casperlabsHelper?: any
-  }
-}
-
-function findProvider(): any {
-  const candidates = [
-    'CasperWalletProvider',
-    'casperWalletProvider',
-    'CasperSigner',
-    'casperlabsHelper',
-  ] as const
-
-  for (const name of candidates) {
-    const val = (window as any)[name]
-    if (val) return val
-  }
-  return undefined
-}
-
-function isProviderAvailable(): boolean {
-  return !!findProvider()
-}
-
-function getAllMethods(obj: any): string[] {
-  const methods = new Set<string>()
-  let current = obj
-  while (current && current !== Object.prototype) {
-    for (const key of Object.getOwnPropertyNames(current)) {
-      if (typeof current[key] === 'function' && key !== 'constructor') {
-        methods.add(key)
-      }
-    }
-    current = Object.getPrototypeOf(current)
-  }
-  return Array.from(methods)
-}
-
-function instantiateProvider(raw: any): any {
-  // Some wallets expose a class that needs `new`
-  if (typeof raw === 'function') {
-    try {
-      return new raw()
-    } catch {
-      // maybe it's already a singleton with static methods
-      return raw
-    }
-  }
-  return raw
-}
-
-async function tryMethod<T>(provider: any, names: string[]): Promise<T | undefined> {
-  for (const name of names) {
-    if (typeof provider[name] === 'function') {
-      return await provider[name]()
-    }
-  }
-  return undefined
-}
+const DEMO_ADDRESS = '018ac72bcc176b6bedc8928772d591b57888c67c0c5d1f31712a3593c2ee582f90'
 
 export const WalletConnect = () => {
   const [input, setInput] = useState('')
-  const [hasExtension, setHasExtension] = useState<boolean | null>(null)
-  const [connecting, setConnecting] = useState(false)
+  const [touched, setTouched] = useState(false)
   const { setWalletAddress, setError } = useAppStore()
 
-  useEffect(() => {
-    const check = () => {
-      setHasExtension(isProviderAvailable())
-    }
-    check()
-    const timer = setTimeout(check, 1500)
-    return () => clearTimeout(timer)
-  }, [])
+  const isValid = validateCasperAddress(input.trim())
+  const showError = touched && input.trim().length > 0 && !isValid
 
-  const handleExtensionConnect = async () => {
-    const raw = findProvider()
-    if (!raw) {
-      setError('Casper Wallet extension not found. Please install it first.')
+  const handleConnect = useCallback(() => {
+    const trimmed = input.trim()
+    if (!trimmed) {
+      setError('Please enter your Casper public key')
+      setTouched(true)
       return
     }
-
-    const provider = instantiateProvider(raw)
-
-    // Debug: log provider details to browser console
-    // eslint-disable-next-line no-console
-    console.log('[Casper Wallet] raw provider:', raw)
-    // eslint-disable-next-line no-console
-    console.log('[Casper Wallet] instantiated provider:', provider)
-    // eslint-disable-next-line no-console
-    console.log('[Casper Wallet] provider type:', typeof raw, '| is function:', typeof raw === 'function')
-    // eslint-disable-next-line no-console
-    console.log('[Casper Wallet] all methods:', getAllMethods(provider))
-
-    setConnecting(true)
+    if (!validateCasperAddress(trimmed)) {
+      setError('Invalid public key. Must be 66-68 characters starting with 01 or 02.')
+      setTouched(true)
+      return
+    }
+    setWalletAddress(trimmed)
     setError(null)
-    try {
-      // Try to check if already connected
-      let isConnected = false
-      const connectedResult = await tryMethod<boolean>(provider, ['isConnected', 'isActive', 'hasConnected'])
-      if (connectedResult !== undefined) {
-        isConnected = connectedResult
-      }
+  }, [input, setWalletAddress, setError])
 
-      // Request connection if not connected
-      if (!isConnected) {
-        const connectResult = await tryMethod<void>(provider, ['requestConnection', 'requestConnect', 'connect', 'requestConnectionToActiveKey'])
-        if (connectResult === undefined) {
-          const methods = getAllMethods(provider).join(', ')
-          setError(`Could not find a connection method. Available methods: ${methods || 'none'}. Raw type: ${typeof raw}. Please connect manually.`)
-          setConnecting(false)
-          return
-        }
-      }
-
-      // Get public key - try multiple method names
-      const publicKey = await tryMethod<string>(provider, ['getActivePublicKey', 'getPublicKey', 'getActiveKey', 'publicKey', 'getSelectedKey'])
-
-      if (publicKey && validateCasperAddress(publicKey)) {
-        setWalletAddress(publicKey)
-      } else if (publicKey) {
-        setError(`Wallet returned an invalid public key: ${publicKey.slice(0, 20)}...`)
-      } else {
-        const methods = getAllMethods(provider).join(', ')
-        setError(`Wallet connected but could not retrieve public key. Available methods: ${methods || 'none'}.`)
-      }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Wallet connection failed'
-      setError(msg)
-    } finally {
-      setConnecting(false)
-    }
-  }
-
-  const handleManualConnect = () => {
-    if (!input.trim()) {
-      setError('Please enter a wallet address')
-      return
-    }
-    if (!validateCasperAddress(input)) {
-      setError('Invalid Casper public key. Must start with 01 (66 chars) or 02 (68 chars).')
-      return
-    }
-    setWalletAddress(input)
+  const handleDemo = useCallback(() => {
+    setInput(DEMO_ADDRESS)
+    setWalletAddress(DEMO_ADDRESS)
     setError(null)
-  }
+  }, [setWalletAddress, setError])
 
   return (
     <div className="w-full max-w-md mx-auto">
-      {/* Main Card */}
+      {/* Glow Card */}
       <div className="relative group">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan/30 via-neon-purple/20 to-neon-blue/30 rounded-xl blur opacity-50 group-hover:opacity-80 transition duration-500" />
-        <div className="relative bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl p-6 transition-all duration-300 hover:border-white/20">
-          {/* Header */}
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan/30 via-neon-purple/20 to-neon-blue/30 rounded-xl blur opacity-60 group-hover:opacity-90 transition duration-500" />
+        <div className="relative bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl p-6 sm:p-8 transition-all duration-300 hover:border-white/20">
+          {/* Icon + Title */}
           <div className="text-center mb-6">
-            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 border border-neon-cyan/30 flex items-center justify-center">
-              {/* Stylized Casper C with dot */}
-              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
-                <path d="M19 8.5C17.5 5.5 14.5 4 12 4C7.5 4 4 7.5 4 12C4 16.5 7.5 20 12 20C14.5 20 17.5 18.5 19 15.5" stroke="url(#casperGrad)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 border border-neon-cyan/30 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none">
+                <path d="M19 8.5C17.5 5.5 14.5 4 12 4C7.5 4 4 7.5 4 12C4 16.5 7.5 20 12 20C14.5 20 17.5 18.5 19 15.5" stroke="url(#wcGrad)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
                 <circle cx="20" cy="5" r="2.2" fill="#06b6d4"/>
                 <defs>
-                  <linearGradient id="casperGrad" x1="4" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+                  <linearGradient id="wcGrad" x1="4" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
                     <stop offset="0%" stopColor="#06b6d4"/>
                     <stop offset="100%" stopColor="#a855f7"/>
                   </linearGradient>
                 </defs>
               </svg>
             </div>
-            <h2 className="text-lg font-semibold text-white mb-1">Connect Wallet</h2>
-            <p className="text-sm text-muted">Choose your preferred connection method</p>
+            <h2 className="text-xl font-semibold text-white mb-1">Connect Your Wallet</h2>
+            <p className="text-sm text-gray-400">Enter your Casper public key to analyze your portfolio</p>
           </div>
 
-          {/* Extension Button */}
-          <button
-            onClick={handleExtensionConnect}
-            disabled={connecting}
-            className="w-full mb-3 px-4 py-3 bg-gradient-to-r from-neon-cyan/20 to-neon-blue/20 border border-neon-cyan/40 text-white text-sm font-medium rounded-lg hover:from-neon-cyan/30 hover:to-neon-blue/30 hover:border-neon-cyan/60 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group/btn"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${hasExtension ? 'bg-green-400' : 'bg-yellow-400'} opacity-75`} />
-              <span className={`relative inline-flex rounded-full h-2 w-2 ${hasExtension ? 'bg-green-500' : 'bg-yellow-500'}`} />
-            </span>
-            {connecting ? 'Connecting...' : hasExtension ? 'Casper Wallet Extension' : 'Install Casper Wallet'}
-          </button>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-4">
-            <div className="flex-1 h-px bg-white/10" />
-            <span className="text-xs text-muted font-mono">OR</span>
-            <div className="flex-1 h-px bg-white/10" />
-          </div>
-
-          {/* Manual Input */}
-          <div className="space-y-3">
+          {/* Input */}
+          <div className="space-y-4">
             <div>
-              <label className="block text-xs font-mono text-muted uppercase mb-1.5">Public Key</label>
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleManualConnect()}
-                placeholder="01abc... (66-68 chars)"
-                className="w-full px-3 py-2.5 bg-white/5 border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-neon-cyan/50 focus:ring-1 focus:ring-neon-cyan/20 transition-all duration-300 font-mono text-sm rounded-lg"
-              />
+              <label className="block text-xs font-mono text-gray-500 uppercase tracking-wider mb-2">
+                Public Key
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => { setInput(e.target.value); setTouched(true) }}
+                  onKeyDown={(e) => e.key === 'Enter' && handleConnect()}
+                  placeholder="01abc... (66-68 characters)"
+                  className={`w-full px-4 py-3 bg-white/5 border text-white placeholder-white/15 focus:outline-none transition-all duration-300 font-mono text-sm rounded-lg ${
+                    showError
+                      ? 'border-red-500/50 focus:border-red-500 focus:ring-1 focus:ring-red-500/20'
+                      : isValid && input.trim()
+                        ? 'border-green-500/50 focus:border-green-500 focus:ring-1 focus:ring-green-500/20'
+                        : 'border-white/10 focus:border-neon-cyan/50 focus:ring-1 focus:ring-neon-cyan/20'
+                  }`}
+                />
+                {isValid && input.trim() && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-400 text-xs">Valid</span>
+                )}
+              </div>
+              {showError && (
+                <p className="mt-2 text-xs text-red-400">
+                  Must be 66-68 characters starting with 01 or 02.
+                </p>
+              )}
             </div>
+
+            {/* Primary CTA */}
             <button
-              onClick={handleManualConnect}
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 text-white text-sm font-medium rounded-lg hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+              onClick={handleConnect}
+              className="w-full px-4 py-3 bg-gradient-to-r from-neon-cyan to-neon-blue text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-neon-cyan/30 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
             >
-              Connect Manually
+              Analyze Portfolio
+            </button>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 my-2">
+              <div className="flex-1 h-px bg-white/10" />
+              <span className="text-[10px] text-gray-500 font-mono uppercase">or try demo</span>
+              <div className="flex-1 h-px bg-white/10" />
+            </div>
+
+            {/* Demo Button */}
+            <button
+              onClick={handleDemo}
+              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 text-gray-300 text-sm font-medium rounded-lg hover:bg-white/10 hover:border-white/20 hover:text-white transition-all duration-300"
+            >
+              Try with Demo Account
             </button>
           </div>
 
-          {/* Mobile App Link */}
-          <div className="mt-4 pt-4 border-t border-white/10 text-center">
+          {/* Helper link */}
+          <div className="mt-5 pt-4 border-t border-white/10 text-center">
             <a
-              href="https://casperwallet.io/"
+              href="https://testnet.cspr.live/tools/faucet"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-muted hover:text-neon-cyan transition-colors"
+              className="text-xs text-gray-500 hover:text-neon-cyan transition-colors"
             >
-              Don&apos;t have a wallet? Get Casper Wallet →
+              Need testnet CSPR? Get tokens from the faucet →
             </a>
           </div>
         </div>
       </div>
 
-      {/* Status indicators */}
-      <div className="mt-4 flex items-center justify-center gap-6 text-xs font-mono text-muted">
+      {/* Footer badges */}
+      <div className="mt-5 flex items-center justify-center gap-6 text-[10px] font-mono text-gray-500">
         <span className="flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
           AI-Powered
