@@ -26,6 +26,28 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
             <span className="text-xs font-mono text-neon-cyan bg-neon-cyan/10 border border-neon-cyan/20 px-1.5 py-0.5 rounded">{sourceLabel}</span>
           </div>
           <p className="text-sm text-gray-300 leading-relaxed">{analysis.summary}</p>
+
+          {/* RWA Exposure Badge */}
+          {typeof analysis.rwaExposurePercent === 'number' && (
+            <div className="mt-4 p-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono text-amber-400">RWA</span>
+                  <span className="text-xs text-gray-400">Recommended allocation</span>
+                </div>
+                <span className="text-sm font-semibold text-amber-300">{analysis.rwaExposurePercent}%</span>
+              </div>
+              <div className="mt-2 w-full bg-white/10 rounded h-1.5 overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-amber-400 to-orange-400 h-full rounded transition-all duration-500"
+                  style={{ width: `${analysis.rwaExposurePercent}%` }}
+                />
+              </div>
+              <p className="mt-2 text-[10px] text-gray-500">
+                Simulated RWA feed: tokenized T-bills, gold, and equities for uncorrelated exposure.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

@@ -1,0 +1,95 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { Activity, Check, Loader2, Terminal } from 'lucide-react'
+
+export interface ActivityStep {
+  id: string
+  label: string
+  status: 'pending' | 'active' | 'complete' | 'error'
+  detail?: string
+  timestamp?: Date
+}
+
+interface AgentActivityLogProps {
+  steps: ActivityStep[]
+}
+
+export const AgentActivityLog = ({ steps }: AgentActivityLogProps) => {
+  const [visibleSteps, setVisibleSteps] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    steps.forEach((step, i) => {
+      if (step.status !== 'pending') {
+        setTimeout(() => {
+          setVisibleSteps(prev => new Set([...prev, step.id]))
+        }, i * 120)
+      }
+    })
+  }, [steps])
+
+  return (
+    <div className="relative group">
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan/20 to-neon-purple/20 rounded-xl blur opacity-50 group-hover:opacity-80 transition duration-500" />
+      <div className="relative bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Terminal className="w-4 h-4 text-neon-cyan" />
+          <h2 className="text-sm font-semibold text-white">Agent Activity Log</h2>
+          <Activity className="w-3 h-3 text-green-400 animate-pulse ml-auto" />
+        </div>
+
+        <div className="space-y-3">
+          {steps.map((step) => {
+            const isVisible = visibleSteps.has(step.id)
+            return (
+              <div
+                key={step.id}
+                className={`flex items-start gap-3 transition-all duration-500 ${
+                  isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
+                }`}
+              >
+                <div className="mt-0.5 flex-shrink-0">
+                  {step.status === 'pending' && (
+                    <div className="w-4 h-4 rounded-full border border-white/20" />
+                  )}
+                  {step.status === 'active' && (
+                    <Loader2 className="w-4 h-4 text-neon-cyan animate-spin" />
+                  )}
+                  {step.status === 'complete' && (
+                    <Check className="w-4 h-4 text-green-400" />
+                  )}
+                  {step.status === 'error' && (
+                    <div className="w-4 h-4 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center">
+                      <span className="text-[8px] text-red-400 font-bold">!</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <p className={`text-xs font-medium ${
+                    step.status === 'complete' ? 'text-gray-300' :
+                    step.status === 'active' ? 'text-neon-cyan' :
+                    step.status === 'error' ? 'text-red-400' : 'text-gray-500'
+                  }`}>
+                    {step.label}
+                  </p>
+                  {step.detail && (
+                    <p className="text-[10px] text-gray-500 font-mono mt-0.5 truncate">
+                      {step.detail}
+                    </p>
+                  )}
+                </div>
+
+                {step.timestamp && (
+                  <span className="text-[10px] font-mono text-gray-600 flex-shrink-0">
+                    {step.timestamp.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  </span>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}

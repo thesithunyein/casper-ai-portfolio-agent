@@ -231,6 +231,22 @@ export const getTransactionExplorerUrl = (transactionHash: string): string =>
 export const getContractExplorerUrl = (contractHash: string): string =>
   `${EXPLORER_BASE_URL}/contract/${contractHash}`
 
+export interface RWAAsset {
+  symbol: string
+  name: string
+  category: 't_bill' | 'gold' | 'equity' | 'reit'
+  priceUsd: number
+  change24h: number
+  source: string
+  simulated: boolean
+}
+
+export interface RWAPriceFeed {
+  assets: RWAAsset[]
+  timestamp: string
+  feedLabel: string
+}
+
 export interface AIAnalysis {
   summary: string
   riskAssessment: string
@@ -240,6 +256,8 @@ export interface AIAnalysis {
     targetAllocation: Record<string, number>
     reasoning: string
   }
+  /** Percentage of portfolio recommended to be in tokenized RWA assets */
+  rwaExposurePercent?: number
   x402Status?: 'settled' | 'verified' | 'optional'
   /** 'openai' = live OpenAI, 'claude' = live Claude, 'heuristic' = deterministic demo fallback */
   analysisSource?: 'openai' | 'claude' | 'heuristic'

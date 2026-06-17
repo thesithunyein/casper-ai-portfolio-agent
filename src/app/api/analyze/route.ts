@@ -18,6 +18,8 @@ interface AnalysisPayload {
     targetAllocation: Record<string, number>
     reasoning: string
   }
+  /** Recommended allocation to tokenized real-world assets (0-100) */
+  rwaExposurePercent: number
 }
 
 /**
@@ -52,6 +54,13 @@ function buildHeuristicAnalysis(portfolio: Portfolio): AnalysisPayload {
     targetAllocation[assets[0].symbol] += drift
   }
 
+  // RWA allocation recommendation: higher when crypto concentration is high
+  const rwaExposurePercent = concentrated
+    ? Math.min(25, Math.round((topPct - 40) * 0.8))
+    : stablePct > 40
+      ? 5
+      : 10
+
   return {
     summary: `This portfolio holds ${
       assets.length
@@ -76,29 +85,33 @@ function buildHeuristicAnalysis(portfolio: Portfolio): AnalysisPayload {
       stablePct < 30
         ? 'Raise stablecoin allocation toward 30% to buffer volatility.'
         : 'Stablecoin buffer is healthy; consider deploying excess into yield.',
+      rwaExposurePercent > 5
+        ? `Consider allocating ${rwaExposurePercent}% to tokenized RWA (T-bills, gold) for uncorrelated, low-volatility exposure.`
+        : 'Maintain a small RWA allocation (5-10%) for portfolio stability.',
       'Set rebalancing thresholds (e.g. ±5%) so the agent can act autonomously.',
-      'Monitor CSPR price action and CEP-18 liquidity before large reallocations.',
       'Persist this analysis on-chain via the Odra contract for an auditable record.',
     ],
     rebalancingSuggestion: {
       action: concentrated
-        ? `Reduce ${top?.symbol} and redistribute into stablecoins and underweight assets.`
+        ? `Reduce ${top?.symbol} and redistribute into stablecoins, underweight assets, and tokenized RWA.`
         : 'Hold current allocation with minor periodic rebalancing.',
       targetAllocation,
       reasoning: concentrated
-        ? 'Lowering the dominant position and lifting stablecoins reduces variance while keeping upside exposure.'
+        ? 'Lowering the dominant position and lifting stablecoins plus a small RWA allocation reduces variance while keeping upside exposure.'
         : 'The current mix is already balanced; periodic rebalancing maintains target weights as prices move.',
     },
+    rwaExposurePercent,
   }
 }
 
-const SYSTEM_PROMPT = `You are a professional DeFi portfolio analyst specializing in the Casper Network ecosystem. Analyze the provided portfolio data and return a structured JSON response.
+const SYSTEM_PROMPT = `You are a professional DeFi portfolio analyst specializing in the Casper Network ecosystem. You also evaluate tokenized Real-World Assets (RWA) such as T-bills, gold, and equities for portfolio diversification.
 
 Your analysis should include:
 1. A concise portfolio summary (2-3 sentences)
 2. A risk assessment evaluating concentration risk, volatility exposure, and diversification
 3. 5 specific, actionable recommendations tailored to the portfolio composition
 4. A rebalancing suggestion with target allocation percentages and detailed reasoning
+5. A rwa_exposure_percent field (0-100) recommending how much of the portfolio should be in tokenized RWA assets — higher when crypto concentration risk is elevated
 
 Return ONLY valid JSON in this exact format:
 {
@@ -109,11 +122,20 @@ Return ONLY valid JSON in this exact format:
     "action": "string",
     "targetAllocation": { "CSPR": number, "USDC": number, "USDT": number, "WETH": number },
     "reasoning": "string"
-  }
+  },
+  "rwaExposurePercent": number
 }`
 
+interface RWAContext {
+  assets: { symbol: string; name: string; priceUsd: number; change24h: number }[]
+}
+
 /** Shared user prompt describing the portfolio for any LLM provider. */
-function buildUserPrompt(portfolio: Portfolio, paymentVerified: boolean): string {
+function buildUserPrompt(
+  portfolio: Portfolio,
+  paymentVerified: boolean,
+  rwaPrices?: RWAContext | null
+): string {
   const portfolioText = portfolio.assets
     .map(
       (a) =>
@@ -123,13 +145,22 @@ function buildUserPrompt(portfolio: Portfolio, paymentVerified: boolean): string
     )
     .join('\n')
 
+  const rwaText = rwaPrices
+    ? `\nAvailable tokenized RWA assets (Simulated Oracle Feed):\n${rwaPrices.assets
+        .map(
+          (a) =>
+            `- ${a.symbol}: ${a.name} — $${a.priceUsd.toFixed(2)} (${a.change24h >= 0 ? '+' : ''}${a.change24h.toFixed(2)}% 24h)`
+        )
+        .join('\n')}`
+    : ''
+
   return `Analyze this Casper Network portfolio:
 
 Total Value: $${portfolio.totalValue.toFixed(2)}
 Wallet: ${portfolio.walletAddress}
 
 Assets:
-${portfolioText}
+${portfolioText}${rwaText}
 
 ${paymentVerified ? 'Note: This user has paid 0.01 CSPR via x402 micropayments for premium analysis.' : ''}`
 }
@@ -219,9 +250,14 @@ export async function POST(request: Request) {
     const paymentVerified =
       x402Settlement === 'settled' || x402Settlement === 'verified'
 
+    // RWA oracle prices passed from client for AI context
+    const rwaPrices = (body as Record<string, unknown>)?.rwaPrices as
+      | RWAContext
+      | undefined
+
     let analysis: AnalysisPayload | null = null
     let analysisSource: 'openai' | 'claude' | 'heuristic' = 'heuristic'
-    const userPrompt = buildUserPrompt(portfolio, paymentVerified)
+    const userPrompt = buildUserPrompt(portfolio, paymentVerified, rwaPrices)
 
     // Provider priority: OpenAI -> Claude -> deterministic heuristic.
     if (process.env.OPENAI_API_KEY) {

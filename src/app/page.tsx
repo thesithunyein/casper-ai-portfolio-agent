@@ -15,6 +15,9 @@ import { LoadingState } from '@/components/LoadingState'
 import { ErrorState } from '@/components/ErrorState'
 import { Logo } from '@/components/Logo'
 import { AgentChat } from '@/components/AgentChat'
+import { AgentActivityLog } from '@/components/AgentActivityLog'
+import { RoadmapSection } from '@/components/RoadmapSection'
+import { AppFooter } from '@/components/AppFooter'
 
 export default function Home() {
   const {
@@ -23,10 +26,15 @@ export default function Home() {
     analysis,
     loading,
     error,
+    activityLog,
     setPortfolio,
     setAnalysis,
     setLoading,
     setError,
+    setActivityLog,
+    appendActivityStep,
+    updateActivityStep,
+    setRwaPrices,
     reset,
   } = useAppStore()
 
@@ -36,8 +44,19 @@ export default function Home() {
     setLoading(true)
     setError(null)
 
+    // Initialize agent activity log
+    const now = new Date()
+    setActivityLog([
+      { id: 'fetch', label: 'Fetching portfolio from CSPR.cloud', status: 'active', timestamp: now },
+      { id: 'rwa', label: 'Checking RWA oracle feed', status: 'pending' },
+      { id: 'x402', label: 'Verifying x402 micropayment', status: 'pending' },
+      { id: 'analyze', label: 'Running AI risk analysis', status: 'pending' },
+      { id: 'onchain', label: 'Signing on-chain transaction', status: 'pending' },
+      { id: 'submit', label: 'Submitting to Casper Testnet', status: 'pending' },
+    ])
+
     try {
-      // Fetch portfolio via our server route (CSPR.cloud blocks browser CORS)
+      // Step 1: Fetch portfolio via our server route (CSPR.cloud blocks browser CORS)
       const portfolioRes = await fetch(
         `/api/portfolio?address=${encodeURIComponent(walletAddress)}`
       )
@@ -46,24 +65,53 @@ export default function Home() {
         throw new Error(err.error || 'Failed to fetch portfolio')
       }
       const portfolioData = await portfolioRes.json()
-      // Re-hydrate the Date that was serialized to a string over JSON
       portfolioData.lastUpdated = new Date(portfolioData.lastUpdated)
       setPortfolio(portfolioData)
+      updateActivityStep('fetch', {
+        status: 'complete',
+        detail: `${portfolioData.assets.length} assets, $${portfolioData.totalValue.toFixed(2)}`,
+        timestamp: new Date(),
+      })
 
-      // Agent pays for its own analysis via an x402 micropayment header
+      // Step 2: Fetch simulated RWA oracle prices
+      updateActivityStep('rwa', { status: 'active', timestamp: new Date() })
+      const rwaRes = await fetch('/api/rwa-oracle')
+      let rwaData = null
+      if (rwaRes.ok) {
+        rwaData = await rwaRes.json()
+        setRwaPrices(rwaData)
+      }
+      updateActivityStep('rwa', {
+        status: 'complete',
+        detail: rwaData ? `${rwaData.assets.length} RWA assets (Simulated)` : 'RWA feed unavailable',
+        timestamp: new Date(),
+      })
+
+      // Step 3: x402 micropayment
+      updateActivityStep('x402', { status: 'active', timestamp: new Date() })
       const payment = await createX402Payment(
         ANALYSIS_COST_CSPR,
         ANALYSIS_RECIPIENT,
         'Portfolio AI Analysis'
       )
+      updateActivityStep('x402', {
+        status: 'complete',
+        detail: `${ANALYSIS_COST_CSPR} CSPR via x402`,
+        timestamp: new Date(),
+      })
 
+      // Step 4: Run AI analysis with RWA context
+      updateActivityStep('analyze', { status: 'active', timestamp: new Date() })
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x402-payment': buildX402HeaderValue(payment),
         },
-        body: JSON.stringify({ portfolio: portfolioData }),
+        body: JSON.stringify({
+          portfolio: portfolioData,
+          rwaPrices: rwaData,
+        }),
       })
 
       if (!response.ok) {
@@ -73,14 +121,51 @@ export default function Home() {
 
       const aiAnalysis = await response.json()
       setAnalysis(aiAnalysis)
+      updateActivityStep('analyze', {
+        status: 'complete',
+        detail: `Source: ${aiAnalysis.analysisSource || 'heuristic'}`,
+        timestamp: new Date(),
+      })
+
+      // Step 5-6: On-chain recording
+      if (aiAnalysis.onchain) {
+        updateActivityStep('onchain', {
+          status: 'complete',
+          detail: `Hash: ${aiAnalysis.onchain.transactionHash.slice(0, 16)}…`,
+          timestamp: new Date(),
+        })
+        updateActivityStep('submit', {
+          status: 'complete',
+          detail: 'Confirmed on Casper Testnet',
+          timestamp: new Date(),
+        })
+      } else {
+        updateActivityStep('onchain', {
+          status: 'complete',
+          detail: 'Agent key not configured',
+          timestamp: new Date(),
+        })
+        updateActivityStep('submit', {
+          status: 'complete',
+          detail: 'On-chain write skipped',
+          timestamp: new Date(),
+        })
+      }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'An error occurred'
       setError(errorMessage)
+      appendActivityStep({
+        id: 'error',
+        label: 'Analysis failed',
+        status: 'error',
+        detail: errorMessage,
+        timestamp: new Date(),
+      })
     } finally {
       setLoading(false)
     }
-  }, [walletAddress, setPortfolio, setAnalysis, setLoading, setError])
+  }, [walletAddress, setPortfolio, setAnalysis, setLoading, setError, setActivityLog, updateActivityStep, appendActivityStep, setRwaPrices])
 
   if (loading) {
     return (
@@ -128,6 +213,7 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <a href="#features" className="hidden sm:block text-sm font-medium text-muted hover:text-white transition-colors duration-300">Features</a>
               <a href="#how-it-works" className="hidden sm:block text-sm font-medium text-muted hover:text-white transition-colors duration-300">How It Works</a>
+              <a href="#roadmap" className="hidden sm:block text-sm font-medium text-muted hover:text-white transition-colors duration-300">Roadmap</a>
               <a href="#faq" className="hidden sm:block text-sm font-medium text-muted hover:text-white transition-colors duration-300">FAQ</a>
               <a href="#docs" className="hidden sm:block text-sm font-medium text-muted hover:text-white transition-colors duration-300">Docs</a>
               <button
@@ -199,6 +285,7 @@ export default function Home() {
                 <div className="space-y-1.5">
                   <p><span className="text-gray-600">14:32:01</span> <span className="text-neon-blue">INFO</span> <span className="text-gray-300">Portfolio fetch initiated</span></p>
                   <p><span className="text-gray-600">14:32:02</span> <span className="text-neon-blue">INFO</span> <span className="text-gray-300">Connected to CSPR.cloud API</span></p>
+                  <p><span className="text-gray-600">14:32:02</span> <span className="text-neon-blue">INFO</span> <span className="text-gray-300">RWA oracle: TBILL $99.87, XAU $2,345.60</span></p>
                   <p><span className="text-gray-600">14:32:03</span> <span className="text-yellow-400">WARN</span> <span className="text-gray-300">CSPR concentration 78% — above threshold</span></p>
                   <p><span className="text-gray-600">14:32:04</span> <span className="text-neon-blue">INFO</span> <span className="text-gray-300">AI analysis: OpenAI GPT-4o</span></p>
                   <p><span className="text-gray-600">14:32:05</span> <span className="text-green-400">OK</span> <span className="text-gray-300">store_analysis recorded on-chain</span></p>
@@ -327,6 +414,9 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Roadmap Section */}
+        <RoadmapSection />
+
         {/* Connect Wallet Section */}
         <section id="wallet-section" className="relative z-10 py-20 px-4 md:px-6 border-t border-white/10">
           <div className="max-w-2xl mx-auto text-center">
@@ -337,21 +427,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="relative z-10 bg-galaxy-900/80 backdrop-blur-md border-t border-white/10 py-8 px-4 md:px-6">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-medium text-gray-300">Casper Agentic Buildathon 2026</p>
-              <p className="text-xs text-gray-500 mt-1">Powered by OpenAI, x402, and Casper Network</p>
-            </div>
-            <div className="flex items-center gap-3 text-xs font-mono text-gray-500">
-              <span>Testnet</span>
-              <span className="text-gray-700">|</span>
-              <a href="https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contract</a>
-              <span className="text-gray-700">|</span>
-              <a href="https://github.com/thesithunyein/casper-ai-portfolio-agent" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
-            </div>
-          </div>
-        </footer>
+        <AppFooter />
       </main>
     )
   }
@@ -422,13 +498,14 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-6">
                 <PortfolioDisplay portfolio={portfolio} />
+                {activityLog.length > 0 && <AgentActivityLog steps={activityLog} />}
                 {analysis && <AIAnalysisComponent analysis={analysis} />}
               </div>
-              <div className="lg:sticky lg:top-20">
-                <AgentChat 
-                  portfolio={portfolio} 
-                  analysis={analysis} 
-                  onAnalyze={handleAnalyze} 
+              <div className="lg:sticky lg:top-20 space-y-6">
+                <AgentChat
+                  portfolio={portfolio}
+                  analysis={analysis}
+                  onAnalyze={handleAnalyze}
                 />
               </div>
             </div>
