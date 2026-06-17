@@ -40,8 +40,8 @@ export const WalletConnect = () => {
     <div className="w-full max-w-md mx-auto">
       {/* Glow Card */}
       <div className="relative group">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan/30 via-neon-purple/20 to-neon-blue/30 rounded-xl blur opacity-60 group-hover:opacity-90 transition duration-500" />
-        <div className="relative bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl p-6 sm:p-8 transition-all duration-300 hover:border-white/20">
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan/20 via-neon-purple/15 to-neon-blue/20 rounded-xl blur opacity-40 group-hover:opacity-70 transition duration-700" />
+        <div className="relative bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl p-6 sm:p-8 transition-all duration-500 hover:border-white/15 card-lift">
           {/* Icon + Title */}
           <div className="text-center mb-6">
             <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 border border-neon-cyan/30 flex items-center justify-center">
@@ -97,22 +97,22 @@ export const WalletConnect = () => {
             {/* Primary CTA */}
             <button
               onClick={handleConnect}
-              className="w-full px-4 py-3 bg-gradient-to-r from-neon-cyan to-neon-blue text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-neon-cyan/30 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+              className="w-full px-4 py-3.5 bg-gradient-to-r from-neon-cyan to-neon-blue text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-neon-cyan/25 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0"
             >
               Analyze Portfolio
             </button>
 
             {/* Divider */}
-            <div className="flex items-center gap-3 my-2">
+            <div className="flex items-center gap-3 my-1">
               <div className="flex-1 h-px bg-white/10" />
-              <span className="text-[10px] text-gray-500 font-mono uppercase">or try demo</span>
+              <span className="text-[10px] text-gray-500 font-mono uppercase tracking-wider">or try demo</span>
               <div className="flex-1 h-px bg-white/10" />
             </div>
 
             {/* Demo Button */}
             <button
               onClick={handleDemo}
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 text-gray-300 text-sm font-medium rounded-lg hover:bg-white/10 hover:border-white/20 hover:text-white transition-all duration-300"
+              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 text-gray-300 text-sm font-medium rounded-xl hover:bg-white/10 hover:border-white/20 hover:text-white transition-all duration-300 active:scale-[0.98]"
             >
               Try with Demo Account
             </button>

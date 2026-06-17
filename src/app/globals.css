@@ -23,10 +23,39 @@ body {
   color: #e2e8f0;
 }
 
-/* Dense, sharp typography */
+/* Apple-quality typography */
 h1, h2, h3, h4 {
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   font-weight: 600;
+  text-wrap: pretty;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Smooth button / interactive press */
+button, a, [role="button"] {
+  transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.2s ease,
+              box-shadow 0.3s ease,
+              border-color 0.3s ease,
+              background-color 0.3s ease;
+}
+
+button:active, a:active {
+  transform: scale(0.97);
+}
+
+/* Subtle hover lift for cards */
+.card-lift {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s ease,
+              border-color 0.3s ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-3px);
 }
 
 /* Functional scrollbar - dark theme */
@@ -45,21 +74,58 @@ h1, h2, h3, h4 {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* Focus ring */
+/* Focus ring with smooth transition */
 :focus-visible {
   outline: 2px solid #06b6d4;
   outline-offset: 1px;
   border-radius: 2px;
+  transition: outline-offset 0.15s ease;
 }
 
-/* Minimal fade */
+/* Apple-quality fade with cubic-bezier */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: fadeIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Staggered children entrance */
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+
+/* Shimmer skeleton loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.03) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Slide up with spring easing */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  opacity: 0;
 }
 
 /* Terminal cursor blink */

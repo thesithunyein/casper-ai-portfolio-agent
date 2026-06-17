@@ -163,7 +163,7 @@ export default function Home() {
                     const element = document.getElementById('wallet-section')
                     element?.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="px-6 py-3 bg-gradient-to-r from-neon-cyan to-neon-blue text-white text-sm font-medium rounded-lg hover:shadow-lg hover:shadow-neon-cyan/30 transition-all duration-300 hover:-translate-y-0.5"
+                  className="px-6 py-3.5 bg-gradient-to-r from-neon-cyan to-neon-blue text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-neon-cyan/25 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.97] active:translate-y-0"
                 >
                   Start Analyzing
                 </button>
@@ -218,16 +218,16 @@ export default function Home() {
               <h2 className="text-3xl font-bold text-white mb-3">Capabilities</h2>
               <p className="text-sm text-muted max-w-md mx-auto">What the agent does on your behalf.</p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
               {[
                 { badge: 'AI', title: 'Portfolio Analysis', desc: 'OpenAI GPT-4o analyzes holdings and generates risk assessments in real-time.', color: 'from-neon-cyan/20 to-neon-blue/20' },
                 { badge: 'AG', title: 'Agent Chat', desc: 'Conversational interface for portfolio queries and agent-directed actions.', color: 'from-neon-purple/20 to-neon-pink/20' },
                 { badge: '$0', title: 'x402 Micropayments', desc: 'Agent pays per-analysis fees via Casper\'s x402 payment protocol.', color: 'from-neon-blue/20 to-neon-cyan/20' },
                 { badge: 'CH', title: 'On-Chain Storage', desc: 'Analysis records persisted to Casper Testnet via Odra smart contract.', color: 'from-neon-pink/20 to-neon-purple/20' },
               ].map((feat, i) => (
-                <div key={i} className="group relative">
+                <div key={i} className="group relative animate-fade-in">
                   <div className={`absolute -inset-0.5 bg-gradient-to-r ${feat.color} rounded-xl blur opacity-0 group-hover:opacity-60 transition duration-500`} />
-                  <div className="relative bg-galaxy-800/60 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-white/20 transition-all duration-300 hover:-translate-y-1">
+                  <div className="relative bg-galaxy-800/60 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-white/20 transition-all duration-300 card-lift">
                     <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 border border-neon-cyan/20 flex items-center justify-center text-xs font-mono font-bold text-neon-cyan mb-4">{feat.badge}</div>
                     <h3 className="text-sm font-semibold text-white mb-2">{feat.title}</h3>
                     <p className="text-xs text-gray-400 leading-relaxed">{feat.desc}</p>
@@ -245,16 +245,16 @@ export default function Home() {
               <h2 className="text-3xl font-bold text-white mb-3">How It Works</h2>
               <p className="text-sm text-muted max-w-md mx-auto">Four steps from connection to autonomous action.</p>
             </div>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-6 stagger-children">
               {[
                 { num: '01', title: 'Connect Wallet', desc: 'Use Casper Wallet extension or enter your public key manually. No private keys ever required.' },
                 { num: '02', title: 'Fetch Balances', desc: 'Real-time portfolio data pulled from CSPR.cloud API across all your token holdings.' },
                 { num: '03', title: 'AI Analysis', desc: 'GPT-4o generates a complete risk profile and rebalancing suggestions tailored to your allocation.' },
                 { num: '04', title: 'On-Chain Action', desc: 'Agent records analysis to the Odra contract and optionally executes autonomous rebalancing transfers.' },
               ].map((step, i) => (
-                <div key={i} className="group relative">
+                <div key={i} className="group relative animate-fade-in">
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan/10 to-neon-purple/10 rounded-xl blur opacity-0 group-hover:opacity-50 transition duration-500" />
-                  <div className="relative bg-galaxy-800/60 backdrop-blur-sm border border-white/10 rounded-xl p-6 flex items-start gap-4 hover:border-white/20 transition-all duration-300">
+                  <div className="relative bg-galaxy-800/60 backdrop-blur-sm border border-white/10 rounded-xl p-6 flex items-start gap-4 hover:border-white/20 transition-all duration-300 card-lift">
                     <span className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 border border-neon-cyan/20 flex items-center justify-center text-sm font-mono font-bold text-neon-cyan">{step.num}</span>
                     <div>
                       <h3 className="text-sm font-semibold text-white mb-1">{step.title}</h3>
