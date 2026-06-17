@@ -14,9 +14,12 @@ export default function ComingSoon() {
       {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-galaxy-900/80 backdrop-blur-md border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity duration-300">
-            <Logo className="w-6 h-6" />
-            <span className="font-semibold text-sm text-white tracking-tight">Casper Agent</span>
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-neon-cyan/30 to-neon-purple/30 rounded-lg blur opacity-0 group-hover:opacity-60 transition duration-500" />
+              <Logo className="relative w-7 h-7" />
+            </div>
+            <span className="font-semibold text-sm text-white tracking-tight group-hover:text-neon-cyan transition-colors duration-300">Casper Agent</span>
           </Link>
         </div>
       </nav>
