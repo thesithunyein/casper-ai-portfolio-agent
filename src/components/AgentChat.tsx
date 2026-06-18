@@ -111,15 +111,14 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
 
   return (
     <div className="relative group">
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan/20 to-neon-purple/20 rounded-xl blur opacity-50 group-hover:opacity-80 transition duration-500" />
-      <div className="relative bg-galaxy-800/80 backdrop-blur-md border border-white/10 rounded-xl flex flex-col h-[420px]">
+      <div className="relative bg-white border border-border rounded-xl flex flex-col h-[420px] shadow-sm">
         {/* Header */}
-        <div className="px-4 py-3 bg-gradient-to-r from-galaxy-800 to-galaxy-700 border-b border-white/10 rounded-t-xl">
+        <div className="px-4 py-3 bg-slate-50 border-b border-border rounded-t-xl">
           <div className="flex items-center gap-2">
-            <span className="w-6 h-6 bg-gradient-to-br from-neon-cyan to-neon-purple text-white flex items-center justify-center text-[10px] font-mono font-bold rounded">AI</span>
+            <span className="w-6 h-6 bg-primary text-white flex items-center justify-center text-[10px] font-mono font-bold rounded">AI</span>
             <div>
-              <h3 className="text-xs font-semibold text-white">Agent</h3>
-              <p className="text-[10px] font-mono text-neon-cyan">Online • x402</p>
+              <h3 className="text-xs font-semibold text-slate-900">Agent</h3>
+              <p className="text-[10px] font-mono text-primary">Online • x402</p>
             </div>
           </div>
         </div>
@@ -129,15 +128,15 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
           {messages.map((msg) => (
             <div key={msg.id} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
               <div className={`w-6 h-6 flex items-center justify-center flex-shrink-0 text-[10px] font-mono font-bold rounded ${
-                msg.role === 'agent' ? 'bg-gradient-to-br from-neon-cyan to-neon-purple text-white' : 'bg-white/10 border border-white/10 text-white'
+                msg.role === 'agent' ? 'bg-primary text-white' : 'bg-slate-100 border border-border text-slate-700'
               }`}>
                 {msg.role === 'agent' ? 'AI' : 'U'}
               </div>
               <div className={`max-w-[80%] space-y-1.5 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                 <div className={`px-3 py-2 text-sm rounded-lg ${
                   msg.role === 'agent'
-                    ? 'bg-white/5 border border-white/10 text-gray-300'
-                    : 'bg-gradient-to-r from-neon-cyan to-neon-blue text-white'
+                    ? 'bg-slate-50 border border-border text-slate-700'
+                    : 'bg-primary text-white'
                 }`}>
                   <p className="whitespace-pre-line leading-relaxed">{msg.content}</p>
                 </div>
@@ -147,7 +146,7 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
                       <button
                         key={idx}
                         onClick={() => handleAction(action)}
-                        className="px-2 py-1 bg-white/5 border border-white/10 text-xs font-medium text-gray-300 hover:bg-neon-cyan/20 hover:border-neon-cyan/30 hover:text-white transition-all duration-300 rounded"
+                        className="px-2 py-1 bg-slate-50 border border-border text-xs font-medium text-slate-600 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300 rounded"
                       >
                         {action.label}
                       </button>
@@ -159,8 +158,8 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
           ))}
           {isTyping && (
             <div className="flex gap-2">
-              <span className="w-6 h-6 bg-gradient-to-br from-neon-cyan to-neon-purple text-white flex items-center justify-center text-[10px] font-mono font-bold rounded">AI</span>
-              <div className="bg-white/5 border border-white/10 px-3 py-2 text-xs text-muted rounded-lg">
+              <span className="w-6 h-6 bg-primary text-white flex items-center justify-center text-[10px] font-mono font-bold rounded">AI</span>
+              <div className="bg-slate-50 border border-border px-3 py-2 text-xs text-muted rounded-lg">
                 Thinking<span className="terminal-cursor">_</span>
               </div>
             </div>
@@ -169,7 +168,7 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
         </div>
 
         {/* Input */}
-        <div className="p-3 border-t border-white/10 bg-galaxy-800/50 rounded-b-xl">
+        <div className="p-3 border-t border-border bg-slate-50 rounded-b-xl">
           <div className="flex gap-2">
             <input
               type="text"
@@ -177,11 +176,11 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Ask anything..."
-              className="flex-1 px-3 py-2 bg-white/5 border border-white/10 text-sm text-white placeholder-white/20 focus:outline-none focus:border-neon-cyan/50 focus:ring-1 focus:ring-neon-cyan/20 transition-all duration-300 rounded-lg"
+              className="flex-1 px-3 py-2 bg-white border border-border text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-300 rounded-lg"
             />
             <button
               onClick={handleSend}
-              className="px-3 py-2 bg-gradient-to-r from-neon-cyan to-neon-blue text-white hover:opacity-90 transition-opacity rounded-lg"
+              className="px-3 py-2 bg-primary text-white hover:bg-blue-700 transition-all rounded-lg"
             >
               <Send className="w-3 h-3" />
             </button>

@@ -10,7 +10,7 @@
 
 html {
   scroll-behavior: smooth;
-  background: #05050a;
+  background: #ffffff;
   scroll-padding-top: 4rem;
 }
 
@@ -19,8 +19,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  background: #05050a;
-  color: #e2e8f0;
+  background: #ffffff;
+  color: #0f172a;
 }
 
 /* Apple-quality typography */
@@ -138,37 +138,22 @@ button:active, a:active {
   animation: cursorBlink 1s step-end infinite;
 }
 
-/* ===== PREMIUM DARK BACKGROUND ===== */
+/* ===== LIGHT BACKGROUND ===== */
 .galaxy-bg {
   position: fixed;
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(ellipse at 15% 50%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 85% 30%, rgba(6, 182, 212, 0.04) 0%, transparent 50%),
-    linear-gradient(180deg, #05050a 0%, #08080f 50%, #05050a 100%);
+    radial-gradient(ellipse at 15% 50%, rgba(37, 99, 235, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 30%, rgba(6, 182, 212, 0.03) 0%, transparent 50%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
   overflow: hidden;
-}
-
-.galaxy-bg::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(1px 1px at 200px 100px, rgba(255,255,255,0.15), transparent),
-    radial-gradient(1px 1px at 600px 300px, rgba(255,255,255,0.1), transparent),
-    radial-gradient(1px 1px at 900px 150px, rgba(255,255,255,0.12), transparent),
-    radial-gradient(1px 1px at 1200px 400px, rgba(255,255,255,0.08), transparent);
-  background-size: 1400px 500px;
-  background-repeat: repeat;
-  opacity: 0.4;
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
-  .terminal-cursor,
-  .galaxy-bg::before {
+  .terminal-cursor {
     animation: none;
   }
 }
