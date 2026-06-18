@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
+import { WaveBackground } from '@/components/WaveBackground'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -39,6 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${ibmPlexMono.variable} font-sans bg-galaxy-900 text-white antialiased`}>
+        <WaveBackground />
         {children}
       </body>
     </html>

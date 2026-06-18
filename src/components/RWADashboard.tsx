@@ -28,11 +28,14 @@ export const RWADashboard = () => {
     return () => clearInterval(interval)
   }, [])
 
-  const formatYield = (val: number) =>
-    val > 0 ? `${val.toFixed(2)}% APY` : '—'
-  const formatPrice = (val: number) =>
-    val > 0 ? `$${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—'
-  const formatChange = (val: number) => {
+  const formatYield = (val: number | undefined | null) =>
+    typeof val === 'number' && !isNaN(val) ? `${val.toFixed(2)}% APY` : '—'
+  const formatPrice = (val: number | undefined | null) =>
+    typeof val === 'number' && !isNaN(val)
+      ? `$${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      : '—'
+  const formatChange = (val: number | undefined | null) => {
+    if (typeof val !== 'number' || isNaN(val)) return '—'
     const sign = val >= 0 ? '+' : ''
     return `${sign}${val.toFixed(2)}%`
   }
@@ -74,7 +77,7 @@ export const RWADashboard = () => {
             ) : (
               <>
                 <p className="text-xl font-bold text-slate-900">
-                  {formatYield(data?.tbill.yield ?? 0)}
+                  {formatYield(data?.tbill?.yield)}
                 </p>
                 <p className="text-[10px] text-slate-400 mt-1">via Treasury.gov</p>
               </>
@@ -107,10 +110,10 @@ export const RWADashboard = () => {
             ) : (
               <>
                 <p className="text-xl font-bold text-slate-900">
-                  {formatPrice(data?.paxg.price ?? 0)}
+                  {formatPrice(data?.paxg?.price)}
                 </p>
-                <p className={`text-xs font-medium mt-1 ${(data?.paxg.change24h ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                  {formatChange(data?.paxg.change24h ?? 0)} 24h
+                <p className={`text-xs font-medium mt-1 ${(data?.paxg?.change24h ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                  {formatChange(data?.paxg?.change24h)} 24h
                 </p>
                 <p className="text-[10px] text-slate-400 mt-1">via CoinGecko</p>
               </>
@@ -143,10 +146,10 @@ export const RWADashboard = () => {
             ) : (
               <>
                 <p className="text-xl font-bold text-slate-900">
-                  {formatPrice(data?.ondo.price ?? 0)}
+                  {formatPrice(data?.ondo?.price)}
                 </p>
-                <p className={`text-xs font-medium mt-1 ${(data?.ondo.change24h ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                  {formatChange(data?.ondo.change24h ?? 0)} 24h
+                <p className={`text-xs font-medium mt-1 ${(data?.ondo?.change24h ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                  {formatChange(data?.ondo?.change24h)} 24h
                 </p>
                 <p className="text-[10px] text-slate-400 mt-1">via CoinGecko</p>
               </>
