@@ -10,7 +10,6 @@
 
 html {
   scroll-behavior: smooth;
-  background: #ffffff;
   scroll-padding-top: 4rem;
 }
 
@@ -19,7 +18,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  background: #ffffff;
   color: #0f172a;
 }
 
@@ -151,21 +149,11 @@ button:active, a:active {
 }
 
 /* ===== ANIMATED WAVE BACKGROUND ===== */
-@keyframes waveSlide {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-@keyframes pulseOrb {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.2); opacity: 0.8; }
-}
-
-@keyframes floatBubble {
-  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
-  25% { transform: translateY(-30px) translateX(15px); opacity: 0.6; }
-  50% { transform: translateY(-15px) translateX(-15px); opacity: 0.4; }
-  75% { transform: translateY(-40px) translateX(10px); opacity: 0.7; }
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
 }
 
 /* Reduced motion support */

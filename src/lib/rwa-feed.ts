@@ -74,7 +74,7 @@ async function fetchTBillYield(): Promise<{
   const url =
     'https://api.fiscaldata.treasury.gov/services/api/v1/accounting/od/avg_interest_rates?fields=record_date,avg_interest_rate_amt&filter=security_desc:eq:Treasury%20Bills&sort=-record_date&page[size]=1'
 
-  const res = await fetchWithTimeout(url, 3_000)
+  const res = await fetchWithTimeout(url, 8_000)
   if (!res || !res.ok) return null
 
   try {

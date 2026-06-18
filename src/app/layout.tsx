@@ -39,7 +39,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${ibmPlexMono.variable} font-sans bg-galaxy-900 text-white antialiased`}>
+      <body className={`${inter.variable} ${ibmPlexMono.variable} font-sans antialiased`}>
         <WaveBackground />
         {children}
       </body>
