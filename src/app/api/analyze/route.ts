@@ -292,17 +292,34 @@ export async function POST(request: Request) {
     }
 
     // 1. Fetch live RWA feed data
-    const rwaFeed = await fetchRWAFeed()
+    let rwaFeed: RWAFeedResponse | undefined
+    try {
+      rwaFeed = await fetchRWAFeed()
+    } catch (rwaErr) {
+      console.error('[ANALYZE] RWA feed failed:', rwaErr)
+      // proceed without RWA data
+    }
 
     // x402 payment: verified structurally, and settled on-chain through the
     // Casper x402 Facilitator when X402_FACILITATOR_URL is configured.
-    const x402Header = request.headers.get('x402-payment')
-    const x402Settlement = await settleX402Payment(x402Header)
+    let x402Settlement: import('@/lib/x402').X402SettlementStatus = 'none'
+    try {
+      const x402Header = request.headers.get('x402-payment')
+      x402Settlement = await settleX402Payment(x402Header)
+    } catch (x402Err) {
+      console.error('[ANALYZE] x402 settlement failed:', x402Err)
+    }
     const paymentVerified =
       x402Settlement === 'settled' || x402Settlement === 'verified'
 
     // Build system prompt with live RWA context
-    const systemPrompt = buildSystemPrompt(rwaFeed)
+    let systemPrompt: string
+    try {
+      systemPrompt = buildSystemPrompt(rwaFeed)
+    } catch (promptErr) {
+      console.error('[ANALYZE] buildSystemPrompt failed:', promptErr)
+      systemPrompt = buildSystemPrompt()
+    }
 
     // RWA oracle prices passed from client for AI context (legacy support)
     const rwaPrices = (body as Record<string, unknown>)?.rwaPrices as
@@ -311,38 +328,53 @@ export async function POST(request: Request) {
 
     let analysis: AnalysisPayload | null = null
     let analysisSource: 'openai' | 'claude' | 'heuristic' = 'heuristic'
-    const userPrompt = buildUserPrompt(portfolio, paymentVerified, rwaPrices)
 
-    // Provider priority: OpenAI -> Claude -> deterministic heuristic.
-    if (process.env.OPENAI_API_KEY) {
-      try {
-        analysis = await getOpenAIAnalysis(userPrompt, systemPrompt)
-        if (analysis) analysisSource = 'openai'
-      } catch (openAiError) {
-        console.error('OpenAI analysis failed:', openAiError)
+    try {
+      const userPrompt = buildUserPrompt(portfolio, paymentVerified, rwaPrices)
+
+      // Provider priority: OpenAI -> Claude -> deterministic heuristic.
+      if (process.env.OPENAI_API_KEY) {
+        try {
+          analysis = await getOpenAIAnalysis(userPrompt, systemPrompt)
+          if (analysis) analysisSource = 'openai'
+        } catch (openAiError) {
+          console.error('[ANALYZE] OpenAI analysis failed:', openAiError)
+        }
       }
-    }
 
-    if (!analysis && process.env.ANTHROPIC_API_KEY) {
-      try {
-        analysis = await getClaudeAnalysis(userPrompt, systemPrompt)
-        if (analysis) analysisSource = 'claude'
-      } catch (claudeError) {
-        console.error('Claude analysis failed:', claudeError)
+      if (!analysis && process.env.ANTHROPIC_API_KEY) {
+        try {
+          analysis = await getClaudeAnalysis(userPrompt, systemPrompt)
+          if (analysis) analysisSource = 'claude'
+        } catch (claudeError) {
+          console.error('[ANALYZE] Claude analysis failed:', claudeError)
+        }
       }
-    }
 
-    if (!analysis) {
+      if (!analysis) {
+        analysis = buildHeuristicAnalysis(portfolio, rwaFeed)
+        analysisSource = 'heuristic'
+      }
+    } catch (aiErr) {
+      console.error('[ANALYZE] AI block failed:', aiErr)
       analysis = buildHeuristicAnalysis(portfolio, rwaFeed)
       analysisSource = 'heuristic'
     }
 
-    analysis.recommendations = analysis.recommendations || []
-    analysis.recommendations.push(
-      paymentVerified
-        ? 'x402 payment verified: Premium AI analysis unlocked'
-        : 'Upgrade to x402 micropayments for advanced agent features'
-    )
+    // Defensive: ensure analysis has all required arrays before mutating
+    try {
+      analysis.recommendations = analysis.recommendations || []
+      analysis.recommendations.push(
+        paymentVerified
+          ? 'x402 payment verified: Premium AI analysis unlocked'
+          : 'Upgrade to x402 micropayments for advanced agent features'
+      )
+    } catch (recErr) {
+      console.error('[ANALYZE] recommendations push failed:', recErr)
+      analysis.recommendations = [
+        'x402 payment verified: Premium AI analysis unlocked',
+      ]
+    }
 
     // Agentic on-chain write: persist the analysis record to the
     // PortfolioAgent contract on Casper Testnet (when agent key configured).
@@ -362,7 +394,7 @@ export async function POST(request: Request) {
         onchainError = result.error
       }
     } catch (chainErr) {
-      console.error('On-chain recording error:', chainErr)
+      console.error('[ANALYZE] On-chain recording error:', chainErr)
       onchainError = chainErr instanceof Error ? chainErr.message : String(chainErr)
     }
 
@@ -381,7 +413,7 @@ export async function POST(request: Request) {
         )
       }
     } catch (rebalanceErr) {
-      console.error('Autonomous rebalance error:', rebalanceErr)
+      console.error('[ANALYZE] Autonomous rebalance error:', rebalanceErr)
     }
 
     return Response.json(
@@ -401,7 +433,7 @@ export async function POST(request: Request) {
       { status: 200 }
     )
   } catch (error) {
-    console.error('Error analyzing portfolio:', error)
+    console.error('[ANALYZE] TOP-LEVEL ERROR:', error)
     return Response.json(
       { error: 'AI analysis failed. Please try again.' },
       { status: 500 }
