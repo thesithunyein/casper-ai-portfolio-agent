@@ -275,22 +275,16 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="relative min-h-screen">
-        <div className="galaxy-bg" />
-        <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
-          <LoadingState />
-        </div>
+      <div className="relative min-h-screen flex flex-col items-center justify-center p-4">
+        <LoadingState />
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="relative min-h-screen">
-        <div className="galaxy-bg" />
-        <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
-          <ErrorState error={error} onRetry={reset} />
-        </div>
+      <div className="relative min-h-screen flex flex-col items-center justify-center p-4">
+        <ErrorState error={error} onRetry={reset} />
       </div>
     )
   }
@@ -298,8 +292,6 @@ export default function Home() {
   if (!walletAddress) {
     return (
       <main className="relative min-h-screen">
-        {/* Background */}
-        <div className="galaxy-bg" />
 
         {/* Navigation */}
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
@@ -539,9 +531,6 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen">
-      {/* Galaxy Background */}
-      <div className="galaxy-bg" />
-
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
