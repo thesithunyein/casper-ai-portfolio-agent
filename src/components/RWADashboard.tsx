@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Building2, Gem, TrendingUp } from 'lucide-react'
-import type { RWAFeedResponse } from '@/app/api/rwa-feed/route'
+import type { RWAFeedResponse } from '@/lib/rwa-feed'
 
 export const RWADashboard = () => {
   const [data, setData] = useState<RWAFeedResponse | null>(null)

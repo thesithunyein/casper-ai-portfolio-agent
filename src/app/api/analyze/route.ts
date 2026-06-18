@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import type { Portfolio } from '@/lib/casper'
 import { settleX402Payment } from '@/lib/x402'
 import { fetchRWAFeed } from '@/lib/rwa-feed'
-import type { RWAFeedResponse } from '@/app/api/rwa-feed/route'
+import type { RWAFeedResponse } from '@/lib/rwa-feed'
 import {
   executeAutonomousRebalance,
   hashAnalysisSummary,
