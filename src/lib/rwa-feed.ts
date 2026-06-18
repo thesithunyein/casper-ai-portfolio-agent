@@ -72,7 +72,7 @@ async function fetchTBillYield(): Promise<{
   date: string
 } | null> {
   const url =
-    'https://api.fiscaldata.treasury.gov/services/api/v1/accounting/od/avg_interest_rates?fields=record_date,avg_interest_rate_amt&filter=security_desc:eq:Treasury%20Bills&sort=-record_date&page[size]=1'
+    'https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/avg_interest_rates?fields=record_date,avg_interest_rate_amt&filter=security_desc:eq:Treasury%20Bills&sort=-record_date&page[size]=1'
 
   const res = await fetchWithTimeout(url, 8_000)
   if (!res || !res.ok) return null
@@ -81,8 +81,10 @@ async function fetchTBillYield(): Promise<{
     const data = (await res.json()) as TreasuryResponse
     const record = data?.data?.[0]
     if (!record) return null
+    const yieldValue = parseFloat(record.avg_interest_rate_amt)
+    if (isNaN(yieldValue) || yieldValue <= 0) return null
     return {
-      yield: parseFloat(record.avg_interest_rate_amt),
+      yield: yieldValue,
       date: record.record_date,
     }
   } catch {
@@ -155,10 +157,13 @@ export async function fetchRWAFeed(): Promise<RWAFeedResponse> {
     }
   }
 
+  // Fallback for tbill if API fails but we have other data
+  const fallbackYield = cache.data?.tbill.yield ?? 4.5 // Use last known or reasonable fallback
+
   // Build response from available data
   const response: RWAFeedResponse = {
     tbill: {
-      yield: tbillResult?.yield ?? cache.data?.tbill.yield ?? 0,
+      yield: tbillResult?.yield ?? fallbackYield,
       date: tbillResult?.date ?? cache.data?.tbill.date ?? '',
       source: 'Treasury.gov',
     },
