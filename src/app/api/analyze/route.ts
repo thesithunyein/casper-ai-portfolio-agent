@@ -1,6 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { Portfolio } from '@/lib/casper'
 import { settleX402Payment } from '@/lib/x402'
+import { fetchRWAFeed } from '@/lib/rwa-feed'
+import type { RWAFeedResponse } from '@/app/api/rwa-feed/route'
 import {
   executeAutonomousRebalance,
   hashAnalysisSummary,
@@ -20,6 +22,14 @@ interface AnalysisPayload {
   }
   /** Recommended allocation to tokenized real-world assets (0-100) */
   rwaExposurePercent: number
+  /** Current estimated percentage of portfolio in RWA assets */
+  rwa_exposure_percent?: number
+  /** Specific RWA allocation recommendation text */
+  rwa_recommendation?: string
+  /** RWA yield opportunity description */
+  rwa_yield_opportunity?: string
+  /** Which AI model or heuristic produced this analysis */
+  analysis_source?: string
 }
 
 /**
@@ -28,7 +38,10 @@ interface AnalysisPayload {
  * it is never confused with live Claude output. Set ANTHROPIC_API_KEY for
  * real-time Claude 3.5 Sonnet analysis.
  */
-function buildHeuristicAnalysis(portfolio: Portfolio): AnalysisPayload {
+function buildHeuristicAnalysis(
+  portfolio: Portfolio,
+  rwaFeed?: RWAFeedResponse | null
+): AnalysisPayload {
   const assets = [...portfolio.assets].sort((a, b) => b.value - a.value)
   const top = assets[0]
   const topPct = top?.percentage ?? 0
@@ -61,6 +74,21 @@ function buildHeuristicAnalysis(portfolio: Portfolio): AnalysisPayload {
       ? 5
       : 10
 
+  // Build RWA recommendation from live feed data
+  const tbillYield = rwaFeed?.tbill.yield ?? 5.0
+  const paxgPrice = rwaFeed?.paxg.price ?? 2300
+
+  const rwaRecommendation = concentrated
+    ? `Shift ${rwaExposurePercent}% to tokenized RWA — PAX Gold ($${paxgPrice.toFixed(2)}) or T-bills yielding ${tbillYield}% as uncorrelated hedge against ${top?.symbol} concentration.`
+    : stablePct < 10
+      ? `Increase stablecoin buffer to 15%+ and add ${Math.max(5, rwaExposurePercent)}% RWA (T-bills ${tbillYield}% yield) for downside protection.`
+      : `Maintain ${rwaExposurePercent}% RWA allocation for portfolio stability — T-bills at ${tbillYield}% APY provide solid risk-adjusted returns.`
+
+  const rwaYieldOpportunity =
+    tbillYield > 0
+      ? `US T-bills yielding ${tbillYield}% APY via Treasury.gov — risk-free rate exceeds most stablecoin yields.`
+      : 'Tokenized T-bills and PAX Gold available for low-volatility portfolio hedging.'
+
   return {
     summary: `This portfolio holds ${
       assets.length
@@ -86,7 +114,7 @@ function buildHeuristicAnalysis(portfolio: Portfolio): AnalysisPayload {
         ? 'Raise stablecoin allocation toward 30% to buffer volatility.'
         : 'Stablecoin buffer is healthy; consider deploying excess into yield.',
       rwaExposurePercent > 5
-        ? `Consider allocating ${rwaExposurePercent}% to tokenized RWA (T-bills, gold) for uncorrelated, low-volatility exposure.`
+        ? `Consider allocating ${rwaExposurePercent}% to tokenized RWA (T-bills at ${tbillYield}%, PAX Gold $${paxgPrice.toFixed(0)}) for uncorrelated, low-volatility exposure.`
         : 'Maintain a small RWA allocation (5-10%) for portfolio stability.',
       'Set rebalancing thresholds (e.g. ±5%) so the agent can act autonomously.',
       'Persist this analysis on-chain via the Odra contract for an auditable record.',
@@ -101,10 +129,19 @@ function buildHeuristicAnalysis(portfolio: Portfolio): AnalysisPayload {
         : 'The current mix is already balanced; periodic rebalancing maintains target weights as prices move.',
     },
     rwaExposurePercent,
+    rwa_exposure_percent: rwaExposurePercent,
+    rwa_recommendation: rwaRecommendation,
+    rwa_yield_opportunity: rwaYieldOpportunity,
+    analysis_source: 'heuristic',
   }
 }
 
-const SYSTEM_PROMPT = `You are a professional DeFi portfolio analyst specializing in the Casper Network ecosystem. You also evaluate tokenized Real-World Assets (RWA) such as T-bills, gold, and equities for portfolio diversification.
+function buildSystemPrompt(rwaFeed?: RWAFeedResponse | null): string {
+  const rwaPrompt = rwaFeed
+    ? `\n\nYou also have access to live Real-World Asset data:\n- US T-bill Yield: ${rwaFeed.tbill.yield}% (as of ${rwaFeed.tbill.date})\n- PAX Gold (PAXG): $${rwaFeed.paxg.price.toFixed(2)} (${rwaFeed.paxg.change24h >= 0 ? '+' : ''}${rwaFeed.paxg.change24h.toFixed(2)}% 24h)\n- Ondo Finance (ONDO): $${rwaFeed.ondo.price.toFixed(2)} (${rwaFeed.ondo.change24h >= 0 ? '+' : ''}${rwaFeed.ondo.change24h.toFixed(2)}% 24h)\n\nFactor this into your analysis:\n- If CSPR concentration > 70%: recommend shifting 15-25% to T-bills or PAXG as RWA hedge\n- If stablecoin buffer < 10%: flag as high risk, suggest USDC as RWA-adjacent stable allocation\n- Include rwa_recommendation and rwa_yield_opportunity in your JSON output`
+    : ''
+
+  return `You are a professional DeFi portfolio analyst specializing in the Casper Network ecosystem. You also evaluate tokenized Real-World Assets (RWA) such as T-bills, gold, and equities for portfolio diversification.
 
 Your analysis should include:
 1. A concise portfolio summary (2-3 sentences)
@@ -112,6 +149,8 @@ Your analysis should include:
 3. 5 specific, actionable recommendations tailored to the portfolio composition
 4. A rebalancing suggestion with target allocation percentages and detailed reasoning
 5. A rwa_exposure_percent field (0-100) recommending how much of the portfolio should be in tokenized RWA assets — higher when crypto concentration risk is elevated
+6. A rwa_recommendation field with a specific actionable RWA allocation suggestion
+7. A rwa_yield_opportunity field describing current RWA yield opportunities${rwaPrompt}
 
 Return ONLY valid JSON in this exact format:
 {
@@ -123,8 +162,13 @@ Return ONLY valid JSON in this exact format:
     "targetAllocation": { "CSPR": number, "USDC": number, "USDT": number, "WETH": number },
     "reasoning": "string"
   },
-  "rwaExposurePercent": number
+  "rwaExposurePercent": number,
+  "rwa_exposure_percent": number,
+  "rwa_recommendation": "string",
+  "rwa_yield_opportunity": "string",
+  "analysis_source": "string"
 }`
+}
 
 interface RWAContext {
   assets: { symbol: string; name: string; priceUsd: number; change24h: number }[]
@@ -177,7 +221,8 @@ function extractAnalysisJson(content: string): AnalysisPayload | null {
  * reliable structured output. Model configurable via OPENAI_MODEL.
  */
 async function getOpenAIAnalysis(
-  prompt: string
+  prompt: string,
+  systemPrompt: string
 ): Promise<AnalysisPayload | null> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) return null
@@ -195,7 +240,7 @@ async function getOpenAIAnalysis(
       temperature: 0.4,
       response_format: { type: 'json_object' },
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'system', content: systemPrompt },
         { role: 'user', content: prompt },
       ],
     }),
@@ -213,7 +258,8 @@ async function getOpenAIAnalysis(
 
 /** Anthropic Claude analysis. */
 async function getClaudeAnalysis(
-  prompt: string
+  prompt: string,
+  systemPrompt: string
 ): Promise<AnalysisPayload | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) return null
@@ -222,7 +268,7 @@ async function getClaudeAnalysis(
   const response = await client.messages.create({
     model: 'claude-3-5-sonnet-20241022',
     max_tokens: 1500,
-    system: SYSTEM_PROMPT,
+    system: systemPrompt,
     messages: [{ role: 'user', content: prompt }],
   })
 
@@ -243,6 +289,9 @@ export async function POST(request: Request) {
       )
     }
 
+    // 1. Fetch live RWA feed data
+    const rwaFeed = await fetchRWAFeed()
+
     // x402 payment: verified structurally, and settled on-chain through the
     // Casper x402 Facilitator when X402_FACILITATOR_URL is configured.
     const x402Header = request.headers.get('x402-payment')
@@ -250,7 +299,10 @@ export async function POST(request: Request) {
     const paymentVerified =
       x402Settlement === 'settled' || x402Settlement === 'verified'
 
-    // RWA oracle prices passed from client for AI context
+    // Build system prompt with live RWA context
+    const systemPrompt = buildSystemPrompt(rwaFeed)
+
+    // RWA oracle prices passed from client for AI context (legacy support)
     const rwaPrices = (body as Record<string, unknown>)?.rwaPrices as
       | RWAContext
       | undefined
@@ -262,7 +314,7 @@ export async function POST(request: Request) {
     // Provider priority: OpenAI -> Claude -> deterministic heuristic.
     if (process.env.OPENAI_API_KEY) {
       try {
-        analysis = await getOpenAIAnalysis(userPrompt)
+        analysis = await getOpenAIAnalysis(userPrompt, systemPrompt)
         if (analysis) analysisSource = 'openai'
       } catch (openAiError) {
         console.error('OpenAI analysis failed:', openAiError)
@@ -271,7 +323,7 @@ export async function POST(request: Request) {
 
     if (!analysis && process.env.ANTHROPIC_API_KEY) {
       try {
-        analysis = await getClaudeAnalysis(userPrompt)
+        analysis = await getClaudeAnalysis(userPrompt, systemPrompt)
         if (analysis) analysisSource = 'claude'
       } catch (claudeError) {
         console.error('Claude analysis failed:', claudeError)
@@ -279,7 +331,7 @@ export async function POST(request: Request) {
     }
 
     if (!analysis) {
-      analysis = buildHeuristicAnalysis(portfolio)
+      analysis = buildHeuristicAnalysis(portfolio, rwaFeed)
       analysisSource = 'heuristic'
     }
 

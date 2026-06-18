@@ -18,6 +18,8 @@ import { AgentChat } from '@/components/AgentChat'
 import { AgentActivityLog } from '@/components/AgentActivityLog'
 import { RoadmapSection } from '@/components/RoadmapSection'
 import { AppFooter } from '@/components/AppFooter'
+import { RWADashboard } from '@/components/RWADashboard'
+import type { AgentStep } from '@/lib/store'
 
 export default function Home() {
   const {
@@ -26,7 +28,7 @@ export default function Home() {
     analysis,
     loading,
     error,
-    activityLog,
+    agentSteps,
     setPortfolio,
     setAnalysis,
     setLoading,
@@ -35,6 +37,8 @@ export default function Home() {
     appendActivityStep,
     updateActivityStep,
     setRwaPrices,
+    addAgentStep,
+    clearAgentSteps,
     reset,
   } = useAppStore()
 
@@ -43,9 +47,11 @@ export default function Home() {
 
     setLoading(true)
     setError(null)
+    clearAgentSteps()
 
-    // Initialize agent activity log
     const now = new Date()
+    const ts = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })
+
     setActivityLog([
       { id: 'fetch', label: 'Fetching portfolio from CSPR.cloud', status: 'active', timestamp: now },
       { id: 'rwa', label: 'Checking RWA oracle feed', status: 'pending' },
@@ -55,8 +61,10 @@ export default function Home() {
       { id: 'submit', label: 'Submitting to Casper Testnet', status: 'pending' },
     ])
 
+    const pushStep = (step: AgentStep) => addAgentStep(step)
+
     try {
-      // Step 1: Fetch portfolio via our server route (CSPR.cloud blocks browser CORS)
+      pushStep({ message: 'Connecting to CSPR.cloud API...', status: 'pending', timestamp: ts })
       const portfolioRes = await fetch(
         `/api/portfolio?address=${encodeURIComponent(walletAddress)}`
       )
@@ -67,41 +75,86 @@ export default function Home() {
       const portfolioData = await portfolioRes.json()
       portfolioData.lastUpdated = new Date(portfolioData.lastUpdated)
       setPortfolio(portfolioData)
+      pushStep({
+        message: `Portfolio fetched — ${portfolioData.assets.length} assets found`,
+        status: 'success',
+        timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      })
       updateActivityStep('fetch', {
         status: 'complete',
         detail: `${portfolioData.assets.length} assets, $${portfolioData.totalValue.toFixed(2)}`,
         timestamp: new Date(),
       })
 
-      // Step 2: Fetch simulated RWA oracle prices
-      updateActivityStep('rwa', { status: 'active', timestamp: new Date() })
-      const rwaRes = await fetch('/api/rwa-oracle')
+      pushStep({
+        message: 'Fetching live RWA data from Treasury.gov...',
+        status: 'pending',
+        timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      })
+      const rwaRes = await fetch('/api/rwa-feed')
       let rwaData = null
       if (rwaRes.ok) {
         rwaData = await rwaRes.json()
-        setRwaPrices(rwaData)
+        setRwaPrices({
+          assets: [
+            { symbol: 'TBILL', name: 'US T-bill', priceUsd: rwaData.tbill.yield, change24h: 0, source: 'Treasury.gov', simulated: false, category: 't_bill' },
+            { symbol: 'PAXG', name: 'PAX Gold', priceUsd: rwaData.paxg.price, change24h: rwaData.paxg.change24h, source: 'CoinGecko', simulated: false, category: 'gold' },
+            { symbol: 'ONDO', name: 'Ondo Finance', priceUsd: rwaData.ondo.price, change24h: rwaData.ondo.change24h, source: 'CoinGecko', simulated: false, category: 'equity' },
+          ],
+          timestamp: rwaData.timestamp,
+          feedLabel: 'Live RWA Feed',
+        })
+      }
+      if (rwaData) {
+        pushStep({
+          message: `T-bill yield: ${rwaData.tbill.yield}%`,
+          status: 'rwa',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
+        pushStep({
+          message: `Fetching RWA token prices from CoinGecko...`,
+          status: 'pending',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
+        pushStep({
+          message: `PAXG: $${rwaData.paxg.price.toFixed(2)} | ONDO: $${rwaData.ondo.price.toFixed(2)}`,
+          status: 'rwa',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
       }
       updateActivityStep('rwa', {
         status: 'complete',
-        detail: rwaData ? `${rwaData.assets.length} RWA assets (Simulated)` : 'RWA feed unavailable',
+        detail: rwaData ? `T-bill ${rwaData.tbill.yield}%, PAXG $${rwaData.paxg.price.toFixed(0)}` : 'RWA feed unavailable',
         timestamp: new Date(),
       })
 
-      // Step 3: x402 micropayment
-      updateActivityStep('x402', { status: 'active', timestamp: new Date() })
+      pushStep({
+        message: 'Verifying x402 micropayment...',
+        status: 'pending',
+        timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      })
       const payment = await createX402Payment(
         ANALYSIS_COST_CSPR,
         ANALYSIS_RECIPIENT,
         'Portfolio AI Analysis'
       )
+      pushStep({
+        message: `x402 payment verified — ${ANALYSIS_COST_CSPR} CSPR`,
+        status: 'success',
+        timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      })
       updateActivityStep('x402', {
         status: 'complete',
         detail: `${ANALYSIS_COST_CSPR} CSPR via x402`,
         timestamp: new Date(),
       })
 
-      // Step 4: Run AI analysis with RWA context
-      updateActivityStep('analyze', { status: 'active', timestamp: new Date() })
+      const modelName = process.env.OPENAI_API_KEY ? 'GPT-4o' : process.env.ANTHROPIC_API_KEY ? 'Claude 3.5 Sonnet' : 'Heuristic'
+      pushStep({
+        message: `Sending portfolio + RWA data to ${modelName}...`,
+        status: 'pending',
+        timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      })
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: {
@@ -121,14 +174,57 @@ export default function Home() {
 
       const aiAnalysis = await response.json()
       setAnalysis(aiAnalysis)
+      const riskLevel = aiAnalysis.riskAssessment?.toLowerCase().includes('high') ? 'High' :
+        aiAnalysis.riskAssessment?.toLowerCase().includes('low') ? 'Low' : 'Medium'
+      pushStep({
+        message: `AI analysis complete — Risk: ${riskLevel}`,
+        status: 'success',
+        timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      })
+      if (aiAnalysis.rwa_recommendation) {
+        pushStep({
+          message: `RWA recommendation: ${aiAnalysis.rwa_recommendation}`,
+          status: 'rwa',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
+      }
       updateActivityStep('analyze', {
         status: 'complete',
-        detail: `Source: ${aiAnalysis.analysisSource || 'heuristic'}`,
+        detail: `Source: ${aiAnalysis.analysisSource || aiAnalysis.analysis_source || 'heuristic'}`,
         timestamp: new Date(),
       })
 
-      // Step 5-6: On-chain recording
       if (aiAnalysis.onchain) {
+        pushStep({
+          message: 'Hashing analysis with SHA-256...',
+          status: 'pending',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
+        pushStep({
+          message: `Hash: ${aiAnalysis.onchain.transactionHash.slice(0, 16)}...`,
+          status: 'success',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
+        pushStep({
+          message: 'Signing transaction with agent wallet...',
+          status: 'pending',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
+        pushStep({
+          message: 'Transaction signed',
+          status: 'success',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
+        pushStep({
+          message: 'Submitting to Casper Testnet...',
+          status: 'pending',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
+        pushStep({
+          message: `TX: ${aiAnalysis.onchain.transactionHash} — View on Explorer →`,
+          status: 'success',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
         updateActivityStep('onchain', {
           status: 'complete',
           detail: `Hash: ${aiAnalysis.onchain.transactionHash.slice(0, 16)}…`,
@@ -140,6 +236,11 @@ export default function Home() {
           timestamp: new Date(),
         })
       } else {
+        pushStep({
+          message: 'On-chain recording skipped — agent key not configured',
+          status: 'success',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
         updateActivityStep('onchain', {
           status: 'complete',
           detail: 'Agent key not configured',
@@ -155,6 +256,11 @@ export default function Home() {
       const errorMessage =
         err instanceof Error ? err.message : 'An error occurred'
       setError(errorMessage)
+      pushStep({
+        message: `Analysis failed: ${errorMessage}`,
+        status: 'error',
+        timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      })
       appendActivityStep({
         id: 'error',
         label: 'Analysis failed',
@@ -165,7 +271,7 @@ export default function Home() {
     } finally {
       setLoading(false)
     }
-  }, [walletAddress, setPortfolio, setAnalysis, setLoading, setError, setActivityLog, updateActivityStep, appendActivityStep, setRwaPrices])
+  }, [walletAddress, setPortfolio, setAnalysis, setLoading, setError, setActivityLog, updateActivityStep, appendActivityStep, setRwaPrices, clearAgentSteps, addAgentStep])
 
   if (loading) {
     return (
@@ -236,8 +342,11 @@ export default function Home() {
                   <span className="absolute bottom-1 left-0 w-full h-3 bg-primary/20 -z-0" />
                 </span>
               </h1>
-              <p className="text-lg text-slate-500 mb-10 max-w-lg leading-relaxed">
+              <p className="text-lg text-slate-500 mb-4 max-w-lg leading-relaxed">
                 AI-powered analysis with autonomous on-chain rebalancing. The agent reads your portfolio, checks RWA prices, and acts — all on Casper Testnet.
+              </p>
+              <p className="text-sm text-slate-400 mb-10 max-w-lg leading-relaxed">
+                Supports CSPR, stablecoins, and RWA token analysis — including live US T-bill yields and tokenized gold (PAXG).
               </p>
               <div className="flex flex-wrap items-center gap-4 mb-10">
                 <button
@@ -300,12 +409,13 @@ export default function Home() {
               <h2 className="text-4xl font-bold text-slate-900 mb-4">Capabilities</h2>
               <p className="text-base text-muted max-w-md mx-auto">What the agent does on your behalf.</p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 stagger-children">
+            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-5 stagger-children">
               {[
                 { badge: 'AI', title: 'Portfolio Analysis', desc: 'OpenAI GPT-4o analyzes holdings and generates risk assessments in real-time.', color: 'bg-blue-50 text-blue-600 border-blue-200' },
                 { badge: 'AG', title: 'Agent Chat', desc: 'Conversational interface for portfolio queries and agent-directed actions.', color: 'bg-violet-50 text-violet-600 border-violet-200' },
                 { badge: '$0', title: 'x402 Micropayments', desc: 'Agent pays per-analysis fees via Casper\'s x402 payment protocol.', color: 'bg-sky-50 text-sky-600 border-sky-200' },
                 { badge: 'CH', title: 'On-Chain Storage', desc: 'Analysis records persisted to Casper Testnet via Odra smart contract.', color: 'bg-emerald-50 text-emerald-600 border-emerald-200' },
+                { badge: 'RWA', title: 'RWA Intelligence', desc: 'Live Real-World Asset feeds — US T-bill yields, tokenized gold (PAXG), and ONDO finance prices integrated directly into AI risk scoring and rebalancing.', color: 'bg-amber-50 text-amber-600 border-amber-200' },
               ].map((feat, i) => (
                 <div key={i} className="group relative animate-fade-in">
                   <div className="relative bg-white border border-border rounded-xl p-6 hover:border-border-strong transition-all duration-300 card-lift">
@@ -376,6 +486,9 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Live RWA Intelligence */}
+        <RWADashboard />
+
         {/* Docs Section */}
         <section id="docs" className="relative z-10 py-24 px-4 md:px-6 border-t border-border">
           <div className="max-w-6xl mx-auto">
@@ -386,7 +499,7 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-5">
               {[
                 { title: 'Smart Contract', desc: 'Odra-based contract deployed on Casper Testnet. Stores analysis hashes and autonomous action records.', link: 'https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6', tag: 'Testnet' },
-                { title: 'API Reference', desc: 'REST endpoints for portfolio fetching, AI analysis with x402 payment headers, and agent status.', link: '#', tag: 'Coming Soon' },
+                { title: 'Roadmap', desc: 'Q3 2026 Mainnet, Q4 2026 RWA oracle + CEP-18, Q1 2027 Mobile PWA + DAO governance.', link: 'https://github.com/thesithunyein/casper-ai-portfolio-agent#roadmap--launch-plans', tag: 'Planned' },
                 { title: 'GitHub Repository', desc: 'Full source code including frontend, AI agents, x402 integration, and Odra smart contracts.', link: 'https://github.com/thesithunyein/casper-ai-portfolio-agent', tag: 'Open Source' },
               ].map((doc, i) => (
                 <a key={i} href={doc.link} target="_blank" rel="noopener noreferrer" className="group relative block">
@@ -487,7 +600,7 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-6">
                 <PortfolioDisplay portfolio={portfolio} />
-                {activityLog.length > 0 && <AgentActivityLog steps={activityLog} />}
+                <AgentActivityLog steps={agentSteps} isRunning={loading} />
                 {analysis && <AIAnalysisComponent analysis={analysis} />}
               </div>
               <div className="lg:sticky lg:top-20 space-y-6">

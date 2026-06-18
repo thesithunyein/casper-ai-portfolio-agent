@@ -192,6 +192,31 @@ Input validation on every API route:
 
 ---
 
+## Real-World Asset (RWA) Integration
+
+Live RWA data feeds factored into every AI analysis:
+
+| Data | Source | Update Frequency |
+|---|---|---|
+| US T-bill Yield | Treasury.gov (official) | Daily |
+| PAX Gold (PAXG) | CoinGecko | 60 seconds |
+| Ondo Finance (ONDO) | CoinGecko | 60 seconds |
+
+### RWA Rebalancing Logic
+
+- **CSPR concentration > 70%** → recommend 15-25% shift to PAXG / T-bills as RWA hedge
+- **Stablecoin buffer < 10%** → flag high risk, suggest USDC allocation
+- All RWA recommendations stored immutably on-chain with analysis hash
+
+### Architecture
+
+- `/api/rwa-feed` — fetches Treasury.gov + CoinGecko in parallel with 60s cache and 8s timeout
+- `/api/analyze` — injects live RWA context into the AI system prompt
+- `RWADashboard` — live cards on the landing page with auto-refresh
+- `AgentActivityLog` — terminal-style real-time steps including RWA fetch and yield display
+
+---
+
 ## Smart Contract (Odra / Rust)
 
 The `PortfolioAgent` contract is written in **Rust with the Odra framework** and deployed on Casper Testnet.
@@ -313,6 +338,28 @@ casper-ai-portfolio-agent/
 6. **Performance-first.** 106 KB first load, GPU-composited animations, 60s price cache, 8s fetch timeouts.
 7. **Accessibility.** `prefers-reduced-motion`, WCAG AA contrast, keyboard navigation.
 8. **Professional craft.** Apple-quality easing curves, shimmer loading states, staggered entrances, press feedback.
+
+---
+
+## Roadmap & Launch Plans
+
+| Timeline | Milestone |
+|---|---|
+| Q3 2026 | Mainnet deployment of PortfolioAgent contract |
+| Q3 2026 | Live x402 facilitator — real micropayment settlement |
+| Q4 2026 | Real RWA oracle on-chain — tokenized T-bills + gold |
+| Q4 2026 | CEP-18 multi-token portfolio support |
+| Q1 2027 | Mobile PWA + Casper Wallet + Ledger integration |
+| Q1 2027 | Multi-agent DAO governance module |
+
+## Community & Socials
+
+| Channel | Link |
+|---|---|
+| Twitter / X | [@YOUR_HANDLE] |
+| Telegram | [YOUR_CHANNEL] |
+| GitHub | [thesithunyein/casper-ai-portfolio-agent](https://github.com/thesithunyein/casper-ai-portfolio-agent) |
+| Live App | [casper-ai-portfolio-agent.vercel.app](https://casper-ai-portfolio-agent.vercel.app) |
 
 ---
 

@@ -2,6 +2,12 @@ import { create } from 'zustand'
 import { Portfolio, AIAnalysis, RWAPriceFeed } from './casper'
 import { ActivityStep } from '@/components/AgentActivityLog'
 
+export interface AgentStep {
+  message: string
+  status: 'pending' | 'success' | 'error' | 'rwa'
+  timestamp: string
+}
+
 interface AppState {
   walletAddress: string | null
   portfolio: Portfolio | null
@@ -11,6 +17,8 @@ interface AppState {
   x402PaymentStatus: 'idle' | 'pending' | 'success' | 'failed'
   activityLog: ActivityStep[]
   rwaPrices: RWAPriceFeed | null
+  /** Real-time terminal-style steps shown during analysis */
+  agentSteps: AgentStep[]
   setWalletAddress: (address: string | null) => void
   setPortfolio: (portfolio: Portfolio | null) => void
   setAnalysis: (analysis: AIAnalysis | null) => void
@@ -21,6 +29,8 @@ interface AppState {
   appendActivityStep: (step: ActivityStep) => void
   updateActivityStep: (id: string, updates: Partial<ActivityStep>) => void
   setRwaPrices: (prices: RWAPriceFeed | null) => void
+  addAgentStep: (step: AgentStep) => void
+  clearAgentSteps: () => void
   reset: () => void
 }
 
@@ -33,6 +43,7 @@ export const useAppStore = create<AppState>((set) => ({
   x402PaymentStatus: 'idle',
   activityLog: [],
   rwaPrices: null,
+  agentSteps: [],
   setWalletAddress: (address) => set({ walletAddress: address }),
   setPortfolio: (portfolio) => set({ portfolio }),
   setAnalysis: (analysis) => set({ analysis }),
@@ -49,6 +60,9 @@ export const useAppStore = create<AppState>((set) => ({
       ),
     })),
   setRwaPrices: (prices) => set({ rwaPrices: prices }),
+  addAgentStep: (step) =>
+    set((state) => ({ agentSteps: [...state.agentSteps, step] })),
+  clearAgentSteps: () => set({ agentSteps: [] }),
   reset: () =>
     set({
       walletAddress: null,
@@ -59,5 +73,6 @@ export const useAppStore = create<AppState>((set) => ({
       x402PaymentStatus: 'idle',
       activityLog: [],
       rwaPrices: null,
+      agentSteps: [],
     }),
 }))
