@@ -277,6 +277,8 @@ async function getClaudeAnalysis(
   return extractAnalysisJson(content)
 }
 
+export const maxDuration = 30
+
 export async function POST(request: Request) {
   try {
     const body = await request.json()
@@ -346,31 +348,40 @@ export async function POST(request: Request) {
     // PortfolioAgent contract on Casper Testnet (when agent key configured).
     let onchain = null
     let onchainError = null
-    if (isOnChainRecordingConfigured()) {
-      const riskMatch = analysis.riskAssessment.match(/\b(high|medium|low)\b/i)
-      const result = await recordAnalysisOnChain({
-        walletAddress: portfolio.walletAddress,
-        totalValueUsd: portfolio.totalValue,
-        riskLevel: riskMatch ? riskMatch[1].toUpperCase() : 'UNKNOWN',
-        recommendationCount: analysis.recommendations.length,
-        summaryHash: hashAnalysisSummary(analysis),
-      })
-      onchain = result.record
-      onchainError = result.error
+    try {
+      if (isOnChainRecordingConfigured()) {
+        const riskMatch = analysis.riskAssessment?.match(/\b(high|medium|low)\b/i)
+        const result = await recordAnalysisOnChain({
+          walletAddress: portfolio.walletAddress,
+          totalValueUsd: portfolio.totalValue,
+          riskLevel: riskMatch ? riskMatch[1].toUpperCase() : 'UNKNOWN',
+          recommendationCount: analysis.recommendations?.length ?? 0,
+          summaryHash: hashAnalysisSummary(analysis),
+        })
+        onchain = result.record
+        onchainError = result.error
+      }
+    } catch (chainErr) {
+      console.error('On-chain recording error:', chainErr)
+      onchainError = chainErr instanceof Error ? chainErr.message : String(chainErr)
     }
 
     // Autonomous on-chain action: when the AI recommends rebalancing, the
     // agent autonomously executes a native CSPR transfer to the user's
     // wallet — proving the agent doesn't just analyze, it *acts* on-chain.
     let autonomousAction = null
-    const shouldRebalance =
-      isAutonomousRebalanceEnabled() &&
-      !/hold current allocation/i.test(analysis.rebalancingSuggestion.action)
-    if (shouldRebalance) {
-      autonomousAction = await executeAutonomousRebalance(
-        portfolio.walletAddress,
-        analysis.rebalancingSuggestion.action
-      )
+    try {
+      const shouldRebalance =
+        isAutonomousRebalanceEnabled() &&
+        !/hold current allocation/i.test(analysis.rebalancingSuggestion?.action ?? '')
+      if (shouldRebalance) {
+        autonomousAction = await executeAutonomousRebalance(
+          portfolio.walletAddress,
+          analysis.rebalancingSuggestion?.action ?? 'AI rebalancing action'
+        )
+      }
+    } catch (rebalanceErr) {
+      console.error('Autonomous rebalance error:', rebalanceErr)
     }
 
     return Response.json(
