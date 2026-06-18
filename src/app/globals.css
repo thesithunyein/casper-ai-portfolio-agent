@@ -151,52 +151,27 @@ button:active, a:active {
 }
 
 /* ===== ANIMATED WAVE BACKGROUND ===== */
-@keyframes waveMove1 {
+@keyframes waveSlide {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
-@keyframes waveMove2 {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+@keyframes pulseOrb {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 0.8; }
 }
 
-@keyframes waveMove3 {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-@keyframes floatParticle {
-  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
-  25% { transform: translateY(-20px) translateX(10px); opacity: 0.5; }
-  50% { transform: translateY(-10px) translateX(-10px); opacity: 0.3; }
-  75% { transform: translateY(-30px) translateX(5px); opacity: 0.6; }
-}
-
-.wave-layer-1 {
-  animation: waveMove1 25s linear infinite;
-}
-
-.wave-layer-2 {
-  animation: waveMove2 18s linear infinite;
-}
-
-.wave-layer-3 {
-  animation: waveMove3 12s linear infinite;
-}
-
-.animate-float-particle {
-  animation: floatParticle linear infinite;
+@keyframes floatBubble {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+  25% { transform: translateY(-30px) translateX(15px); opacity: 0.6; }
+  50% { transform: translateY(-15px) translateX(-15px); opacity: 0.4; }
+  75% { transform: translateY(-40px) translateX(10px); opacity: 0.7; }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
-  .terminal-cursor,
-  .wave-layer-1,
-  .wave-layer-2,
-  .wave-layer-3,
-  .animate-float-particle {
+  .terminal-cursor {
     animation: none;
   }
 }
