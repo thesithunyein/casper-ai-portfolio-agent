@@ -407,7 +407,7 @@ export default function Home() {
                 { badge: 'AG', title: 'Agent Chat', desc: 'Conversational interface for portfolio queries and agent-directed actions.', color: 'bg-violet-50 text-violet-600 border-violet-200' },
                 { badge: '$0', title: 'x402 Micropayments', desc: 'Agent pays per-analysis fees via Casper\'s x402 payment protocol.', color: 'bg-sky-50 text-sky-600 border-sky-200' },
                 { badge: 'CH', title: 'On-Chain Storage', desc: 'Analysis records persisted to Casper Testnet via Odra smart contract.', color: 'bg-emerald-50 text-emerald-600 border-emerald-200' },
-                { badge: 'RWA', title: 'RWA Intelligence', desc: 'Live Real-World Asset feeds — US T-bill yields, tokenized gold (PAXG), and ONDO finance prices integrated directly into AI risk scoring and rebalancing.', color: 'bg-amber-50 text-amber-600 border-amber-200' },
+                { badge: 'RWA', title: 'RWA Intelligence', desc: 'Live US T-bill yields, tokenized gold, and ONDO prices integrated into AI rebalancing.', color: 'bg-amber-50 text-amber-600 border-amber-200' },
               ].map((feat, i) => (
                 <div key={i} className="group relative animate-fade-in">
                   <div className="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-6 hover:border-slate-300/80 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
