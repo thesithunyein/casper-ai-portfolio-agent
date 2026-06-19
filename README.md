@@ -432,9 +432,9 @@ casper-ai-portfolio-agent/
 
 ## Demo Video
 
-> **Record a 3-5 minute walkthrough** showing: wallet connection → AI analysis → on-chain transaction proof → RWA dashboard → agent chat → autonomous rebalancing.
->
-> Upload to YouTube unlisted and link here before submission.
+[![Demo Video](https://img.youtube.com/vi/3oaGutfrkKo/maxresdefault.jpg)](https://www.youtube.com/watch?v=3oaGutfrkKo)
+
+> Walkthrough of the Casper AI Portfolio Agent: wallet connection, AI analysis, on-chain transaction proof, RWA intelligence, agent chat, and autonomous rebalancing.
 
 ---
 
