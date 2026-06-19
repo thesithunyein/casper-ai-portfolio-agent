@@ -41,25 +41,25 @@ export const RWADashboard = () => {
   }
 
   return (
-    <section className="py-20 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Live RWA Intelligence</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+    <section className="relative z-10 py-24 px-6 lg:px-8 border-t border-black/[0.06] dark:border-white/[0.06]">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-[32px] md:text-[40px] font-bold text-ink-900 dark:text-white mb-4 tracking-tight">Live RWA Intelligence</h2>
+          <p className="text-base text-ink-500 dark:text-ink-400 max-w-md mx-auto">
             Real-world asset data factored into every AI rebalancing decision
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="grid md:grid-cols-3 gap-4">
           {/* T-bill Card */}
-          <div className="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-5 shadow-sm overflow-hidden hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
+          <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-5 shadow-stripe-sm overflow-hidden hover:shadow-stripe-md hover:border-black/[0.1] dark:hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-300">
             <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
                 <Building2 className="w-4 h-4 text-amber-600" />
               </div>
               <div className="flex-1">
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">US Treasury T-bill</p>
+                <p className="text-xs font-medium text-ink-500 dark:text-ink-400">US Treasury T-bill</p>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="relative flex h-2 w-2">
@@ -71,28 +71,28 @@ export const RWADashboard = () => {
             </div>
             {loading ? (
               <div className="space-y-2">
-                <div className="h-6 w-24 bg-slate-100 dark:bg-slate-700 rounded animate-pulse" />
-                <div className="h-3 w-16 bg-slate-100 dark:bg-slate-700 rounded animate-pulse" />
+                <div className="h-6 w-24 bg-ink-100 dark:bg-ink-800 rounded animate-pulse" />
+                <div className="h-3 w-16 bg-ink-100 dark:bg-ink-800 rounded animate-pulse" />
               </div>
             ) : (
               <>
-                <p className="text-xl font-bold text-slate-900 dark:text-white">
+                <p className="text-xl font-bold text-ink-900 dark:text-white tracking-tight">
                   {formatYield(data?.tbill?.yield)}
                 </p>
-                <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">via Treasury.gov</p>
+                <p className="text-[10px] text-ink-400 dark:text-ink-500 mt-1">via Treasury.gov</p>
               </>
             )}
           </div>
 
           {/* PAX Gold Card */}
-          <div className="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-5 shadow-sm overflow-hidden hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
+          <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-5 shadow-stripe-sm overflow-hidden hover:shadow-stripe-md hover:border-black/[0.1] dark:hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-300">
             <div className="absolute top-0 left-0 w-1 h-full bg-yellow-500" />
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-lg bg-yellow-50 flex items-center justify-center">
                 <Gem className="w-4 h-4 text-yellow-600" />
               </div>
               <div className="flex-1">
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">PAX Gold (PAXG)</p>
+                <p className="text-xs font-medium text-ink-500 dark:text-ink-400">PAX Gold (PAXG)</p>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="relative flex h-2 w-2">
@@ -104,31 +104,31 @@ export const RWADashboard = () => {
             </div>
             {loading ? (
               <div className="space-y-2">
-                <div className="h-6 w-24 bg-slate-100 dark:bg-slate-700 rounded animate-pulse" />
-                <div className="h-3 w-16 bg-slate-100 dark:bg-slate-700 rounded animate-pulse" />
+                <div className="h-6 w-24 bg-ink-100 dark:bg-ink-800 rounded animate-pulse" />
+                <div className="h-3 w-16 bg-ink-100 dark:bg-ink-800 rounded animate-pulse" />
               </div>
             ) : (
               <>
-                <p className="text-xl font-bold text-slate-900 dark:text-white">
+                <p className="text-xl font-bold text-ink-900 dark:text-white tracking-tight">
                   {formatPrice(data?.paxg?.price)}
                 </p>
                 <p className={`text-xs font-medium mt-1 ${(data?.paxg?.change24h ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                   {formatChange(data?.paxg?.change24h)} 24h
                 </p>
-                <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">via CoinGecko</p>
+                <p className="text-[10px] text-ink-400 dark:text-ink-500 mt-1">via CoinGecko</p>
               </>
             )}
           </div>
 
           {/* Ondo Finance Card */}
-          <div className="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-5 shadow-sm overflow-hidden hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
+          <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-5 shadow-stripe-sm overflow-hidden hover:shadow-stripe-md hover:border-black/[0.1] dark:hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-300">
             <div className="absolute top-0 left-0 w-1 h-full bg-sky-500" />
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center">
                 <TrendingUp className="w-4 h-4 text-sky-600" />
               </div>
               <div className="flex-1">
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Ondo Finance (ONDO)</p>
+                <p className="text-xs font-medium text-ink-500 dark:text-ink-400">Ondo Finance (ONDO)</p>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="relative flex h-2 w-2">
@@ -140,24 +140,24 @@ export const RWADashboard = () => {
             </div>
             {loading ? (
               <div className="space-y-2">
-                <div className="h-6 w-24 bg-slate-100 dark:bg-slate-700 rounded animate-pulse" />
-                <div className="h-3 w-16 bg-slate-100 dark:bg-slate-700 rounded animate-pulse" />
+                <div className="h-6 w-24 bg-ink-100 dark:bg-ink-800 rounded animate-pulse" />
+                <div className="h-3 w-16 bg-ink-100 dark:bg-ink-800 rounded animate-pulse" />
               </div>
             ) : (
               <>
-                <p className="text-xl font-bold text-slate-900 dark:text-white">
+                <p className="text-xl font-bold text-ink-900 dark:text-white tracking-tight">
                   {formatPrice(data?.ondo?.price)}
                 </p>
                 <p className={`text-xs font-medium mt-1 ${(data?.ondo?.change24h ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                   {formatChange(data?.ondo?.change24h)} 24h
                 </p>
-                <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">via CoinGecko</p>
+                <p className="text-[10px] text-ink-400 dark:text-ink-500 mt-1">via CoinGecko</p>
               </>
             )}
           </div>
         </div>
 
-        <p className="text-center text-xs text-slate-400 dark:text-slate-500 mt-6">
+        <p className="text-center text-xs text-ink-400 dark:text-ink-500 mt-6">
           These yields are factored into AI rebalancing when CSPR concentration exceeds 70%
         </p>
       </div>

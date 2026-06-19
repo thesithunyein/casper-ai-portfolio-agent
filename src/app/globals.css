@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== STRIPE-INSPIRED DESIGN SYSTEM ===== */
+
 * {
   margin: 0;
   padding: 0;
@@ -10,26 +12,28 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 4rem;
+  scroll-padding-top: 5rem;
 }
 
 body {
-  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  color: #0f172a;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  color: #1a1f36;
+  background-color: #ffffff;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark body {
-  color: #e2e8f0;
-  background-color: #0f172a;
+  color: #e6e9f0;
+  background-color: #0a0e1a;
 }
 
-/* Apple-quality typography */
+/* Stripe-quality typography */
 h1, h2, h3, h4 {
-  letter-spacing: -0.025em;
+  letter-spacing: -0.022em;
   font-weight: 600;
   text-wrap: pretty;
 }
@@ -38,78 +42,95 @@ p {
   text-wrap: pretty;
 }
 
-/* Smooth button / interactive press */
+/* Stripe-smooth transitions on interactive elements */
 button, a, [role="button"] {
-  transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              opacity 0.2s ease,
-              box-shadow 0.3s ease,
-              border-color 0.3s ease,
-              background-color 0.3s ease;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button:active, a:active {
   transform: scale(0.97);
 }
 
-/* Subtle hover lift for cards */
+/* Subtle card lift — Stripe style */
 .card-lift {
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.4s ease,
-              border-color 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card-lift:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 
-/* Functional scrollbar */
+/* Stripe-style scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+  background: rgba(0, 0, 0, 0.2);
+  background-clip: content-box;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
+  background-clip: content-box;
 }
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+  background-clip: content-box;
 }
 
-/* Focus ring with smooth transition */
+/* Stripe-style focus ring */
 :focus-visible {
-  outline: 2px solid #06b6d4;
-  outline-offset: 1px;
-  border-radius: 2px;
+  outline: 2px solid #635bff;
+  outline-offset: 2px;
+  border-radius: 4px;
   transition: outline-offset 0.15s ease;
 }
 
-/* Apple-quality fade with cubic-bezier */
+/* ===== ANIMATIONS ===== */
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
 }
 
 /* Staggered children entrance */
 .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-.stagger-children > *:nth-child(2) { animation-delay: 60ms; }
-.stagger-children > *:nth-child(3) { animation-delay: 120ms; }
-.stagger-children > *:nth-child(4) { animation-delay: 180ms; }
-.stagger-children > *:nth-child(5) { animation-delay: 240ms; }
-.stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 80ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 160ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 320ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 400ms; }
 
 /* Shimmer skeleton loading */
 @keyframes shimmer {
@@ -120,23 +141,12 @@ button:active, a:active {
 .animate-shimmer {
   background: linear-gradient(
     90deg,
-    rgba(255,255,255,0.03) 25%,
-    rgba(255,255,255,0.08) 50%,
-    rgba(255,255,255,0.03) 75%
+    rgba(0,0,0,0.04) 25%,
+    rgba(0,0,0,0.08) 50%,
+    rgba(0,0,0,0.04) 75%
   );
   background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
-}
-
-/* Slide up with spring easing */
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-slide-up {
-  animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  opacity: 0;
+  animation: shimmer 1.8s ease-in-out infinite;
 }
 
 /* Terminal cursor blink */
@@ -146,33 +156,81 @@ button:active, a:active {
 }
 
 .terminal-cursor {
-  animation: cursorBlink 1s step-end infinite;
+  animation: cursorBlink 1.1s step-end infinite;
 }
 
-/* ===== LIGHT BACKGROUND ===== */
-.galaxy-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background:
-    radial-gradient(ellipse at 15% 50%, rgba(37, 99, 235, 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 85% 30%, rgba(6, 182, 212, 0.03) 0%, transparent 50%),
-    linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
-  overflow: hidden;
+/* Stripe-style gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #635bff 0%, #7c3aed 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* ===== ANIMATED WAVE BACKGROUND ===== */
+/* Stripe-style gradient mesh background animation */
+@keyframes meshFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -20px) scale(1.05); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes meshFloat2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-25px, 25px) scale(0.95); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
 @keyframes blob {
   0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(40px, -60px) scale(1.15); }
-  66% { transform: translate(-30px, 30px) scale(0.9); }
+  33% { transform: translate(40px, -60px) scale(1.1); }
+  66% { transform: translate(-30px, 30px) scale(0.95); }
   100% { transform: translate(0px, 0px) scale(1); }
+}
+
+/* Stripe-style subtle grid pattern */
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.dark .grid-pattern {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+}
+
+/* Stripe-style glassmorphism */
+.stripe-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+.dark .stripe-glass {
+  background: rgba(10, 14, 26, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* Stripe-style button shadow */
+.btn-shadow {
+  box-shadow: 0 1px 1px rgba(0,0,0,0.04), 0 2px 5px rgba(0,0,0,0.06);
+}
+
+.btn-shadow-hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 4px 12px rgba(99, 91, 255, 0.15);
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
+  .animate-slide-up,
   .terminal-cursor {
     animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
   }
 }

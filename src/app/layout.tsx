@@ -18,8 +18,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Casper Agent — AI Portfolio Analysis',
-  description: 'Agentic AI-powered portfolio analysis for Casper Network',
+  title: 'Casper Agent — Autonomous AI Portfolio Management',
+  description: 'AI-powered portfolio analysis with autonomous on-chain rebalancing on Casper Network. Real RWA intelligence, x402 micropayments, and MCP-native blockchain access.',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32' },
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0a0a0a',
+  themeColor: '#635bff',
 }
 
 export default function RootLayout({

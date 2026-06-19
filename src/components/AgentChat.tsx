@@ -111,13 +111,13 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
 
   return (
     <div className="relative group">
-      <div className="relative bg-white border border-border rounded-xl flex flex-col h-[420px] shadow-sm">
+      <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl flex flex-col h-[420px] shadow-stripe-sm">
         {/* Header */}
-        <div className="px-4 py-3 bg-slate-50 border-b border-border rounded-t-xl">
+        <div className="px-4 py-3 bg-ink-50 dark:bg-ink-800/50 border-b border-black/[0.06] dark:border-white/[0.06] rounded-t-xl">
           <div className="flex items-center gap-2">
             <span className="w-6 h-6 bg-primary text-white flex items-center justify-center text-[10px] font-mono font-bold rounded">AI</span>
             <div>
-              <h3 className="text-xs font-semibold text-slate-900">Agent</h3>
+              <h3 className="text-xs font-semibold text-ink-900 dark:text-white tracking-tight">Agent</h3>
               <p className="text-[10px] font-mono text-primary">Online • x402</p>
             </div>
           </div>
@@ -128,14 +128,14 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
           {messages.map((msg) => (
             <div key={msg.id} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
               <div className={`w-6 h-6 flex items-center justify-center flex-shrink-0 text-[10px] font-mono font-bold rounded ${
-                msg.role === 'agent' ? 'bg-primary text-white' : 'bg-slate-100 border border-border text-slate-700'
+                msg.role === 'agent' ? 'bg-primary text-white' : 'bg-ink-100 dark:bg-ink-800 border border-black/[0.06] dark:border-white/[0.06] text-ink-700 dark:text-ink-300'
               }`}>
                 {msg.role === 'agent' ? 'AI' : 'U'}
               </div>
               <div className={`max-w-[80%] space-y-1.5 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                 <div className={`px-3 py-2 text-sm rounded-lg ${
                   msg.role === 'agent'
-                    ? 'bg-slate-50 border border-border text-slate-700'
+                    ? 'bg-ink-50 dark:bg-ink-800/50 border border-black/[0.06] dark:border-white/[0.06] text-ink-700 dark:text-ink-300'
                     : 'bg-primary text-white'
                 }`}>
                   <p className="whitespace-pre-line leading-relaxed">{msg.content}</p>
@@ -146,7 +146,7 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
                       <button
                         key={idx}
                         onClick={() => handleAction(action)}
-                        className="px-2 py-1 bg-slate-50 border border-border text-xs font-medium text-slate-600 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300 rounded"
+                        className="px-2 py-1 bg-ink-50 dark:bg-ink-800/50 border border-black/[0.06] dark:border-white/[0.06] text-xs font-medium text-ink-600 dark:text-ink-400 hover:bg-primary/5 hover:border-primary/20 hover:text-primary transition-all duration-300 rounded"
                       >
                         {action.label}
                       </button>
@@ -159,7 +159,7 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
           {isTyping && (
             <div className="flex gap-2">
               <span className="w-6 h-6 bg-primary text-white flex items-center justify-center text-[10px] font-mono font-bold rounded">AI</span>
-              <div className="bg-slate-50 border border-border px-3 py-2 text-xs text-muted rounded-lg">
+              <div className="bg-ink-50 dark:bg-ink-800/50 border border-black/[0.06] dark:border-white/[0.06] px-3 py-2 text-xs text-ink-400 dark:text-ink-500 rounded-lg">
                 Thinking<span className="terminal-cursor">_</span>
               </div>
             </div>
@@ -168,7 +168,7 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
         </div>
 
         {/* Input */}
-        <div className="p-3 border-t border-border bg-slate-50 rounded-b-xl">
+        <div className="p-3 border-t border-black/[0.06] dark:border-white/[0.06] bg-ink-50 dark:bg-ink-800/50 rounded-b-xl">
           <div className="flex gap-2">
             <input
               type="text"
@@ -176,11 +176,11 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Ask anything..."
-              className="flex-1 px-3 py-2 bg-white border border-border text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-300 rounded-lg"
+              className="flex-1 px-3 py-2 bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] text-sm text-ink-900 dark:text-white placeholder-ink-400 dark:placeholder-ink-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-300 rounded-lg"
             />
             <button
               onClick={handleSend}
-              className="px-3 py-2 bg-primary text-white hover:bg-blue-700 transition-all rounded-lg"
+              className="px-3 py-2 bg-primary text-white hover:bg-[#5a4dff] transition-all duration-300 rounded-lg"
             >
               <Send className="w-3 h-3" />
             </button>

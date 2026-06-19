@@ -44,11 +44,11 @@ const ROADMAP: RoadmapItem[] = [
 
 export const RoadmapSection = () => {
   return (
-    <section id="roadmap" className="relative z-10 py-24 px-4 md:px-6 border-t border-slate-200 dark:border-slate-800">
+    <section id="roadmap" className="relative z-10 py-24 px-6 lg:px-8 border-t border-black/[0.06] dark:border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">Roadmap</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-[32px] md:text-[40px] font-bold text-ink-900 dark:text-white mb-4 tracking-tight">Roadmap</h2>
+          <p className="text-base text-ink-500 dark:text-ink-400 max-w-md mx-auto">
             Where we are headed — from hackathon MVP to a full agentic portfolio mesh.
           </p>
         </div>
@@ -60,42 +60,42 @@ export const RoadmapSection = () => {
               className="group relative animate-fade-in"
               style={{ animationDelay: `${i * 100}ms` }}
             >
-              <div className="relative flex items-start gap-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:border-border-strong transition-all duration-300 shadow-sm">
+              <div className="relative flex items-start gap-4 bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-5 hover:border-black/[0.1] dark:hover:border-white/[0.1] hover:shadow-stripe-md transition-all duration-300">
                 <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
                   item.status === 'done'
-                    ? 'bg-green-100 border border-green-200'
+                    ? 'bg-emerald-50 border border-emerald-100'
                     : item.status === 'in-progress'
-                      ? 'bg-blue-100 border border-blue-200'
-                      : 'bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600'
+                      ? 'bg-primary/5 border border-primary/10'
+                      : 'bg-ink-50 dark:bg-ink-800 border border-black/[0.06] dark:border-white/[0.06]'
                 }`}>
-                  {item.status === 'done' && <Check className="w-4 h-4 text-green-600" />}
-                  {item.status === 'in-progress' && <Clock className="w-4 h-4 text-blue-600 animate-pulse" />}
-                  {item.status === 'upcoming' && <Rocket className="w-4 h-4 text-slate-400" />}
+                  {item.status === 'done' && <Check className="w-4 h-4 text-emerald-600" />}
+                  {item.status === 'in-progress' && <Clock className="w-4 h-4 text-primary animate-pulse" />}
+                  {item.status === 'upcoming' && <Rocket className="w-4 h-4 text-ink-400" />}
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${
                       item.status === 'done'
-                        ? 'bg-green-50 text-green-600 border border-green-200'
+                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
                         : item.status === 'in-progress'
-                          ? 'bg-blue-50 text-blue-600 border border-blue-200'
-                          : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600'
+                          ? 'bg-primary/5 text-primary border border-primary/10'
+                          : 'bg-ink-50 dark:bg-ink-800 text-ink-500 dark:text-ink-400 border border-black/[0.06] dark:border-white/[0.06]'
                     }`}>
                       {item.phase}
                     </span>
                     <span className={`text-[10px] font-mono ${
                       item.status === 'done'
-                        ? 'text-green-600'
+                        ? 'text-emerald-600'
                         : item.status === 'in-progress'
-                          ? 'text-blue-600'
-                          : 'text-slate-500'
+                          ? 'text-primary'
+                          : 'text-ink-400'
                     }`}>
                       {item.status === 'done' ? 'Shipped' : item.status === 'in-progress' ? 'In Progress' : 'Planned'}
                     </span>
                   </div>
-                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">{item.title}</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{item.desc}</p>
+                  <h3 className="text-sm font-semibold text-ink-900 dark:text-white mb-1 tracking-tight">{item.title}</h3>
+                  <p className="text-xs text-ink-500 dark:text-ink-400 leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             </div>
