@@ -44,11 +44,11 @@ const ROADMAP: RoadmapItem[] = [
 
 export const RoadmapSection = () => {
   return (
-    <section id="roadmap" className="relative z-10 py-24 px-4 md:px-6 border-t border-border">
+    <section id="roadmap" className="relative z-10 py-24 px-4 md:px-6 border-t border-slate-200 dark:border-slate-800">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-slate-900 mb-3">Roadmap</h2>
-          <p className="text-sm text-muted max-w-md mx-auto">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">Roadmap</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
             Where we are headed — from hackathon MVP to a full agentic portfolio mesh.
           </p>
         </div>
@@ -60,13 +60,13 @@ export const RoadmapSection = () => {
               className="group relative animate-fade-in"
               style={{ animationDelay: `${i * 100}ms` }}
             >
-              <div className="relative flex items-start gap-4 bg-white border border-border rounded-xl p-5 hover:border-border-strong transition-all duration-300 shadow-sm">
+              <div className="relative flex items-start gap-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:border-border-strong transition-all duration-300 shadow-sm">
                 <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
                   item.status === 'done'
                     ? 'bg-green-100 border border-green-200'
                     : item.status === 'in-progress'
                       ? 'bg-blue-100 border border-blue-200'
-                      : 'bg-slate-100 border border-slate-200'
+                      : 'bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600'
                 }`}>
                   {item.status === 'done' && <Check className="w-4 h-4 text-green-600" />}
                   {item.status === 'in-progress' && <Clock className="w-4 h-4 text-blue-600 animate-pulse" />}
@@ -80,7 +80,7 @@ export const RoadmapSection = () => {
                         ? 'bg-green-50 text-green-600 border border-green-200'
                         : item.status === 'in-progress'
                           ? 'bg-blue-50 text-blue-600 border border-blue-200'
-                          : 'bg-slate-50 text-slate-500 border border-slate-200'
+                          : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600'
                     }`}>
                       {item.phase}
                     </span>
@@ -94,8 +94,8 @@ export const RoadmapSection = () => {
                       {item.status === 'done' ? 'Shipped' : item.status === 'in-progress' ? 'In Progress' : 'Planned'}
                     </span>
                   </div>
-                  <h3 className="text-sm font-semibold text-slate-900 mb-1">{item.title}</h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">{item.title}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             </div>
