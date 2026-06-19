@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#635bff"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#635bff" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <!-- Rounded square background -->
+  <rect x="20" y="20" width="360" height="360" rx="90" fill="url(#bg)" filter="url(#shadow)"/>
+  <!-- Outer diamond (white) -->
+  <path d="M200 100 L270 200 L200 300 L130 200 Z" fill="white" fill-opacity="0.95"/>
+  <!-- Inner diamond (gradient) -->
+  <path d="M200 140 L235 200 L200 260 L165 200 Z" fill="url(#bg)"/>
+  <!-- Subtle shine -->
+  <ellipse cx="160" cy="130" rx="60" ry="30" fill="white" fill-opacity="0.08" transform="rotate(-30 160 130)"/>
+</svg>

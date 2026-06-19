@@ -1,14 +1,32 @@
+<div align="center">
+
+<img src="public/profile-logo.svg" width="120" height="120" alt="Casper AI Agent Logo" />
+
 # Casper AI Portfolio Agent
 
-> **Autonomous AI portfolio analyst that reads your holdings, thinks, and executes rebalancing actions on Casper Testnet.**
->
-> Live: [casper-ai-portfolio-agent.vercel.app](https://casper-ai-portfolio-agent.vercel.app) | Contract: [Testnet Explorer](https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6)
+**Autonomous AI that reads your portfolio, analyzes risk, and executes rebalancing actions on Casper Testnet — without human approval.**
+
+[![Live App](https://img.shields.io/badge/%E2%9A%A1_Live_App-casper--ai--portfolio--agent.vercel.app-635bff?style=flat-square)](https://casper-ai-portfolio-agent.vercel.app)
+[![Casper Testnet](https://img.shields.io/badge/Blockchain-Casper_Testnet-ff4757?style=flat-square)](https://testnet.cspr.live)
+[![x402 Protocol](https://img.shields.io/badge/Payments-x402_Micropayments-06b6d4?style=flat-square)](https://docs.casper.network)
+[![MCP Native](https://img.shields.io/badge/Integration-MCP_Native-7c3aed?style=flat-square)](https://docs.casper.network)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](./LICENSE)
+[![Built for Buildathon](https://img.shields.io/badge/Casper_Agentic_Buildathon-2026-ffd700?style=flat-square)](https://dorahacks.io/hackathon/casper-agentic-buildathon)
+
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat-square&logo=vercel)](https://casper-ai-portfolio-agent.vercel.app)
+[![Smart Contract](https://img.shields.io/badge/Smart_Contract-Deployed_✓-22c55e?style=flat-square)](https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6)
+[![AI: GPT-4o](https://img.shields.io/badge/AI-GPT--4o_+_Claude_3.5-8b5cf6?style=flat-square)](https://openai.com)
+[![RWA Feeds](https://img.shields.io/badge/RWA-Live_Feeds-f59e0b?style=flat-square)](https://home.treasury.gov)
+
+### [🚀 Live App](https://casper-ai-portfolio-agent.vercel.app) · [📖 Smart Contract](https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6) · [💬 X / Twitter](https://x.com/CasperAgentAI) · [📱 Telegram](https://t.me/casperagent)
+
+</div>
 
 ---
 
-## TL;DR for Judges
+## 🏆 TL;DR for Judges (5-Second Pitch)
 
-This is not a mockup. Every analysis triggers a **real Casper 2.0 transaction** signed by the AI agent and recorded on-chain. The agent pays for its own compute via the **x402 micropayment protocol**, talks to you in a conversational interface, and can autonomously execute native CSPR transfers based on its own recommendations.
+> **This is not a mockup.** Every analysis triggers a **real Casper 2.0 transaction** signed by the AI agent and recorded on-chain. The agent pays for its own compute via **x402 micropayments**, reads live RWA prices (US T-bills, PAXG, ONDO), talks to you in a conversational interface, and **autonomously executes native CSPR transfers** based on its own recommendations.
 
 | | |
 |---|---|
@@ -333,47 +351,66 @@ npm run build
 ```
 casper-ai-portfolio-agent/
 ├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── api/                # Server API routes
-│   │   │   ├── analyze/        # AI analysis + on-chain write
-│   │   │   ├── chat/           # Conversational agent
-│   │   │   ├── portfolio/      # CSPR.cloud balance fetch
-│   │   │   ├── rwa-feed/       # Treasury.gov + CoinGecko RWA data
-│   │   │   └── agent-status/   # Diagnostics (on-chain + MCP + x402)
-│   │   ├── page.tsx            # Landing page (glassmorphism + dark mode)
-│   │   ├── layout.tsx          # Root layout (ThemeProvider + WaveBackground)
-│   │   ├── globals.css         # Design tokens + animations + dark mode
-│   │   ├── not-found.tsx       # 404 page
-│   │   └── coming-soon/        # Coming soon page
-│   ├── components/             # React components
-│   │   ├── WalletConnect.tsx   # Manual key input + demo mode
-│   │   ├── PortfolioDisplay.tsx
-│   │   ├── AIAnalysis.tsx
-│   │   ├── AgentChat.tsx
-│   │   ├── LoadingState.tsx    # Shimmer skeleton
-│   │   ├── ErrorState.tsx
-│   │   ├── RWADashboard.tsx    # Live RWA price cards
-│   │   ├── WaveBackground.tsx  # Stripe-style gradient mesh + grid
-│   │   ├── FloatingTokens.tsx  # 3D animated crypto coins
-│   │   ├── TokenTicker.tsx     # Live scrolling price ticker
-│   │   ├── RoadmapSection.tsx  # Project roadmap timeline
-│   │   ├── AppFooter.tsx       # Footer with socials + status
-│   │   ├── ThemeProvider.tsx   # next-themes wrapper
-│   │   ├── ThemeToggle.tsx     # Dark/light mode toggle
-│   │   └── Logo.tsx            # Gradient rounded-square mark
-│   └── lib/                    # Core logic
-│       ├── casper.ts           # CSPR.cloud + validation
-│       ├── casper-agent.ts     # On-chain agent wallet
-│       ├── x402.ts             # Micropayment protocol (facilitator + demo)
-│       ├── store.ts            # Zustand state
-│       ├── rwa-feed.ts         # Treasury.gov + CoinGecko RWA feeds
-│       ├── mcp-client.ts       # Casper MCP + CSPR.trade MCP integration
-│       └── agent-chat.ts       # Chat action handlers
-├── odra-project/               # Rust smart contract (Odra)
-├── public/                     # Static assets
-├── next.config.mjs             # Next.js + security headers
-├── tailwind.config.ts          # Design tokens + color palette
-└── CHANGELOG.md                # Design evolution history
+│   ├── app/                        # Next.js 14 App Router
+│   │   ├── api/                    # Server API routes
+│   │   │   ├── analyze/            # AI analysis + on-chain write
+│   │   │   ├── chat/               # Conversational agent
+│   │   │   ├── portfolio/          # CSPR.cloud balance fetch
+│   │   │   ├── rwa-feed/           # Treasury.gov + CoinGecko RWA data
+│   │   │   ├── rwa-oracle/         # RWA oracle price endpoint
+│   │   │   └── agent-status/       # Diagnostics (on-chain + MCP + x402)
+│   │   ├── page.tsx                # Landing page (Stripe-inspired UI)
+│   │   ├── layout.tsx              # Root layout (fonts + ThemeProvider)
+│   │   ├── globals.css             # Design tokens + animations + dark mode
+│   │   ├── not-found.tsx           # 404 page
+│   │   └── coming-soon/            # Coming soon page
+│   ├── components/                 # React components
+│   │   ├── WalletConnect.tsx       # Manual key input + demo mode
+│   │   ├── PortfolioDisplay.tsx    # Portfolio assets + total value
+│   │   ├── AIAnalysis.tsx          # AI analysis results display
+│   │   ├── AgentChat.tsx           # Conversational AI chat interface
+│   │   ├── AgentActivityLog.tsx    # Terminal-style real-time agent steps
+│   │   ├── LoadingState.tsx        # Shimmer skeleton loader
+│   │   ├── ErrorState.tsx          # Error card with retry
+│   │   ├── RWADashboard.tsx        # Live RWA price cards (T-bills, PAXG, ONDO)
+│   │   ├── WaveBackground.tsx      # Stripe-style gradient mesh + grid
+│   │   ├── FloatingTokens.tsx      # 3D animated spinning crypto coins
+│   │   ├── TokenTicker.tsx         # Live scrolling price ticker bar
+│   │   ├── RoadmapSection.tsx      # Project roadmap timeline
+│   │   ├── AppFooter.tsx           # Footer with socials + status
+│   │   ├── ThemeProvider.tsx       # next-themes wrapper
+│   │   ├── ThemeToggle.tsx         # Dark/light mode toggle
+│   │   ├── MouseGlow.tsx           # Cursor-following glow effect
+│   │   └── Logo.tsx                # Gradient rounded-square brand mark
+│   └── lib/                        # Core logic
+│       ├── casper.ts               # CSPR.cloud API + validation
+│       ├── casper-agent.ts         # On-chain agent wallet (sign + submit tx)
+│       ├── x402.ts                 # x402 micropayment protocol
+│       ├── store.ts                # Zustand state management
+│       ├── rwa-feed.ts             # Treasury.gov + CoinGecko RWA feeds
+│       ├── mcp-client.ts           # Casper MCP + CSPR.trade MCP integration
+│       └── agent-chat.ts           # Chat action handlers
+├── odra-project/                   # Rust smart contract (Odra framework)
+│   ├── src/                        # Contract source code
+│   ├── Cargo.toml                  # Rust dependencies
+│   └── Odra.toml                   # Odra config
+├── scripts/                        # Deployment & utility scripts
+│   ├── deploy-local.mjs            # Local contract deployment
+│   └── read-package-hash.mjs       # Read deployed package hash
+├── public/                         # Static assets
+│   ├── icon.svg                    # Favicon (matches app logo)
+│   ├── profile-logo.svg            # 400×400 social media logo
+│   └── profile-logo-256.svg        # 256×256 Telegram logo
+├── next.config.mjs                 # Next.js config + security headers
+├── tailwind.config.ts              # Design tokens + color palette
+├── .env.example                    # Environment variable template
+├── BUIDL_SUBMISSION.md             # DoraHacks submission doc
+├── DEMO_SCRIPT.md                  # Demo video script
+├── DEPLOY_CONTRACT.md              # Contract deployment guide
+├── QUICKSTART.md                   # Quick start guide
+├── SOCIAL_MEDIA_LAUNCH.md          # Social media launch plan
+├── CHANGELOG.md                    # Design evolution history
+└── LICENSE                         # MIT License
 ```
 
 ---
