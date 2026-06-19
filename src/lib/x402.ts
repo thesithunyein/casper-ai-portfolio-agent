@@ -98,7 +98,7 @@ export const settleX402Payment = async (
 
   const paymentRequirements = {
     scheme: 'exact',
-    network: process.env.NEXT_PUBLIC_CASPER_NETWORK === 'mainnet' ? 'casper' : 'casper-test',
+    network: process.env.NEXT_PUBLIC_CASPER_NETWORK === 'mainnet' ? 'casper:casper' : 'casper:casper-test',
     asset: 'CSPR',
     payTo: payment.recipient,
     maxAmountRequired: payment.amount,
@@ -109,7 +109,14 @@ export const settleX402Payment = async (
     paymentPayload: payment,
     paymentRequirements,
   })
-  const headers = { 'Content-Type': 'application/json' }
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  }
+  // CSPR.cloud x402 facilitator requires authorization
+  const csrfCloudKey = process.env.NEXT_PUBLIC_CSPR_CLOUD_API_KEY
+  if (csrfCloudKey) {
+    headers['Authorization'] = `Bearer ${csrfCloudKey}`
+  }
 
   try {
     const verifyRes = await fetch(`${facilitatorBase}/verify`, {
