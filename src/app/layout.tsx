@@ -21,13 +21,10 @@ export const metadata: Metadata = {
   title: 'Casper Agent — Autonomous AI Portfolio Management',
   description: 'AI-powered portfolio analysis with autonomous on-chain rebalancing on Casper Network. Real RWA intelligence, x402 micropayments, and MCP-native blockchain access.',
   icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: '32x32' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    apple: '/apple-icon.png',
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
   },
-  manifest: '/manifest.json',
 }
 
 export const viewport: Viewport = {

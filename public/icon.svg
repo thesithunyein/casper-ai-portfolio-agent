@@ -1,14 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#06b6d4"/>
-      <stop offset="100%" stop-color="#a855f7"/>
+      <stop offset="0%" stop-color="#635bff"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
     </linearGradient>
   </defs>
-  <!-- Solid outer diamond -->
-  <path d="M32 4L60 32L32 60L4 32Z" fill="url(#g)"/>
-  <!-- Inner cutout -->
-  <path d="M32 16L48 32L32 48L16 32Z" fill="#0a0a1a"/>
-  <!-- Center accent diamond -->
-  <path d="M32 24L40 32L32 40L24 32Z" fill="url(#g)" opacity="0.9"/>
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#g)"/>
+  <path d="M32 16L44 32L32 48L20 32Z" fill="white" fill-opacity="0.95"/>
+  <path d="M32 22L38 32L32 42L26 32Z" fill="url(#g)"/>
 </svg>

@@ -19,6 +19,8 @@ import { AgentActivityLog } from '@/components/AgentActivityLog'
 import { RoadmapSection } from '@/components/RoadmapSection'
 import { AppFooter } from '@/components/AppFooter'
 import { RWADashboard } from '@/components/RWADashboard'
+import { FloatingTokens } from '@/components/FloatingTokens'
+import { TokenTicker } from '@/components/TokenTicker'
 import type { AgentStep } from '@/lib/store'
 
 export default function Home() {
@@ -319,17 +321,24 @@ export default function Home() {
           </div>
         </nav>
 
+        {/* Token Ticker */}
+        <div className="fixed top-16 left-0 right-0 z-40">
+          <TokenTicker />
+        </div>
+
         {/* Hero Section */}
-        <section className="relative z-10 pt-36 pb-28 px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+        <section className="relative z-10 pt-44 pb-28 px-6 lg:px-8 overflow-hidden">
+          {/* 3D Floating Tokens */}
+          <FloatingTokens />
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
             <div className="animate-slide-up">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.08] rounded-full text-xs font-medium text-primary mb-8 shadow-stripe-sm">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.08] rounded-full text-xs font-medium text-primary mb-8 shadow-stripe-sm animate-pulse-glow">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Casper Agentic Buildathon 2026
               </div>
               <h1 className="text-[44px] md:text-[64px] leading-[1.05] font-bold text-ink-900 dark:text-white mb-6 tracking-tight">
                 Autonomous portfolio management,{' '}
-                <span className="gradient-text">powered by AI</span>
+                <span className="gradient-text-animated">powered by AI</span>
               </h1>
               <p className="text-lg text-ink-500 dark:text-ink-400 mb-4 max-w-lg leading-relaxed">
                 AI-powered analysis with autonomous on-chain rebalancing. The agent reads your portfolio, checks RWA prices, and acts — all on Casper Testnet.
