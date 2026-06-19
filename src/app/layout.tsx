@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 import { WaveBackground } from '@/components/WaveBackground'
+import { ThemeProvider } from '@/components/ThemeProvider'
+import { ThemeToggle } from '@/components/ThemeToggle'
+import { MouseGlow } from '@/components/MouseGlow'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -38,10 +41,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${ibmPlexMono.variable} font-sans antialiased`}>
-        <WaveBackground />
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <WaveBackground />
+          <MouseGlow />
+          <div className="fixed top-4 right-4 z-[100] hidden sm:block">
+            <ThemeToggle />
+          </div>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )

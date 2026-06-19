@@ -19,6 +19,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   color: #0f172a;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  color: #e2e8f0;
+  background-color: #0f172a;
 }
 
 /* Apple-quality typography */
@@ -56,7 +62,7 @@ button:active, a:active {
   transform: translateY(-3px);
 }
 
-/* Functional scrollbar - dark theme */
+/* Functional scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -65,10 +71,17 @@ button:active, a:active {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid #050510;
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 

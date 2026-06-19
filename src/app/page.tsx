@@ -294,18 +294,18 @@ export default function Home() {
       <main className="relative min-h-screen">
 
         {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
           <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5 cursor-pointer group" onClick={reset}>
               <Logo className="relative w-7 h-7" />
-              <span className="font-semibold text-sm text-slate-900 tracking-tight group-hover:text-primary transition-colors duration-300">Casper Agent</span>
+              <span className="font-semibold text-sm text-slate-900 dark:text-white tracking-tight group-hover:text-primary transition-colors duration-300">Casper Agent</span>
             </div>
             <div className="flex items-center gap-4">
-              <a href="#features" className="hidden sm:block text-sm font-medium text-muted hover:text-slate-900 transition-colors duration-300">Features</a>
-              <a href="#how-it-works" className="hidden sm:block text-sm font-medium text-muted hover:text-slate-900 transition-colors duration-300">How It Works</a>
-              <a href="#roadmap" className="hidden sm:block text-sm font-medium text-muted hover:text-slate-900 transition-colors duration-300">Roadmap</a>
-              <a href="#faq" className="hidden sm:block text-sm font-medium text-muted hover:text-slate-900 transition-colors duration-300">FAQ</a>
-              <a href="#docs" className="hidden sm:block text-sm font-medium text-muted hover:text-slate-900 transition-colors duration-300">Docs</a>
+              <a href="#features" className="hidden sm:block text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white transition-colors duration-300">Features</a>
+              <a href="#how-it-works" className="hidden sm:block text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white transition-colors duration-300">How It Works</a>
+              <a href="#roadmap" className="hidden sm:block text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white transition-colors duration-300">Roadmap</a>
+              <a href="#faq" className="hidden sm:block text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white transition-colors duration-300">FAQ</a>
+              <a href="#docs" className="hidden sm:block text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white transition-colors duration-300">Docs</a>
               <button
                 onClick={() => {
                   const element = document.getElementById('wallet-section')
@@ -323,18 +323,18 @@ export default function Home() {
         <section className="relative z-10 pt-32 pb-24 px-4 md:px-6">
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
             <div className="animate-slide-up">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-mono text-primary mb-8 backdrop-blur-sm">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-surface border border-slate-200 dark:border-slate-700 rounded-full text-xs font-mono text-primary mb-8 backdrop-blur-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                 Casper Agentic Buildathon 2026
               </div>
-              <h1 className="text-5xl md:text-7xl font-bold text-slate-900 mb-6 leading-[1.1] tracking-tight">
+              <h1 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6 leading-[1.1] tracking-tight">
                 Autonomous portfolio management has never been{' '}
                 <span className="relative inline-block">
                   <span className="relative z-10">Smarter</span>
                   <span className="absolute bottom-1 left-0 w-full h-3 bg-primary/20 -z-0" />
                 </span>
               </h1>
-              <p className="text-lg text-slate-500 mb-4 max-w-lg leading-relaxed">
+              <p className="text-lg text-slate-500 dark:text-slate-400 mb-4 max-w-lg leading-relaxed">
                 AI-powered analysis with autonomous on-chain rebalancing. The agent reads your portfolio, checks RWA prices, and acts — all on Casper Testnet.
               </p>
               <p className="text-sm text-slate-400 mb-10 max-w-lg leading-relaxed">
@@ -354,7 +354,7 @@ export default function Home() {
                   href="https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-7 py-3.5 border border-border-strong text-slate-900 text-sm font-medium rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all duration-300"
+                  className="px-7 py-3.5 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white text-sm font-medium rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all duration-300"
                 >
                   View contract →
                 </a>
@@ -366,7 +366,7 @@ export default function Home() {
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  <a href="https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 transition-colors">Proof of write →</a>
+                  <a href="https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 dark:text-white transition-colors">Proof of write →</a>
                 </span>
               </div>
             </div>
@@ -376,18 +376,18 @@ export default function Home() {
               <div className="relative bg-slate-900 border border-slate-700 rounded-xl p-5 font-mono text-xs leading-relaxed">
                 <div className="flex items-center gap-2 mb-3 text-slate-400 border-b border-slate-700 pb-2">
                   <span className="text-blue-400">agent.log</span>
-                  <span className="ml-auto text-slate-500">_</span>
+                  <span className="ml-auto text-slate-500 dark:text-slate-400">_</span>
                 </div>
                 <div className="space-y-1.5">
-                  <p><span className="text-slate-500">14:32:01</span> <span className="text-blue-400">INFO</span> <span className="text-slate-300">Portfolio fetch initiated</span></p>
-                  <p><span className="text-slate-500">14:32:02</span> <span className="text-blue-400">INFO</span> <span className="text-slate-300">Connected to CSPR.cloud API</span></p>
-                  <p><span className="text-slate-500">14:32:02</span> <span className="text-blue-400">INFO</span> <span className="text-slate-300">RWA oracle: TBILL $99.87, XAU $2,345.60</span></p>
-                  <p><span className="text-slate-500">14:32:03</span> <span className="text-yellow-400">WARN</span> <span className="text-slate-300">CSPR concentration 78% — above threshold</span></p>
-                  <p><span className="text-slate-500">14:32:04</span> <span className="text-blue-400">INFO</span> <span className="text-slate-300">AI analysis: OpenAI GPT-4o</span></p>
-                  <p><span className="text-slate-500">14:32:05</span> <span className="text-green-400">OK</span> <span className="text-slate-300">store_analysis recorded on-chain</span></p>
-                  <p><span className="text-slate-500">14:32:06</span> <span className="text-violet-400">ACT</span> <span className="text-slate-300">Autonomous rebalance executed</span></p>
-                  <p><span className="text-slate-500">14:32:07</span> <span className="text-green-400">OK</span> <span className="text-slate-300">Native transfer: 1 CSPR → user</span></p>
-                  <p className="text-slate-500 mt-2"><span className="terminal-cursor">_</span></p>
+                  <p><span className="text-slate-500 dark:text-slate-400">14:32:01</span> <span className="text-blue-400">INFO</span> <span className="text-slate-300">Portfolio fetch initiated</span></p>
+                  <p><span className="text-slate-500 dark:text-slate-400">14:32:02</span> <span className="text-blue-400">INFO</span> <span className="text-slate-300">Connected to CSPR.cloud API</span></p>
+                  <p><span className="text-slate-500 dark:text-slate-400">14:32:02</span> <span className="text-blue-400">INFO</span> <span className="text-slate-300">RWA oracle: TBILL $99.87, XAU $2,345.60</span></p>
+                  <p><span className="text-slate-500 dark:text-slate-400">14:32:03</span> <span className="text-yellow-400">WARN</span> <span className="text-slate-300">CSPR concentration 78% — above threshold</span></p>
+                  <p><span className="text-slate-500 dark:text-slate-400">14:32:04</span> <span className="text-blue-400">INFO</span> <span className="text-slate-300">AI analysis: OpenAI GPT-4o</span></p>
+                  <p><span className="text-slate-500 dark:text-slate-400">14:32:05</span> <span className="text-green-400">OK</span> <span className="text-slate-300">store_analysis recorded on-chain</span></p>
+                  <p><span className="text-slate-500 dark:text-slate-400">14:32:06</span> <span className="text-violet-400">ACT</span> <span className="text-slate-300">Autonomous rebalance executed</span></p>
+                  <p><span className="text-slate-500 dark:text-slate-400">14:32:07</span> <span className="text-green-400">OK</span> <span className="text-slate-300">Native transfer: 1 CSPR → user</span></p>
+                  <p className="text-slate-500 dark:text-slate-400 mt-2"><span className="terminal-cursor">_</span></p>
                 </div>
               </div>
             </div>
@@ -395,11 +395,11 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="relative z-10 py-24 px-4 md:px-6 border-t border-border">
+        <section id="features" className="relative z-10 py-24 px-4 md:px-6 border-t border-slate-200 dark:border-slate-700">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-slate-900 mb-4">Capabilities</h2>
-              <p className="text-base text-muted max-w-md mx-auto">What the agent does on your behalf.</p>
+              <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">Capabilities</h2>
+              <p className="text-base text-slate-500 dark:text-slate-400 max-w-md mx-auto">What the agent does on your behalf.</p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-5 stagger-children">
               {[
@@ -410,10 +410,10 @@ export default function Home() {
                 { badge: 'RWA', title: 'RWA Intelligence', desc: 'Live Real-World Asset feeds — US T-bill yields, tokenized gold (PAXG), and ONDO finance prices integrated directly into AI risk scoring and rebalancing.', color: 'bg-amber-50 text-amber-600 border-amber-200' },
               ].map((feat, i) => (
                 <div key={i} className="group relative animate-fade-in">
-                  <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-6 hover:border-slate-300/80 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-6 hover:border-slate-300/80 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
                     <div className={`w-10 h-10 rounded-xl ${feat.color} border flex items-center justify-center text-xs font-mono font-bold mb-4 shadow-sm`}>{feat.badge}</div>
-                    <h3 className="text-sm font-semibold text-slate-900 mb-2 tracking-tight">{feat.title}</h3>
-                    <p className="text-xs text-slate-500 leading-relaxed">{feat.desc}</p>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-2 tracking-tight">{feat.title}</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{feat.desc}</p>
                   </div>
                 </div>
               ))}
@@ -422,11 +422,11 @@ export default function Home() {
         </section>
 
         {/* How It Works */}
-        <section id="how-it-works" className="relative z-10 py-24 px-4 md:px-6 border-t border-border">
+        <section id="how-it-works" className="relative z-10 py-24 px-4 md:px-6 border-t border-slate-200 dark:border-slate-700">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-slate-900 mb-4">How It Works</h2>
-              <p className="text-base text-muted max-w-md mx-auto">Four steps from connection to autonomous action.</p>
+              <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">How It Works</h2>
+              <p className="text-base text-slate-500 dark:text-slate-400 max-w-md mx-auto">Four steps from connection to autonomous action.</p>
             </div>
             <div className="grid md:grid-cols-2 gap-5 stagger-children">
               {[
@@ -436,11 +436,11 @@ export default function Home() {
                 { num: '04', title: 'On-Chain Action', desc: 'Agent records analysis to the Odra contract and optionally executes autonomous rebalancing transfers.' },
               ].map((step, i) => (
                 <div key={i} className="group relative animate-fade-in">
-                  <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-6 flex items-start gap-4 hover:border-slate-300/80 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-6 flex items-start gap-4 hover:border-slate-300/80 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
                     <span className="flex-shrink-0 w-10 h-10 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-sm font-mono font-bold text-primary shadow-sm">{step.num}</span>
                     <div>
-                      <h3 className="text-sm font-semibold text-slate-900 mb-1 tracking-tight">{step.title}</h3>
-                      <p className="text-xs text-slate-500 leading-relaxed">{step.desc}</p>
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 tracking-tight">{step.title}</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{step.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -450,11 +450,11 @@ export default function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section id="faq" className="relative z-10 py-24 px-4 md:px-6 border-t border-border">
+        <section id="faq" className="relative z-10 py-24 px-4 md:px-6 border-t border-slate-200 dark:border-slate-700">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-slate-900 mb-4">FAQ</h2>
-              <p className="text-base text-muted">Common questions about the Casper AI Portfolio Agent.</p>
+              <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">FAQ</h2>
+              <p className="text-base text-slate-500 dark:text-slate-400">Common questions about the Casper AI Portfolio Agent.</p>
             </div>
             <div className="space-y-3">
               {[
@@ -464,12 +464,12 @@ export default function Home() {
                 { q: 'Which wallet do I need?', a: 'We recommend the Casper Wallet browser extension. You can also paste any valid Casper public key (starting with 01 or 02) to try the demo.' },
                 { q: 'Is this on mainnet or testnet?', a: 'Currently running on Casper Testnet. Mainnet deployment is planned after the buildathon period.' },
               ].map((item, i) => (
-                <details key={i} className="group bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl open:border-slate-300/80 open:shadow-lg open:shadow-slate-200/30 transition-all duration-300">
-                  <summary className="flex items-center justify-between cursor-pointer p-5 text-sm font-medium text-slate-900 hover:text-primary transition-colors duration-300 list-none">
+                <details key={i} className="group bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl open:border-slate-300/80 open:shadow-lg open:shadow-slate-200/30 transition-all duration-300">
+                  <summary className="flex items-center justify-between cursor-pointer p-5 text-sm font-medium text-slate-900 dark:text-white hover:text-primary transition-colors duration-300 list-none">
                     <span>{item.q}</span>
                     <span className="ml-4 text-primary transition-transform duration-300 group-open:rotate-180">▼</span>
                   </summary>
-                  <div className="px-5 pb-5 text-xs text-slate-500 leading-relaxed animate-fade-in">
+                  <div className="px-5 pb-5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed animate-fade-in">
                     {item.a}
                   </div>
                 </details>
@@ -482,11 +482,11 @@ export default function Home() {
         <RWADashboard />
 
         {/* Docs Section */}
-        <section id="docs" className="relative z-10 py-24 px-4 md:px-6 border-t border-border">
+        <section id="docs" className="relative z-10 py-24 px-4 md:px-6 border-t border-slate-200 dark:border-slate-700">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-slate-900 mb-4">Documentation</h2>
-              <p className="text-base text-muted max-w-md mx-auto">Everything you need to understand and extend the agent.</p>
+              <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">Documentation</h2>
+              <p className="text-base text-slate-500 dark:text-slate-400 max-w-md mx-auto">Everything you need to understand and extend the agent.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-5">
               {[
@@ -495,15 +495,15 @@ export default function Home() {
                 { title: 'GitHub Repository', desc: 'Full source code including frontend, AI agents, x402 integration, and Odra smart contracts.', link: 'https://github.com/thesithunyein/casper-ai-portfolio-agent', tag: 'Open Source' },
               ].map((doc, i) => (
                 <a key={i} href={doc.link} target="_blank" rel="noopener noreferrer" className="group relative block">
-                  <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-6 hover:border-slate-300/80 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300 h-full flex flex-col">
+                  <div className="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-6 hover:border-slate-300/80 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300 h-full flex flex-col">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-xs font-mono text-primary bg-primary/10 border border-primary/20 px-2 py-1 rounded">{doc.tag}</span>
                       <svg className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </div>
-                    <h3 className="text-sm font-semibold text-slate-900 mb-2">{doc.title}</h3>
-                    <p className="text-xs text-slate-500 leading-relaxed flex-1">{doc.desc}</p>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-2">{doc.title}</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed flex-1">{doc.desc}</p>
                   </div>
                 </a>
               ))}
@@ -515,10 +515,10 @@ export default function Home() {
         <RoadmapSection />
 
         {/* Connect Wallet Section */}
-        <section id="wallet-section" className="relative z-10 py-20 px-4 md:px-6 border-t border-border">
+        <section id="wallet-section" className="relative z-10 py-20 px-4 md:px-6 border-t border-slate-200 dark:border-slate-700">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-slate-900 mb-3">Connect Wallet</h2>
-            <p className="text-sm text-muted mb-8 max-w-md mx-auto">Link your Casper wallet to get AI-powered portfolio analysis and autonomous rebalancing.</p>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">Connect Wallet</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto">Link your Casper wallet to get AI-powered portfolio analysis and autonomous rebalancing.</p>
             <WalletConnect />
           </div>
         </section>
@@ -532,11 +532,11 @@ export default function Home() {
   return (
     <main className="relative min-h-screen">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity duration-300" onClick={reset}>
             <Logo className="w-6 h-6" />
-            <span className="font-semibold text-sm text-slate-900 tracking-tight">Casper Agent</span>
+            <span className="font-semibold text-sm text-slate-900 dark:text-white tracking-tight">Casper Agent</span>
           </div>
           <button
             onClick={reset}
@@ -550,10 +550,10 @@ export default function Home() {
       <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-6 pt-20 pb-12">
         {!portfolio ? (
           <div className="max-w-md mt-8 mx-auto">
-            <div className="relative bg-white border border-border rounded-xl p-6">
+            <div className="relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
               <div className="mb-4">
-                <p className="text-xs font-mono text-muted uppercase mb-2">Connected Wallet</p>
-                <p className="font-mono text-xs text-slate-900 break-all bg-slate-50 border border-border rounded-lg p-3">{walletAddress}</p>
+                <p className="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase mb-2">Connected Wallet</p>
+                <p className="font-mono text-xs text-slate-900 dark:text-white break-all bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-3">{walletAddress}</p>
               </div>
               <div className="space-y-3">
                 <button
@@ -564,7 +564,7 @@ export default function Home() {
                 </button>
                 <button
                   onClick={reset}
-                  className="w-full px-4 py-3 bg-slate-50 text-slate-900 text-sm font-medium border border-border rounded-lg hover:bg-slate-100 hover:border-border-strong transition-all duration-300"
+                  className="w-full px-4 py-3 bg-slate-50 text-slate-900 dark:text-white text-sm font-medium border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 hover:border-slate-200 dark:hover:border-slate-600 transition-all duration-300"
                 >
                   Disconnect
                 </button>
@@ -573,10 +573,10 @@ export default function Home() {
           </div>
         ) : (
           <div className="space-y-6 mt-4">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-border">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-slate-200 dark:border-slate-700">
               <div>
-                <h1 className="text-xl font-semibold text-slate-900">Analysis Results</h1>
-                <p className="text-sm text-muted">Portfolio overview and AI insights</p>
+                <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Analysis Results</h1>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Portfolio overview and AI insights</p>
               </div>
               <button
                 onClick={reset}
