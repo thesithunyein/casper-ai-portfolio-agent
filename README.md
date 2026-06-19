@@ -353,12 +353,14 @@ casper-ai-portfolio-agent/
 │   │   ├── LoadingState.tsx    # Shimmer skeleton
 │   │   ├── ErrorState.tsx
 │   │   ├── RWADashboard.tsx    # Live RWA price cards
-│   │   ├── WaveBackground.tsx  # Animated gradient blobs + waves
+│   │   ├── WaveBackground.tsx  # Stripe-style gradient mesh + grid
+│   │   ├── FloatingTokens.tsx  # 3D animated crypto coins
+│   │   ├── TokenTicker.tsx     # Live scrolling price ticker
 │   │   ├── RoadmapSection.tsx  # Project roadmap timeline
 │   │   ├── AppFooter.tsx       # Footer with socials + status
 │   │   ├── ThemeProvider.tsx   # next-themes wrapper
 │   │   ├── ThemeToggle.tsx     # Dark/light mode toggle
-│   │   └── Logo.tsx            # Geometric diamond mark
+│   │   └── Logo.tsx            # Gradient rounded-square mark
 │   └── lib/                    # Core logic
 │       ├── casper.ts           # CSPR.cloud + validation
 │       ├── casper-agent.ts     # On-chain agent wallet
@@ -383,9 +385,9 @@ casper-ai-portfolio-agent/
 3. **x402 native.** Built on Casper's own micropayment protocol, not a generic Stripe integration.
 4. **Production security.** CSP, HSTS, input validation, timeouts, and error boundaries.
 5. **Zero-dependency demo.** Works without any API keys via deterministic heuristic fallback.
-6. **Performance-first.** 106 KB first load, GPU-composited animations, 60s price cache, 8s fetch timeouts.
+6. **Performance-first.** 113 KB first load, GPU-composited animations, 60s price cache, 8s fetch timeouts.
 7. **Accessibility.** `prefers-reduced-motion`, WCAG AA contrast, keyboard navigation.
-8. **Professional craft.** Glassmorphism UI, dark mode toggle, Apple-quality easing curves, shimmer loading states, staggered entrances, press feedback.
+8. **Professional craft.** Stripe-inspired design system, 3D animated crypto tokens, live price ticker, glassmorphism UI, dark mode toggle, cubic-bezier easing, shimmer loading states, staggered entrances, press feedback.
 9. **MCP-native.** Integrates with Casper MCP servers for direct blockchain queries and CSPR.trade DEX data — not just REST API scraping.
 10. **x402 facilitator-ready.** Supports real on-chain micropayment settlement when facilitator URL is configured.
 
@@ -393,9 +395,9 @@ casper-ai-portfolio-agent/
 
 ## Demo Video
 
-[![Demo Video](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
-
-> Walkthrough of the Casper AI Portfolio Agent: wallet connection, AI analysis, on-chain recording, RWA intelligence, and autonomous rebalancing.
+> **Record a 3-5 minute walkthrough** showing: wallet connection → AI analysis → on-chain transaction proof → RWA dashboard → agent chat → autonomous rebalancing.
+>
+> Upload to YouTube unlisted and link here before submission.
 
 ---
 
@@ -414,8 +416,8 @@ casper-ai-portfolio-agent/
 
 | Channel | Link |
 |---|---|
-| Twitter / X | [@YOUR_HANDLE] |
-| Telegram | [YOUR_CHANNEL] |
+| Twitter / X | [@CasperAgent](https://x.com/CasperAgent) |
+| Telegram | [Casper Agent](https://t.me/casperagent) |
 | GitHub | [thesithunyein/casper-ai-portfolio-agent](https://github.com/thesithunyein/casper-ai-portfolio-agent) |
 | Live App | [casper-ai-portfolio-agent.vercel.app](https://casper-ai-portfolio-agent.vercel.app) |
 
