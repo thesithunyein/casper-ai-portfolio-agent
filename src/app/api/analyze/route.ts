@@ -10,6 +10,7 @@ import {
   isOnChainRecordingConfigured,
   recordAnalysisOnChain,
 } from '@/lib/casper-agent'
+import { enrichWithMCP, buildMCPContextString, isMCPConfigured } from '@/lib/mcp-client'
 
 interface AnalysisPayload {
   summary: string
@@ -300,6 +301,28 @@ export async function POST(request: Request) {
       // proceed without RWA data
     }
 
+    // 1b. Enrich with MCP server data (Casper MCP + CSPR.trade MCP)
+    // This gives the AI agent direct blockchain access via Model Context Protocol,
+    // supplementing CSPR.cloud data with DEX prices, liquidity pools, and on-chain
+    // account state. Gracefully degrades when MCP servers are not configured.
+    let mcpEnrichment: Awaited<ReturnType<typeof enrichWithMCP>> | null = null
+    if (isMCPConfigured()) {
+      try {
+        const portfolioTokens = portfolio.assets.map((a) => a.symbol)
+        mcpEnrichment = await enrichWithMCP(
+          portfolio.walletAddress,
+          portfolioTokens
+        )
+        console.log(
+          `[ANALYZE] MCP enrichment: ${mcpEnrichment.mcpServersConnected.length} servers connected,`,
+          `${mcpEnrichment.liquidityPools.length} pools,`,
+          `${mcpEnrichment.dexPrices.length} DEX prices`
+        )
+      } catch (mcpErr) {
+        console.error('[ANALYZE] MCP enrichment failed:', mcpErr)
+      }
+    }
+
     // x402 payment: verified structurally, and settled on-chain through the
     // Casper x402 Facilitator when X402_FACILITATOR_URL is configured.
     let x402Settlement: import('@/lib/x402').X402SettlementStatus = 'none'
@@ -316,6 +339,10 @@ export async function POST(request: Request) {
     let systemPrompt: string
     try {
       systemPrompt = buildSystemPrompt(rwaFeed)
+      // Append MCP server context if available
+      if (mcpEnrichment) {
+        systemPrompt += buildMCPContextString(mcpEnrichment)
+      }
     } catch (promptErr) {
       console.error('[ANALYZE] buildSystemPrompt failed:', promptErr)
       systemPrompt = buildSystemPrompt()
@@ -429,6 +456,14 @@ export async function POST(request: Request) {
         onchain,
         onchainError,
         autonomousAction,
+        mcp: mcpEnrichment
+          ? {
+              serversConnected: mcpEnrichment.mcpServersConnected,
+              liquidityPools: mcpEnrichment.liquidityPools.length,
+              dexPrices: mcpEnrichment.dexPrices.length,
+              accountInfo: mcpEnrichment.accountInfo ? true : false,
+            }
+          : null,
       },
       { status: 200 }
     )

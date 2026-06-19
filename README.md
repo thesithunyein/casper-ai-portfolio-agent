@@ -124,9 +124,9 @@ This ensures the demo is **100% functional offline**.
 
 ### 3. x402 Micropayment Protocol Integration
 
-The agent supports **Casper's x402** HTTP-native payment standard:
+The agent supports **Casper's x402** HTTP-native payment standard with real facilitator settlement:
 
-- **Facilitator mode:** When `X402_FACILITATOR_URL` is set, the agent calls `/verify` and `/settle` endpoints to produce real on-chain micropayments.
+- **Facilitator mode:** When `X402_FACILITATOR_URL` is set (e.g. `https://x402.casper.network`), the agent calls `/verify` and `/settle` endpoints to produce **real on-chain micropayments** on Casper Testnet.
 - **Demo mode:** Without a facilitator, the header is structurally validated and reported as `verified` (not `settled`).
 
 ```typescript
@@ -134,6 +134,15 @@ The agent supports **Casper's x402** HTTP-native payment standard:
 export const buildX402HeaderValue = (payment: X402Payment): string =>
   Buffer.from(JSON.stringify(payment), 'utf-8').toString('base64')
 ```
+
+Configure the facilitator:
+```bash
+# .env.local
+X402_FACILITATOR_URL=https://x402.casper.network
+NEXT_PUBLIC_X402_RECIPIENT=01your-recipient-public-key
+```
+
+Verification endpoint: `GET /api/agent-status` reports the x402 facilitator configuration status.
 
 ### 4. Autonomous Rebalancing Execution
 
@@ -215,6 +224,33 @@ Live RWA data feeds factored into every AI analysis:
 - `RWADashboard` — live cards on the landing page with auto-refresh
 - `AgentActivityLog` — terminal-style real-time steps including RWA fetch and yield display
 
+### 9. MCP Server Integration (Model Context Protocol)
+
+The agent integrates with **Casper MCP servers** to gain direct blockchain access beyond CSPR.cloud:
+
+- **Casper MCP Server** (`CASPER_MCP_URL`): On-chain account queries (balance, nonce, locked funds), contract state inspection (entry points, named keys), and block data.
+- **CSPR.trade MCP** (`CSPR_TRADE_MCP_URL`): DEX liquidity pools, swap prices, and trade history from CSPR.trade.
+
+```typescript
+// src/lib/mcp-client.ts — enriches AI context with MCP server data
+const enrichment = await enrichWithMCP(walletAddress, portfolioTokens)
+// Returns: account info, liquidity pools, DEX prices, market data
+
+// Injected into AI system prompt for richer analysis
+systemPrompt += buildMCPContextString(enrichment)
+```
+
+**Graceful degradation:** When MCP servers are not configured, the agent continues to work with CSPR.cloud data only — no errors, no broken flows.
+
+**Diagnostics:** `GET /api/agent-status` reports MCP server configuration status for judges to verify.
+
+Configure MCP servers:
+```bash
+# .env.local
+CASPER_MCP_URL=http://localhost:3001
+CSPR_TRADE_MCP_URL=http://localhost:3002
+```
+
 ---
 
 ## Smart Contract (Odra / Rust)
@@ -261,7 +297,10 @@ Copy `.env.example` to `.env.local` and configure:
 | `ANTHROPIC_API_KEY` | No | Anthropic API key for Claude fallback |
 | `CASPER_AGENT_PRIVATE_KEY_PEM` | No | Agent's PEM private key for on-chain writes |
 | `PORTFOLIO_AGENT_PACKAGE_HASH` | No | Deployed contract package hash |
-| `X402_FACILITATOR_URL` | No | x402 facilitator base URL for real micropayments |
+| `X402_FACILITATOR_URL` | No | x402 facilitator base URL for real micropayments (e.g. `https://x402.casper.network`) |
+| `NEXT_PUBLIC_X402_RECIPIENT` | No | Recipient public key for x402 payments |
+| `CASPER_MCP_URL` | No | Casper MCP server URL for on-chain queries |
+| `CSPR_TRADE_MCP_URL` | No | CSPR.trade MCP server URL for DEX data |
 | `ENABLE_AUTONOMOUS_REBALANCE` | No | Set to `1` to enable autonomous CSPR transfers |
 
 ---
@@ -300,7 +339,7 @@ casper-ai-portfolio-agent/
 │   │   │   ├── chat/           # Conversational agent
 │   │   │   ├── portfolio/      # CSPR.cloud balance fetch
 │   │   │   ├── rwa-feed/       # Treasury.gov + CoinGecko RWA data
-│   │   │   └── agent-status/   # Diagnostics endpoint
+│   │   │   └── agent-status/   # Diagnostics (on-chain + MCP + x402)
 │   │   ├── page.tsx            # Landing page (glassmorphism + dark mode)
 │   │   ├── layout.tsx          # Root layout (ThemeProvider + WaveBackground)
 │   │   ├── globals.css         # Design tokens + animations + dark mode
@@ -323,9 +362,10 @@ casper-ai-portfolio-agent/
 │   └── lib/                    # Core logic
 │       ├── casper.ts           # CSPR.cloud + validation
 │       ├── casper-agent.ts     # On-chain agent wallet
-│       ├── x402.ts             # Micropayment protocol
+│       ├── x402.ts             # Micropayment protocol (facilitator + demo)
 │       ├── store.ts            # Zustand state
 │       ├── rwa-feed.ts         # Treasury.gov + CoinGecko RWA feeds
+│       ├── mcp-client.ts       # Casper MCP + CSPR.trade MCP integration
 │       └── agent-chat.ts       # Chat action handlers
 ├── odra-project/               # Rust smart contract (Odra)
 ├── public/                     # Static assets
@@ -346,6 +386,8 @@ casper-ai-portfolio-agent/
 6. **Performance-first.** 106 KB first load, GPU-composited animations, 60s price cache, 8s fetch timeouts.
 7. **Accessibility.** `prefers-reduced-motion`, WCAG AA contrast, keyboard navigation.
 8. **Professional craft.** Glassmorphism UI, dark mode toggle, Apple-quality easing curves, shimmer loading states, staggered entrances, press feedback.
+9. **MCP-native.** Integrates with Casper MCP servers for direct blockchain queries and CSPR.trade DEX data — not just REST API scraping.
+10. **x402 facilitator-ready.** Supports real on-chain micropayment settlement when facilitator URL is configured.
 
 ---
 
