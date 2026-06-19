@@ -416,7 +416,7 @@ casper-ai-portfolio-agent/
 
 | Channel | Link |
 |---|---|
-| Twitter / X | [@CasperAgent](https://x.com/CasperAgent) |
+| Twitter / X | [@CasperAgentAI](https://x.com/CasperAgentAI) |
 | Telegram | [Casper Agent](https://t.me/casperagent) |
 | GitHub | [thesithunyein/casper-ai-portfolio-agent](https://github.com/thesithunyein/casper-ai-portfolio-agent) |
 | Live App | [casper-ai-portfolio-agent.vercel.app](https://casper-ai-portfolio-agent.vercel.app) |

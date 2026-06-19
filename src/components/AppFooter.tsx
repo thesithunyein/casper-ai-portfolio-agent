@@ -16,7 +16,7 @@ export const AppFooter = () => {
 
           <div className="flex items-center gap-2">
             <a
-              href="https://x.com/casperagent"
+              href="https://x.com/CasperAgentAI"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-3 py-2 bg-ink-50 dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-lg text-xs font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white hover:border-black/[0.1] dark:hover:border-white/[0.1] hover:bg-ink-100 dark:hover:bg-ink-800 transition-all duration-300"
