@@ -69,7 +69,7 @@ This is not a mockup. Every analysis triggers a **real Casper 2.0 transaction** 
 |---|---|---|
 | **Frontend** | Next.js 14 (App Router), React 18, Tailwind CSS 3.4, Zustand | SSR/SSG, state management, atomic CSS |
 | **Fonts** | Inter + IBM Plex Mono | Typography hierarchy |
-| **Animation** | CSS keyframes (`transform` + `opacity` only), `prefers-reduced-motion` | GPU-composited motion, WCAG AA accessibility |
+| **Animation** | CSS keyframes, `framer-motion`, `prefers-reduced-motion` | GPU-composited motion, WCAG AA accessibility |
 | **AI** | OpenAI GPT-4o (primary) / Claude 3.5 Sonnet (fallback) | Portfolio analysis with structured JSON output |
 | **Blockchain** | `casper-js-sdk` v5.0.12 | Native Casper 2.0 transaction signing and submission |
 | **Contract** | Odra framework, Rust | `PortfolioAgent` smart contract on Casper Testnet |
@@ -185,7 +185,7 @@ Input validation on every API route:
 ### 8. Accessibility (WCAG AA)
 
 - Focus rings with `2px solid #06b6d4` and `1px` offset.
-- `prefers-reduced-motion` disables starfield, twinkling, and shooting stars.
+- `prefers-reduced-motion` disables all wave and blob animations.
 - Minimum contrast ratios met across all text/background pairs.
 - Semantic HTML: `<nav>`, `<main>`, `<section>`, `<article>`.
 - Keyboard-navigable FAQ accordion and all interactive elements.
@@ -299,10 +299,11 @@ casper-ai-portfolio-agent/
 │   │   │   ├── analyze/        # AI analysis + on-chain write
 │   │   │   ├── chat/           # Conversational agent
 │   │   │   ├── portfolio/      # CSPR.cloud balance fetch
+│   │   │   ├── rwa-feed/       # Treasury.gov + CoinGecko RWA data
 │   │   │   └── agent-status/   # Diagnostics endpoint
-│   │   ├── page.tsx            # Landing page (galaxy theme)
-│   │   ├── layout.tsx          # Root layout (Inter + IBM Plex Mono)
-│   │   ├── globals.css         # Starfield animation + design tokens
+│   │   ├── page.tsx            # Landing page (glassmorphism + dark mode)
+│   │   ├── layout.tsx          # Root layout (ThemeProvider + WaveBackground)
+│   │   ├── globals.css         # Design tokens + animations + dark mode
 │   │   ├── not-found.tsx       # 404 page
 │   │   └── coming-soon/        # Coming soon page
 │   ├── components/             # React components
@@ -312,17 +313,24 @@ casper-ai-portfolio-agent/
 │   │   ├── AgentChat.tsx
 │   │   ├── LoadingState.tsx    # Shimmer skeleton
 │   │   ├── ErrorState.tsx
+│   │   ├── RWADashboard.tsx    # Live RWA price cards
+│   │   ├── WaveBackground.tsx  # Animated gradient blobs + waves
+│   │   ├── RoadmapSection.tsx  # Project roadmap timeline
+│   │   ├── AppFooter.tsx       # Footer with socials + status
+│   │   ├── ThemeProvider.tsx   # next-themes wrapper
+│   │   ├── ThemeToggle.tsx     # Dark/light mode toggle
 │   │   └── Logo.tsx            # Geometric diamond mark
 │   └── lib/                    # Core logic
 │       ├── casper.ts           # CSPR.cloud + validation
 │       ├── casper-agent.ts     # On-chain agent wallet
 │       ├── x402.ts             # Micropayment protocol
 │       ├── store.ts            # Zustand state
+│       ├── rwa-feed.ts         # Treasury.gov + CoinGecko RWA feeds
 │       └── agent-chat.ts       # Chat action handlers
 ├── odra-project/               # Rust smart contract (Odra)
 ├── public/                     # Static assets
 ├── next.config.mjs             # Next.js + security headers
-├── tailwind.config.ts          # Galaxy color palette
+├── tailwind.config.ts          # Design tokens + color palette
 └── CHANGELOG.md                # Design evolution history
 ```
 
@@ -337,7 +345,15 @@ casper-ai-portfolio-agent/
 5. **Zero-dependency demo.** Works without any API keys via deterministic heuristic fallback.
 6. **Performance-first.** 106 KB first load, GPU-composited animations, 60s price cache, 8s fetch timeouts.
 7. **Accessibility.** `prefers-reduced-motion`, WCAG AA contrast, keyboard navigation.
-8. **Professional craft.** Apple-quality easing curves, shimmer loading states, staggered entrances, press feedback.
+8. **Professional craft.** Glassmorphism UI, dark mode toggle, Apple-quality easing curves, shimmer loading states, staggered entrances, press feedback.
+
+---
+
+## Demo Video
+
+[![Demo Video](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
+
+> Walkthrough of the Casper AI Portfolio Agent: wallet connection, AI analysis, on-chain recording, RWA intelligence, and autonomous rebalancing.
 
 ---
 
