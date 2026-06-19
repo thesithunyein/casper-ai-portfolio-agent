@@ -52,7 +52,7 @@ export const RWADashboard = () => {
 
         <div className="grid md:grid-cols-3 gap-5">
           {/* T-bill Card */}
-          <div className="relative bg-white border border-border rounded-xl p-5 shadow-sm overflow-hidden">
+          <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-5 shadow-sm overflow-hidden hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
             <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
@@ -85,7 +85,7 @@ export const RWADashboard = () => {
           </div>
 
           {/* PAX Gold Card */}
-          <div className="relative bg-white border border-border rounded-xl p-5 shadow-sm overflow-hidden">
+          <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-5 shadow-sm overflow-hidden hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
             <div className="absolute top-0 left-0 w-1 h-full bg-yellow-500" />
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-lg bg-yellow-50 flex items-center justify-center">
@@ -121,7 +121,7 @@ export const RWADashboard = () => {
           </div>
 
           {/* Ondo Finance Card */}
-          <div className="relative bg-white border border-border rounded-xl p-5 shadow-sm overflow-hidden">
+          <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-5 shadow-sm overflow-hidden hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
             <div className="absolute top-0 left-0 w-1 h-full bg-sky-500" />
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center">

@@ -410,9 +410,9 @@ export default function Home() {
                 { badge: 'RWA', title: 'RWA Intelligence', desc: 'Live Real-World Asset feeds — US T-bill yields, tokenized gold (PAXG), and ONDO finance prices integrated directly into AI risk scoring and rebalancing.', color: 'bg-amber-50 text-amber-600 border-amber-200' },
               ].map((feat, i) => (
                 <div key={i} className="group relative animate-fade-in">
-                  <div className="relative bg-white border border-border rounded-xl p-6 hover:border-border-strong transition-all duration-300 card-lift">
-                    <div className={`w-10 h-10 rounded-lg ${feat.color} border flex items-center justify-center text-xs font-mono font-bold mb-4`}>{feat.badge}</div>
-                    <h3 className="text-sm font-semibold text-slate-900 mb-2">{feat.title}</h3>
+                  <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-6 hover:border-slate-300/80 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
+                    <div className={`w-10 h-10 rounded-xl ${feat.color} border flex items-center justify-center text-xs font-mono font-bold mb-4 shadow-sm`}>{feat.badge}</div>
+                    <h3 className="text-sm font-semibold text-slate-900 mb-2 tracking-tight">{feat.title}</h3>
                     <p className="text-xs text-slate-500 leading-relaxed">{feat.desc}</p>
                   </div>
                 </div>
@@ -436,10 +436,10 @@ export default function Home() {
                 { num: '04', title: 'On-Chain Action', desc: 'Agent records analysis to the Odra contract and optionally executes autonomous rebalancing transfers.' },
               ].map((step, i) => (
                 <div key={i} className="group relative animate-fade-in">
-                  <div className="relative bg-white border border-border rounded-xl p-6 flex items-start gap-4 hover:border-border-strong transition-all duration-300 card-lift">
-                    <span className="flex-shrink-0 w-10 h-10 rounded-lg bg-slate-50 border border-border flex items-center justify-center text-sm font-mono font-bold text-primary">{step.num}</span>
+                  <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-6 flex items-start gap-4 hover:border-slate-300/80 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
+                    <span className="flex-shrink-0 w-10 h-10 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-sm font-mono font-bold text-primary shadow-sm">{step.num}</span>
                     <div>
-                      <h3 className="text-sm font-semibold text-slate-900 mb-1">{step.title}</h3>
+                      <h3 className="text-sm font-semibold text-slate-900 mb-1 tracking-tight">{step.title}</h3>
                       <p className="text-xs text-slate-500 leading-relaxed">{step.desc}</p>
                     </div>
                   </div>
@@ -464,7 +464,7 @@ export default function Home() {
                 { q: 'Which wallet do I need?', a: 'We recommend the Casper Wallet browser extension. You can also paste any valid Casper public key (starting with 01 or 02) to try the demo.' },
                 { q: 'Is this on mainnet or testnet?', a: 'Currently running on Casper Testnet. Mainnet deployment is planned after the buildathon period.' },
               ].map((item, i) => (
-                <details key={i} className="group bg-white border border-border rounded-xl open:border-border-strong transition-all duration-300">
+                <details key={i} className="group bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl open:border-slate-300/80 open:shadow-lg open:shadow-slate-200/30 transition-all duration-300">
                   <summary className="flex items-center justify-between cursor-pointer p-5 text-sm font-medium text-slate-900 hover:text-primary transition-colors duration-300 list-none">
                     <span>{item.q}</span>
                     <span className="ml-4 text-primary transition-transform duration-300 group-open:rotate-180">▼</span>
@@ -495,7 +495,7 @@ export default function Home() {
                 { title: 'GitHub Repository', desc: 'Full source code including frontend, AI agents, x402 integration, and Odra smart contracts.', link: 'https://github.com/thesithunyein/casper-ai-portfolio-agent', tag: 'Open Source' },
               ].map((doc, i) => (
                 <a key={i} href={doc.link} target="_blank" rel="noopener noreferrer" className="group relative block">
-                  <div className="relative bg-white border border-border rounded-xl p-6 hover:border-border-strong transition-all duration-300 h-full flex flex-col">
+                  <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-6 hover:border-slate-300/80 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300 h-full flex flex-col">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-xs font-mono text-primary bg-primary/10 border border-primary/20 px-2 py-1 rounded">{doc.tag}</span>
                       <svg className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
