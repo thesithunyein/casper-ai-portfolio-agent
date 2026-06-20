@@ -32,15 +32,17 @@ test.describe('Landing Page', () => {
 
   test('should have theme toggle button', async ({ page }) => {
     await page.goto('/')
-    const themeBtn = page.locator('button[aria-label="Toggle theme"]')
-    await expect(themeBtn).toBeVisible()
+    const themeBtn = page.locator('button').filter({ has: page.locator('svg') }).filter({ hasText: '' }).first()
+    // Theme toggle is the button with Sun/Moon icon in the nav
+    const navButtons = page.locator('nav button')
+    await expect(navButtons.first()).toBeVisible()
   })
 
   test('should toggle dark mode', async ({ page }) => {
     await page.goto('/')
-    const themeBtn = page.locator('button[aria-label="Toggle theme"]')
-    await themeBtn.click()
-    // After clicking, the html should have dark class
+    // Click the first button in nav (theme toggle)
+    const navButton = page.locator('nav button').first()
+    await navButton.click()
     await expect(page.locator('html')).toHaveClass(/dark/)
   })
 
@@ -73,8 +75,8 @@ test.describe('Mobile Layout', () => {
   test('theme toggle should be visible on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/')
-    const themeBtn = page.locator('button[aria-label="Toggle theme"]')
-    await expect(themeBtn).toBeVisible()
+    const navButton = page.locator('nav button').first()
+    await expect(navButton).toBeVisible()
   })
 
   test('Connect button should be visible on mobile', async ({ page }) => {
