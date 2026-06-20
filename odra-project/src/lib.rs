@@ -2,6 +2,7 @@
 #![allow(unexpected_cfgs)]
 use odra::prelude::*;
 use odra::casper_types::U256;
+use odra::prelude::ExecutionError;
 
 /// PortfolioAgent - Smart contract for AI portfolio analysis and autonomous
 /// rebalancing on Casper Network. Supports multi-agent roles, allocation
@@ -126,7 +127,7 @@ impl PortfolioAgent {
         let total = cspr_pct as u16 + stablecoin_pct as u16
             + rwa_pct as u16 + defi_pct as u16;
         if total != 100 {
-            self.env().revert(1); // InvalidAllocationSum
+            self.env().revert(ExecutionError::new(1, "InvalidAllocationSum"));
         }
 
         let allocation = Allocation {
@@ -232,7 +233,7 @@ impl PortfolioAgent {
     pub fn register_yield_opportunity(
         &mut self,
         protocol_name: String,
-        apy_basis_points: u16,
+        apy_basis_points: u32,
         tvl_cents: U256,
         risk_level: String,
     ) {
@@ -240,7 +241,7 @@ impl PortfolioAgent {
 
         let opp = YieldOpportunity {
             protocol_name: protocol_name.clone(),
-            apy_basis_points,
+            apy_basis_points: apy_basis_points as u16,
             tvl_cents,
             risk_level,
             registered_by: self.env().caller(),
@@ -274,7 +275,7 @@ impl PortfolioAgent {
     fn assert_owner(&self) {
         let owner = self.owner.get().expect("owner not initialized");
         if self.env().caller() != owner {
-            self.env().revert(10); // UnauthorizedOwner
+            self.env().revert(ExecutionError::new(10, "UnauthorizedOwner"));
         }
     }
 
@@ -286,7 +287,7 @@ impl PortfolioAgent {
         }
         let agents = self.authorized_agents.get_or_default();
         if !agents.contains(&caller) {
-            self.env().revert(11); // UnauthorizedAgent
+            self.env().revert(ExecutionError::new(11, "UnauthorizedAgent"));
         }
     }
 }
@@ -332,6 +333,7 @@ pub struct RebalanceRecord {
 
 /// RWA oracle prices posted on-chain
 #[odra::odra_type]
+#[derive(Default)]
 pub struct RWAOraclePrices {
     /// T-bill yield in basis points (e.g. 450 = 4.50%)
     pub tbill_yield_basis_points: U256,
