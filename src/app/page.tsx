@@ -21,6 +21,7 @@ import { AppFooter } from '@/components/AppFooter'
 import { RWADashboard } from '@/components/RWADashboard'
 import { FloatingTokens } from '@/components/FloatingTokens'
 import { TokenTicker } from '@/components/TokenTicker'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import type { AgentStep } from '@/lib/store'
 
 export default function Home() {
@@ -297,7 +298,7 @@ export default function Home() {
 
         {/* Navigation */}
         <nav className="fixed top-0 left-0 right-0 z-50 stripe-glass border-b border-black/[0.06] dark:border-white/[0.08]">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8 pr-14 h-16 flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
             <div className="flex items-center gap-2.5 cursor-pointer group" onClick={reset}>
               <Logo className="relative w-7 h-7" />
               <span className="font-semibold text-[15px] text-ink-900 dark:text-white tracking-tight group-hover:text-primary transition-colors duration-300">Casper Agent</span>
@@ -308,6 +309,7 @@ export default function Home() {
               <a href="#roadmap" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">Roadmap</a>
               <a href="#faq" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">FAQ</a>
               <a href="#docs" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">Docs</a>
+              <ThemeToggle />
               <button
                 onClick={() => {
                   const element = document.getElementById('wallet-section')
@@ -539,17 +541,20 @@ export default function Home() {
     <main className="relative min-h-screen">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 stripe-glass border-b border-black/[0.06] dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 pr-14 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5 cursor-pointer group" onClick={reset}>
             <Logo className="w-7 h-7" />
             <span className="font-semibold text-[15px] text-ink-900 dark:text-white tracking-tight group-hover:text-primary transition-colors duration-300">Casper Agent</span>
           </div>
-          <button
-            onClick={reset}
-            className="px-4 py-2 bg-primary text-white text-[13px] font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300"
-          >
-            Back to Home
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={reset}
+              className="px-4 py-2 bg-primary text-white text-[13px] font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300"
+            >
+              Back to Home
+            </button>
+          </div>
         </div>
       </nav>
 
