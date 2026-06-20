@@ -170,7 +170,40 @@ When `ENABLE_AUTONOMOUS_REBALANCE=1` is set and the AI recommends action (not "h
 - Proves the agent doesn't just analyze — it **acts** on-chain.
 - Returns the transaction hash for audit.
 
-### 5. Server-Side Portfolio Fetch (CORS Bridge)
+### 5. Multi-Agent Coordination System (`multi-agent.ts`)
+
+The agent swarm consists of **5 specialized AI agents** that coordinate to manage portfolios autonomously:
+
+| Agent | Role | Contract Entry Point |
+|---|---|---|
+| **Portfolio Agent** | Analyzes holdings, records analysis on-chain | `store_analysis` |
+| **Risk Agent** | Assesses concentration risk, sets target allocations | `set_target_allocation` |
+| **Treasury Agent** | Executes rebalancing actions on-chain | `execute_rebalance` |
+| **Oracle Agent** | Posts live RWA prices (T-bills, PAXG, ONDO) on-chain | `update_rwa_prices` |
+| **Yield Routing Agent** | Discovers yield opportunities from CSPR.trade MCP | `register_yield_opportunity` |
+
+Each agent runs in sequence during analysis, with parallel data gathering (RWA feeds + MCP enrichment). The coordination result is returned in the API response with per-agent status, action descriptions, and success/failure tracking.
+
+```typescript
+// src/lib/multi-agent.ts — runs the full agent swarm
+const result = await runMultiAgentCoordination({
+  walletAddress, portfolio, riskLevel,
+  recommendationCount, summaryHash, rebalancingAction
+})
+// Returns: 5 agent results, coordination summary, RWA + MCP context
+```
+
+### 6. Yield Routing Engine (`yield-routing.ts`)
+
+Discovers yield opportunities across Casper DeFi protocols via CSPR.trade MCP and recommends optimal routing:
+
+- **Discovers** liquidity pools from MCP DEX data with estimated APY.
+- **Assesses risk** per pool (liquidity depth, price ratio variance, impermanent loss).
+- **Calculates risk-adjusted APY** using Sharpe-like ratio: `apy * (1 - riskScore/100)`.
+- **Generates routes** based on portfolio risk tolerance (conservative/moderate/aggressive).
+- **Compares** pool APY against T-bill yield from RWA oracle for allocation recommendations.
+
+### 7. Server-Side Portfolio Fetch (CORS Bridge)
 
 CSPR.cloud does not send CORS headers for browser origins. Instead of proxying through a third-party service, the app uses a **dedicated Next.js API route** (`/api/portfolio`) that:
 
@@ -178,7 +211,7 @@ CSPR.cloud does not send CORS headers for browser origins. Instead of proxying t
 - Enforces an 8-second timeout with `AbortController`.
 - Returns structured portfolio data to the client.
 
-### 6. Security Hardening
+### 8. Security Hardening
 
 Production-grade headers configured in `next.config.mjs`:
 
@@ -196,7 +229,7 @@ Input validation on every API route:
 - Numeric fields validated with `Number.isNaN` checks.
 - Chat messages capped at 2000 characters.
 
-### 7. Performance Optimizations
+### 9. Performance Optimizations
 
 | Technique | Implementation |
 |---|---|
@@ -209,7 +242,7 @@ Input validation on every API route:
 | **Reduced motion** | `@media (prefers-reduced-motion: reduce)` disables all animations |
 | **Static generation** | Landing page, 404, and Coming Soon prerendered at build time |
 
-### 8. Accessibility (WCAG AA)
+### 10. Accessibility (WCAG AA)
 
 - Focus rings with `2px solid #06b6d4` and `1px` offset.
 - `prefers-reduced-motion` disables all wave and blob animations.
@@ -273,32 +306,49 @@ CSPR_TRADE_MCP_URL=http://localhost:3002
 
 ## Smart Contract (Odra / Rust)
 
-The `PortfolioAgent` contract is written in **Rust with the Odra framework** and deployed on Casper Testnet.
+The `PortfolioAgent` contract is written in **Rust with the Odra framework** and deployed on Casper Testnet. It features **multi-agent authorization**, **allocation tracking**, **rebalancing execution**, **RWA oracle prices**, and a **yield opportunity registry**.
 
 ```rust
 #[odra::module]
 pub struct PortfolioAgent {
-    analyses: Mapping<String, Vec<AnalysisRecord>>,
-}
-
-#[odra::module_impl]
-impl PortfolioAgent {
-    pub fn store_analysis(
-        &mut self,
-        wallet_address: String,
-        total_value: U256,
-        risk_level: String,
-        recommendation_count: u8,
-        summary_hash: String,
-    ) {
-        // Emits event + stores record for audit trail
-    }
+    analyses: Mapping<String, AnalysisResult>,
+    allocations: Mapping<String, Allocation>,
+    rebalance_history: Mapping<String, Vec<RebalanceRecord>>,
+    rwa_prices: Var<RWAOraclePrices>,
+    total_analyses: Var<u64>,
+    total_rebalances: Var<u64>,
+    owner: Var<Address>,
+    authorized_agents: Var<Vec<Address>>,
+    yield_opportunities: Mapping<String, YieldOpportunity>,
 }
 ```
 
-- **Entry point:** `store_analysis` — records portfolio snapshot + AI risk level.
-- **Events:** Emitted on every write for off-chain indexing.
-- **Immutable:** Analysis records are append-only.
+### Entry Points
+
+| Entry Point | Caller | Purpose |
+|---|---|---|
+| `init` | Deployer | Initialize contract, set owner |
+| `authorize_agent` | Owner | Authorize a new agent address |
+| `revoke_agent` | Owner | Revoke agent authorization |
+| `store_analysis` | Authorized Agent | Record AI analysis on-chain |
+| `set_target_allocation` | Risk Agent | Set target % allocation (CSPR/stable/RWA/DeFi) |
+| `execute_rebalance` | Treasury Agent | Execute + record rebalancing action with RWA context |
+| `update_rwa_prices` | Oracle Agent | Post live T-bill/PAXG/ONDO/CSPR prices on-chain |
+| `register_yield_opportunity` | Yield Router Agent | Register DeFi yield opportunity (APY, TVL, risk) |
+| `get_analysis` | Read-only | Retrieve latest analysis for a wallet |
+| `get_allocation` | Read-only | Retrieve target allocation |
+| `get_rebalance_history` | Read-only | Retrieve full rebalancing history |
+| `get_rwa_prices` | Read-only | Retrieve latest RWA oracle prices |
+| `get_yield_opportunity` | Read-only | Retrieve yield opportunity by protocol |
+| `get_total_analyses` | Read-only | Global analysis counter |
+| `get_total_rebalances` | Read-only | Global rebalance counter |
+
+### Access Control
+
+- **Owner** (deployer): Can authorize/revoke agents.
+- **Authorized Agents**: Can call write entry points (store_analysis, set_target_allocation, execute_rebalance, update_rwa_prices, register_yield_opportunity).
+- **Anyone**: Can call read-only entry points.
+- Unauthorized writes revert with error code 11.
 
 Full contract source: [`odra-project/`](./odra-project/)
 
@@ -389,6 +439,8 @@ casper-ai-portfolio-agent/
 │       ├── store.ts                # Zustand state management
 │       ├── rwa-feed.ts             # Treasury.gov + CoinGecko RWA feeds
 │       ├── mcp-client.ts           # Casper MCP + CSPR.trade MCP integration
+│       ├── multi-agent.ts          # Multi-agent coordination (5 specialized agents)
+│       ├── yield-routing.ts        # Yield routing engine across Casper DeFi
 │       └── agent-chat.ts           # Chat action handlers
 ├── odra-project/                   # Rust smart contract (Odra framework)
 │   ├── src/                        # Contract source code
@@ -401,6 +453,10 @@ casper-ai-portfolio-agent/
 │   ├── icon.svg                    # Favicon (matches app logo)
 │   ├── profile-logo.svg            # 400×400 social media logo
 │   └── profile-logo-256.svg        # 256×256 Telegram logo
+├── e2e/                            # Playwright E2E tests
+│   └── landing-page.spec.ts        # Landing page UI + mobile tests
+├── jest.config.js                  # Jest test configuration
+├── playwright.config.ts            # Playwright test configuration
 ├── next.config.mjs                 # Next.js config + security headers
 ├── tailwind.config.ts              # Design tokens + color palette
 ├── .env.example                    # Environment variable template
@@ -418,15 +474,18 @@ casper-ai-portfolio-agent/
 ## Why This Wins
 
 1. **Real transactions, not mocks.** Every `Analyze Portfolio` click can produce a signed, submitted Casper 2.0 transaction.
-2. **Autonomous agent.** The AI decides whether to rebalance, and the agent executes without human approval.
-3. **x402 native.** Built on Casper's own micropayment protocol, not a generic Stripe integration.
-4. **Production security.** CSP, HSTS, input validation, timeouts, and error boundaries.
-5. **Zero-dependency demo.** Works without any API keys via deterministic heuristic fallback.
-6. **Performance-first.** 113 KB first load, GPU-composited animations, 60s price cache, 8s fetch timeouts.
-7. **Accessibility.** `prefers-reduced-motion`, WCAG AA contrast, keyboard navigation.
-8. **Professional craft.** Stripe-inspired design system, 3D animated crypto tokens, live price ticker, glassmorphism UI, dark mode toggle, cubic-bezier easing, shimmer loading states, staggered entrances, press feedback.
-9. **MCP-native.** Integrates with Casper MCP servers for direct blockchain queries and CSPR.trade DEX data — not just REST API scraping.
-10. **x402 facilitator-ready.** Supports real on-chain micropayment settlement when facilitator URL is configured.
+2. **Multi-agent swarm.** 5 specialized AI agents (Portfolio, Risk, Treasury, Oracle, Yield Router) coordinate autonomously — not a single LLM call.
+3. **Complex smart contract.** 15 entry points with access control, allocation tracking, rebalancing execution, RWA oracle, and yield registry — not just simple storage.
+4. **Yield routing.** Discovers DeFi yield opportunities via CSPR.trade MCP with risk-adjusted APY ranking and route recommendations.
+5. **x402 native.** Built on Casper's own micropayment protocol, not a generic Stripe integration.
+6. **Production security.** CSP, HSTS, input validation, timeouts, and error boundaries.
+7. **Zero-dependency demo.** Works without any API keys via deterministic heuristic fallback.
+8. **Performance-first.** 115 KB first load, GPU-composited animations, 60s price cache, 8s fetch timeouts.
+9. **Test suite.** Jest unit tests (12 passing) + Playwright E2E tests for landing page and mobile layout.
+10. **Accessibility.** `prefers-reduced-motion`, WCAG AA contrast, keyboard navigation.
+11. **Professional craft.** Stripe-inspired design system, 3D animated crypto tokens, live price ticker, glassmorphism UI, dark mode toggle, cubic-bezier easing, shimmer loading states, staggered entrances, press feedback.
+12. **MCP-native.** Integrates with Casper MCP servers for direct blockchain queries and CSPR.trade DEX data — not just REST API scraping.
+13. **x402 facilitator-ready.** Supports real on-chain micropayment settlement when facilitator URL is configured.
 
 ---
 
@@ -447,7 +506,7 @@ casper-ai-portfolio-agent/
 | Q4 2026 | Real RWA oracle on-chain — tokenized T-bills + gold |
 | Q4 2026 | CEP-18 multi-token portfolio support |
 | Q1 2027 | Mobile PWA + Casper Wallet + Ledger integration |
-| Q1 2027 | Multi-agent DAO governance module |
+| Q3 2026 | Multi-agent DAO governance module |
 
 ## Community & Socials
 

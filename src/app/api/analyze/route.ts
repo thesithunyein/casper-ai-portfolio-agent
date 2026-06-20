@@ -11,6 +11,8 @@ import {
   recordAnalysisOnChain,
 } from '@/lib/casper-agent'
 import { enrichWithMCP, buildMCPContextString, isMCPConfigured } from '@/lib/mcp-client'
+import { runMultiAgentCoordination } from '@/lib/multi-agent'
+import { routeYields } from '@/lib/yield-routing'
 
 interface AnalysisPayload {
   summary: string
@@ -443,6 +445,58 @@ export async function POST(request: Request) {
       console.error('[ANALYZE] Autonomous rebalance error:', rebalanceErr)
     }
 
+    // Multi-agent coordination: run the full agent swarm (Risk, Treasury,
+    // Oracle, Yield Router, Portfolio agents) for comprehensive on-chain
+    // action. This is the agentic core — multiple specialized AI agents
+    // coordinating to manage the portfolio autonomously.
+    let multiAgentResult = null
+    try {
+      multiAgentResult = await runMultiAgentCoordination({
+        walletAddress: portfolio.walletAddress,
+        portfolio: {
+          assets: portfolio.assets.map((a) => ({
+            symbol: a.symbol,
+            amount: a.balance,
+            valueUsd: a.value,
+          })),
+          totalValue: portfolio.totalValue,
+        },
+        riskLevel: analysis.riskAssessment?.match(/\b(high|medium|low)\b/i)?.[1]?.toUpperCase() || 'UNKNOWN',
+        recommendationCount: analysis.recommendations?.length ?? 0,
+        summaryHash: hashAnalysisSummary(analysis),
+        rebalancingAction: analysis.rebalancingSuggestion?.action ?? 'AI rebalancing action',
+      })
+      console.log(
+        `[ANALYZE] Multi-agent: ${multiAgentResult.successfulActions}/${multiAgentResult.totalActions} agents succeeded`
+      )
+    } catch (maErr) {
+      console.error('[ANALYZE] Multi-agent coordination failed:', maErr)
+    }
+
+    // Yield routing: discover yield opportunities across Casper DeFi protocols
+    // via CSPR.trade MCP and recommend optimal routes based on risk profile.
+    let yieldRoutingResult = null
+    try {
+      const riskLevelLower = (analysis.riskAssessment || '').toLowerCase()
+      const riskTolerance = riskLevelLower.includes('high')
+        ? 'aggressive'
+        : riskLevelLower.includes('low')
+          ? 'conservative'
+          : 'moderate'
+      yieldRoutingResult = await routeYields({
+        walletAddress: portfolio.walletAddress,
+        portfolioTokens: portfolio.assets.map((a) => a.symbol),
+        riskTolerance: riskTolerance as 'conservative' | 'moderate' | 'aggressive',
+      })
+      if (yieldRoutingResult.opportunities.length > 0) {
+        console.log(
+          `[ANALYZE] Yield routing: ${yieldRoutingResult.opportunities.length} opportunities found, best APY ${yieldRoutingResult.bestOpportunity?.apy}%`
+        )
+      }
+    } catch (yrErr) {
+      console.error('[ANALYZE] Yield routing failed:', yrErr)
+    }
+
     return Response.json(
       {
         ...analysis,
@@ -456,6 +510,29 @@ export async function POST(request: Request) {
         onchain,
         onchainError,
         autonomousAction,
+        multiAgent: multiAgentResult
+          ? {
+              summary: multiAgentResult.coordinationSummary,
+              totalActions: multiAgentResult.totalActions,
+              successfulActions: multiAgentResult.successfulActions,
+              agents: multiAgentResult.results.map((r) => ({
+                role: r.role,
+                name: r.agentName,
+                action: r.action,
+                status: r.status,
+              })),
+            }
+          : null,
+        yieldRouting: yieldRoutingResult
+          ? {
+              opportunities: yieldRoutingResult.opportunities.length,
+              bestApy: yieldRoutingResult.bestOpportunity?.apy ?? 0,
+              bestProtocol: yieldRoutingResult.bestOpportunity?.protocol ?? null,
+              recommendedRoutes: yieldRoutingResult.recommendedRoutes,
+              totalAvailableTvl: yieldRoutingResult.totalAvailableTvl,
+              mcpServersUsed: yieldRoutingResult.mcpServersUsed,
+            }
+          : null,
         mcp: mcpEnrichment
           ? {
               serversConnected: mcpEnrichment.mcpServersConnected,
