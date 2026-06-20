@@ -2,7 +2,6 @@
 #![allow(unexpected_cfgs)]
 use odra::prelude::*;
 use odra::casper_types::U256;
-use odra::prelude::ExecutionError;
 
 /// PortfolioAgent - Smart contract for AI portfolio analysis and autonomous
 /// rebalancing on Casper Network. Supports multi-agent roles, allocation
@@ -127,7 +126,7 @@ impl PortfolioAgent {
         let total = cspr_pct as u16 + stablecoin_pct as u16
             + rwa_pct as u16 + defi_pct as u16;
         if total != 100 {
-            self.env().revert(ExecutionError::new(1, "InvalidAllocationSum"));
+            self.env().revert(ContractError::InvalidAllocationSum);
         }
 
         let allocation = Allocation {
@@ -170,7 +169,14 @@ impl PortfolioAgent {
             amount,
             rationale,
             risk_score,
-            rwa_context: self.rwa_prices.get_or_default(),
+            rwa_context: self.rwa_prices.get().unwrap_or(RWAOraclePrices {
+                tbill_yield_basis_points: U256::zero(),
+                paxg_price_cents: U256::zero(),
+                ondo_price_cents: U256::zero(),
+                cspr_price_cents: U256::zero(),
+                updated_by: self.env().caller(),
+                updated_at: 0,
+            }),
             timestamp: self.env().get_block_time(),
             executed_by: self.env().caller(),
         };
@@ -275,7 +281,7 @@ impl PortfolioAgent {
     fn assert_owner(&self) {
         let owner = self.owner.get().expect("owner not initialized");
         if self.env().caller() != owner {
-            self.env().revert(ExecutionError::new(10, "UnauthorizedOwner"));
+            self.env().revert(ContractError::UnauthorizedOwner);
         }
     }
 
@@ -287,7 +293,7 @@ impl PortfolioAgent {
         }
         let agents = self.authorized_agents.get_or_default();
         if !agents.contains(&caller) {
-            self.env().revert(ExecutionError::new(11, "UnauthorizedAgent"));
+            self.env().revert(ContractError::UnauthorizedAgent);
         }
     }
 }
@@ -333,7 +339,6 @@ pub struct RebalanceRecord {
 
 /// RWA oracle prices posted on-chain
 #[odra::odra_type]
-#[derive(Default)]
 pub struct RWAOraclePrices {
     /// T-bill yield in basis points (e.g. 450 = 4.50%)
     pub tbill_yield_basis_points: U256,
@@ -358,4 +363,12 @@ pub struct YieldOpportunity {
     pub risk_level: String,
     pub registered_by: Address,
     pub registered_at: u64,
+}
+
+/// Custom contract errors for revert conditions
+#[odra::odra_error]
+pub enum ContractError {
+    InvalidAllocationSum = 1,
+    UnauthorizedOwner = 10,
+    UnauthorizedAgent = 11,
 }
