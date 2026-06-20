@@ -274,4 +274,34 @@ export interface AIAnalysis {
     transactionHash: string
     explorerUrl: string
   } | null
+  /** Multi-agent coordination results (5 specialized agents) */
+  multiAgent?: {
+    summary: string
+    totalActions: number
+    successfulActions: number
+    agents: {
+      role: string
+      name: string
+      action: string
+      status: string
+    }[]
+  } | null
+  /** Yield routing results across Casper DeFi protocols */
+  yieldRouting?: {
+    opportunities: number
+    bestApy: number
+    bestProtocol: string | null
+    recommendedRoutes: {
+      protocol: string
+      token: string
+      apy: number
+      riskAdjustedApy: number
+      riskScore: number
+      riskLevel: string
+      tvlUsd: number
+      allocationPct: number
+    }[]
+    totalAvailableTvl: number
+    mcpServersUsed: number
+  } | null
 }

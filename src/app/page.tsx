@@ -11,6 +11,8 @@ import {
 import { WalletConnect } from '@/components/WalletConnect'
 import { PortfolioDisplay } from '@/components/PortfolioDisplay'
 import { AIAnalysisComponent } from '@/components/AIAnalysis'
+import { MultiAgentPanel } from '@/components/MultiAgentPanel'
+import { YieldRoutingDashboard } from '@/components/YieldRoutingDashboard'
 import { LoadingState } from '@/components/LoadingState'
 import { ErrorState } from '@/components/ErrorState'
 import { Logo } from '@/components/Logo'
@@ -254,6 +256,48 @@ export default function Home() {
           detail: 'On-chain write skipped',
           timestamp: new Date(),
         })
+      }
+
+      // Multi-Agent Coordination steps
+      if (aiAnalysis.multiAgent) {
+        const ma = aiAnalysis.multiAgent
+        pushStep({
+          message: `Multi-agent swarm: ${ma.successfulActions}/${ma.totalActions} agents completed`,
+          status: 'success',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
+        ma.agents.forEach((agent: { role: string; name: string; action: string; status: string }) => {
+          pushStep({
+            message: `${agent.name}: ${agent.action}`,
+            status: agent.status === 'success' || agent.status === 'completed' ? 'success' : 'pending',
+            timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+          })
+        })
+      }
+
+      // Yield Routing steps
+      if (aiAnalysis.yieldRouting) {
+        const yr = aiAnalysis.yieldRouting
+        if (yr.opportunities > 0) {
+          pushStep({
+            message: `Yield routing: ${yr.opportunities} opportunities found, best APY ${yr.bestApy.toFixed(2)}%`,
+            status: 'rwa',
+            timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+          })
+          if (yr.bestProtocol) {
+            pushStep({
+              message: `Top protocol: ${yr.bestProtocol} via ${yr.mcpServersUsed} MCP server(s)`,
+              status: 'success',
+              timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+            })
+          }
+        } else {
+          pushStep({
+            message: 'Yield routing: no opportunities found (MCP not configured)',
+            status: 'pending',
+            timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+          })
+        }
       }
     } catch (err) {
       const errorMessage =
@@ -602,6 +646,8 @@ export default function Home() {
                 <PortfolioDisplay portfolio={portfolio} />
                 <AgentActivityLog steps={agentSteps} isRunning={loading} />
                 {analysis && <AIAnalysisComponent analysis={analysis} />}
+                {analysis?.multiAgent && <MultiAgentPanel data={analysis.multiAgent} />}
+                {analysis?.yieldRouting && <YieldRoutingDashboard data={analysis.yieldRouting} />}
               </div>
               <div className="lg:sticky lg:top-20 space-y-6">
                 <AgentChat
