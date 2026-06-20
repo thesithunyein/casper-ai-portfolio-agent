@@ -29,6 +29,29 @@ jobs:
           # Build must succeed without real secrets; routes read these at runtime.
           ANTHROPIC_API_KEY: ""
 
+  e2e:
+    name: Playwright E2E tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+        env:
+          NEXT_PUBLIC_CSPR_CLOUD_API_KEY: ""
+          OPENAI_API_KEY: ""
+          ANTHROPIC_API_KEY: ""
+
   contract:
     name: Odra contract (WASM build)
     runs-on: ubuntu-latest
