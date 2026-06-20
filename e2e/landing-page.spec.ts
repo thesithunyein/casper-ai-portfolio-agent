@@ -9,14 +9,19 @@ test.describe('Landing Page', () => {
 
   test('should display buildathon badge', async ({ page }) => {
     await page.goto('/')
-    await expect(page.locator('text=Casper Agentic Buildathon 2026')).toBeVisible()
+    await expect(page.getByText('Casper Agentic Buildathon 2026', { exact: true })).toBeVisible()
   })
 
-  test('should have working nav links', async ({ page }) => {
+  test('should have working nav links', async ({ page, isMobile }) => {
     await page.goto('/')
-    await expect(page.locator('text=Features').first()).toBeVisible()
-    await expect(page.locator('text=How It Works').first()).toBeVisible()
-    await expect(page.locator('text=Roadmap').first()).toBeVisible()
+    if (isMobile) {
+      // Nav links are hidden on mobile (hidden sm:block)
+      await expect(page.locator('a[href="#features"]')).toBeHidden()
+    } else {
+      await expect(page.locator('a[href="#features"]')).toBeVisible()
+      await expect(page.locator('a[href="#how-it-works"]')).toBeVisible()
+      await expect(page.locator('a[href="#roadmap"]')).toBeVisible()
+    }
   })
 
   test('should have Connect button', async ({ page }) => {
