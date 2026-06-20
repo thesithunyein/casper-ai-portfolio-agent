@@ -2,8 +2,8 @@
 
 export const Logo = ({ className = '' }: { className?: string }) => {
   return (
-    <div className={className}>
-      <svg viewBox="0 0 32 32" className="w-full h-full" fill="none">
+    <div className={className} aria-hidden="true">
+      <svg viewBox="0 0 32 32" className="w-full h-full" fill="none" shapeRendering="geometricPrecision">
         <defs>
           <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#635bff" />

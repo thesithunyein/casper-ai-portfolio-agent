@@ -21,14 +21,27 @@ export const metadata: Metadata = {
   title: 'Casper Agent — Autonomous AI Portfolio Management',
   description: 'AI-powered portfolio analysis with autonomous on-chain rebalancing on Casper Network. Real RWA intelligence, x402 micropayments, and MCP-native blockchain access.',
   icons: {
-    icon: '/icon.svg',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
     shortcut: '/icon.svg',
     apple: '/icon.svg',
+  },
+  appleWebApp: {
+    capable: true,
+    title: 'Casper Agent',
+    statusBarStyle: 'black-translucent',
   },
 }
 
 export const viewport: Viewport = {
-  themeColor: '#635bff',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#635bff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0e1a' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 }
 
 export default function RootLayout({
@@ -41,7 +54,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${ibmPlexMono.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <WaveBackground />
-          <div className="fixed top-4 right-4 z-[100] hidden sm:block">
+          <div className="fixed top-3 right-3 z-[100]">
             <ThemeToggle />
           </div>
           {children}
