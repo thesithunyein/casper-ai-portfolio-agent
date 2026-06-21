@@ -34,7 +34,7 @@
 | **Smart Contract** | [`PortfolioAgent` on Casper Testnet](https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6) |
 | **On-chain write proof** | [`cc648f7d…1307b779`](https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779) |
 | **Contract install txn** | [`9460c0d3…b22a2dc0a`](https://testnet.cspr.live/transaction/9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a) |
-| **Package Hash** | `1786b541e2c353accd37cc3c2811a11947e5f4188cdd3da99da011b50795fe50` |
+| **Package Hash** | `2f76596281bab4993440f5bd88728a34faa1031ab4b7ce8e0064219e1ae2e03d` |
 | **License** | MIT |
 
 ---

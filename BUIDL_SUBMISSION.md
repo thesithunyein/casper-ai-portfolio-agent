@@ -59,7 +59,7 @@ The submission includes an **Odra 2.7 smart contract** (`odra-project/`) with a 
 
 **Deployed contract (Casper Testnet, protocol 2.2.1):**
 - **Install Transaction Hash:** `9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a`
-- **Contract Package Hash:** `1786b541e2c353accd37cc3c2811a11947e5f4188cdd3da99da011b50795fe50`
+- **Contract Package Hash:** `2f76596281bab4993440f5bd88728a34faa1031ab4b7ce8e0064219e1ae2e03d`
 - **Contract Hash (v1):** `0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6`
 - **Block:** height `8185068`, hash `d30b313e98cc16ed26ac4de3e050e434429292096bf2cb0f3c78d12f73386933`
 - **Deployer Account:** `020343c494c68ea9929fad760585d3c138241876fbf8bd03f7cef3147eeee33dd4a6`
