@@ -14,6 +14,7 @@ import {
 import { enrichWithMCP, buildMCPContextString, isMCPConfigured } from '@/lib/mcp-client'
 import { runMultiAgentCoordination } from '@/lib/multi-agent'
 import { routeYields } from '@/lib/yield-routing'
+import { computeAgentReputation } from '@/lib/agent-reputation'
 
 interface AnalysisPayload {
   summary: string
@@ -522,6 +523,21 @@ export async function POST(request: Request) {
       console.error('[ANALYZE] Yield routing failed:', yrErr)
     }
 
+    const reputation = computeAgentReputation({
+      analysisSource,
+      x402Settled: x402Settlement === 'settled',
+      onchainRecorded: Boolean(onchain),
+      autonomousAction: Boolean(autonomousAction),
+      multiAgentSuccessRate: multiAgentResult
+        ? multiAgentResult.totalActions > 0
+          ? multiAgentResult.successfulActions / multiAgentResult.totalActions
+          : 0
+        : 0,
+      yieldOpportunities: yieldRoutingResult?.opportunities.length ?? 0,
+      rwaFeedUsed: Boolean(rwaFeed || (body as Record<string, unknown>)?.rwaPrices),
+      recommendationCount: analysis.recommendations?.length ?? 0,
+    })
+
     return Response.json(
       {
         ...analysis,
@@ -536,6 +552,7 @@ export async function POST(request: Request) {
         onchain,
         onchainError,
         autonomousAction,
+        reputation,
         multiAgent: multiAgentResult
           ? {
               summary: multiAgentResult.coordinationSummary,
@@ -554,9 +571,25 @@ export async function POST(request: Request) {
               opportunities: yieldRoutingResult.opportunities.length,
               bestApy: yieldRoutingResult.bestOpportunity?.apy ?? 0,
               bestProtocol: yieldRoutingResult.bestOpportunity?.protocol ?? null,
-              recommendedRoutes: yieldRoutingResult.recommendedRoutes,
+              recommendedRoutes: yieldRoutingResult.recommendedRoutes.map((route, idx) => {
+                const matched =
+                  yieldRoutingResult.opportunities.find(
+                    (o) =>
+                      o.protocol === route.toProtocol && o.pool === route.toPool
+                  ) || yieldRoutingResult.opportunities[idx]
+                return {
+                  protocol: route.toProtocol,
+                  token: route.toPool,
+                  apy: route.expectedApy,
+                  riskAdjustedApy: matched?.riskAdjustedApy ?? route.expectedApy,
+                  riskScore: matched?.riskScore ?? 50,
+                  riskLevel: route.riskLevel,
+                  tvlUsd: matched?.tvlUsd ?? 0,
+                  allocationPct: route.percentage,
+                }
+              }),
               totalAvailableTvl: yieldRoutingResult.totalAvailableTvl,
-              mcpServersUsed: yieldRoutingResult.mcpServersUsed,
+              mcpServersUsed: yieldRoutingResult.mcpServersUsed.length,
             }
           : null,
         mcp: mcpEnrichment

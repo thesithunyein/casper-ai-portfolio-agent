@@ -43,7 +43,7 @@ export const YieldRoutingDashboard = ({ data }: YieldRoutingDashboardProps) => {
         <div className="flex items-center gap-2">
           <span className="flex items-center gap-1 text-[10px] font-mono text-ink-400 dark:text-ink-500">
             <Server className="w-3 h-3" />
-            {data.mcpServersUsed} MCP
+            {data.mcpServersUsed} source{data.mcpServersUsed === 1 ? '' : 's'}
           </span>
         </div>
       </div>

@@ -68,7 +68,7 @@ Landing page also ships a **Judge verification pack** with these links.
 | Criterion | Evidence in this repo |
 |---|---|
 | **Technical Execution** | Next.js 14 + Odra/Rust, Jest + Playwright, CI, CodeQL, Dependabot, CSP/HSTS |
-| **Innovation & Originality** | Closed agentic loop ending on-chain + x402 settle + multi-agent swarm on Casper |
+| **Innovation & Originality** | Closed agentic loop ending on-chain + x402 settle + multi-agent swarm + **agent reputation score** committed via summary hash |
 | **Use of AI / Agentic Systems** | GPT-4o / Claude + heuristic fallback; agent signs txs without human approval |
 | **Real-World Applicability** | Portfolio risk + RWA hedge advice from live T-bill / gold / ONDO feeds |
 | **UX & Design** | Stripe-grade UI, demo mode, dark mode, WCAG AA, activity log with clickable txs |

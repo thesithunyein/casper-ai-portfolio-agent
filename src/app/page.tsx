@@ -23,6 +23,8 @@ import { AppFooter } from '@/components/AppFooter'
 import { RWADashboard } from '@/components/RWADashboard'
 import { JudgeProofPanel } from '@/components/JudgeProofPanel'
 import { AgentIdentityCard } from '@/components/AgentIdentityCard'
+import { AgentReputationCard } from '@/components/AgentReputationCard'
+import { JudgeBanner } from '@/components/JudgeBanner'
 import { FloatingTokens } from '@/components/FloatingTokens'
 import { TokenTicker } from '@/components/TokenTicker'
 import { ThemeToggle } from '@/components/ThemeToggle'
@@ -604,6 +606,8 @@ export default function Home() {
 
         {/* Footer */}
         <AppFooter />
+        <div className="h-14" />
+        <JudgeBanner />
       </main>
     )
   }
@@ -629,7 +633,7 @@ export default function Home() {
         </div>
       </nav>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-24 pb-12">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-24 pb-20">
         {!portfolio ? (
           <div className="max-w-md mt-8 mx-auto">
             <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 shadow-stripe-sm">
@@ -672,6 +676,7 @@ export default function Home() {
               <div className="space-y-6">
                 <PortfolioDisplay portfolio={portfolio} />
                 <AgentIdentityCard />
+                {analysis?.reputation && <AgentReputationCard reputation={analysis.reputation} />}
                 <AgentActivityLog steps={agentSteps} isRunning={loading} />
                 {analysis && <AIAnalysisComponent analysis={analysis} />}
                 {analysis?.multiAgent && <MultiAgentPanel data={analysis.multiAgent} />}
@@ -688,6 +693,8 @@ export default function Home() {
           </div>
         )}
       </div>
+      <div className="h-14" />
+      <JudgeBanner />
     </main>
   )
 }

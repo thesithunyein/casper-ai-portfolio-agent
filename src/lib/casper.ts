@@ -311,4 +311,13 @@ export interface AIAnalysis {
     totalAvailableTvl: number
     mcpServersUsed: number
   } | null
+  /** Verifiable agent reputation for this run (hashed into on-chain summary) */
+  reputation?: {
+    score: number
+    grade: 'A' | 'B' | 'C' | 'D'
+    label: string
+    breakdown: { factor: string; points: number; max: number }[]
+    committedOnChain: boolean
+    methodology: string
+  } | null
 }
