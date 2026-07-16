@@ -6,6 +6,9 @@
 Casper Agentic Buildathon Final Round. Organizer feedback: fix/improve the web app; keep repo functional at all times; security tooling required.
 
 ### Shipped
+- **Killer judge-first README** — 60s verify path, criteria map, on-chain proof table, honest x402 modes
+- **Agent Identity card** — live public key + settle mode from `/api/agent-status`
+- **Roadmap** updated with Final Round hardening milestone
 - **Real x402 micropayment settle**: when HTTP facilitator cannot settle, agent wallet submits a real 0.01 CSPR Testnet transfer and returns the explorer tx
 - **x402 status honesty**: UI no longer claims "confirmed" before settle; shows settled/verified + explorer link
 - **Judge proof panel** on landing page: package hash + sample txs with descriptions + playbook links

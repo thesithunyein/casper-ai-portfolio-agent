@@ -22,6 +22,7 @@ import { RoadmapSection } from '@/components/RoadmapSection'
 import { AppFooter } from '@/components/AppFooter'
 import { RWADashboard } from '@/components/RWADashboard'
 import { JudgeProofPanel } from '@/components/JudgeProofPanel'
+import { AgentIdentityCard } from '@/components/AgentIdentityCard'
 import { FloatingTokens } from '@/components/FloatingTokens'
 import { TokenTicker } from '@/components/TokenTicker'
 import { ThemeToggle } from '@/components/ThemeToggle'
@@ -410,7 +411,7 @@ export default function Home() {
                 <span className="gradient-text-animated">powered by AI</span>
               </h1>
               <p className="text-lg text-ink-500 dark:text-ink-400 mb-4 max-w-lg leading-relaxed">
-                AI-powered analysis with autonomous on-chain rebalancing. The agent reads your portfolio, checks RWA prices, and acts — all on Casper Testnet.
+                AI-powered analysis with autonomous on-chain rebalancing. The agent pays via x402, reads live RWA prices, and signs real Casper Testnet transactions — no human approval.
               </p>
               <p className="text-sm text-ink-400 dark:text-ink-500 mb-10 max-w-lg leading-relaxed">
                 Supports CSPR, stablecoins, and RWA token analysis — including live US T-bill yields and tokenized gold (PAXG).
@@ -670,6 +671,7 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-6">
                 <PortfolioDisplay portfolio={portfolio} />
+                <AgentIdentityCard />
                 <AgentActivityLog steps={agentSteps} isRunning={loading} />
                 {analysis && <AIAnalysisComponent analysis={analysis} />}
                 {analysis?.multiAgent && <MultiAgentPanel data={analysis.multiAgent} />}
