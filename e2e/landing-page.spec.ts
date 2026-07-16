@@ -9,7 +9,7 @@ test.describe('Landing Page', () => {
 
   test('should display buildathon badge', async ({ page }) => {
     await page.goto('/')
-    await expect(page.getByText('Casper Agentic Buildathon 2026', { exact: true })).toBeVisible()
+    await expect(page.getByText(/Finalist.*Casper Agentic Buildathon 2026/)).toBeVisible()
   })
 
   test('should have working nav links', async ({ page, isMobile }) => {
