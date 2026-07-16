@@ -6,6 +6,8 @@ export interface AgentStep {
   message: string
   status: 'pending' | 'success' | 'error' | 'rwa'
   timestamp: string
+  /** Optional explorer / docs link for judges to verify a step */
+  href?: string
 }
 
 interface AppState {

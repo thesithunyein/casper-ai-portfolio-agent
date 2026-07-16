@@ -15,6 +15,7 @@ export interface AgentStep {
   message: string
   status: 'pending' | 'success' | 'error' | 'rwa'
   timestamp: string
+  href?: string
 }
 
 interface AgentActivityLogProps {
@@ -119,7 +120,18 @@ export const AgentActivityLog = ({ steps, isRunning = false }: AgentActivityLogP
             </span>
             <span className="flex-shrink-0 mt-0.5">{getStatusIcon(step.status)}</span>
             <span className={`${getStatusColor(step.status)} break-words`}>
-              {step.message}
+              {step.href ? (
+                <a
+                  href={step.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-white/20 hover:decoration-emerald-400 hover:text-emerald-300 transition-colors"
+                >
+                  {step.message}
+                </a>
+              ) : (
+                step.message
+              )}
             </span>
           </div>
         ))}

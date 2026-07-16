@@ -21,6 +21,7 @@ import { AgentActivityLog } from '@/components/AgentActivityLog'
 import { RoadmapSection } from '@/components/RoadmapSection'
 import { AppFooter } from '@/components/AppFooter'
 import { RWADashboard } from '@/components/RWADashboard'
+import { JudgeProofPanel } from '@/components/JudgeProofPanel'
 import { FloatingTokens } from '@/components/FloatingTokens'
 import { TokenTicker } from '@/components/TokenTicker'
 import { ThemeToggle } from '@/components/ThemeToggle'
@@ -134,7 +135,7 @@ export default function Home() {
       })
 
       pushStep({
-        message: 'Verifying x402 micropayment...',
+        message: 'Building x402 payment intent...',
         status: 'pending',
         timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
       })
@@ -144,7 +145,7 @@ export default function Home() {
         'Portfolio AI Analysis'
       )
       pushStep({
-        message: `x402 payment verified — ${ANALYSIS_COST_CSPR} CSPR`,
+        message: `x402 intent created — ${ANALYSIS_COST_CSPR} CSPR (settling on analysis)`,
         status: 'success',
         timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
       })
@@ -181,6 +182,27 @@ export default function Home() {
       setAnalysis(aiAnalysis)
       const riskLevel = aiAnalysis.riskAssessment?.toLowerCase().includes('high') ? 'High' :
         aiAnalysis.riskAssessment?.toLowerCase().includes('low') ? 'Low' : 'Medium'
+
+      if (aiAnalysis.x402Payment?.explorerUrl) {
+        pushStep({
+          message: `x402 SETTLED on-chain — ${aiAnalysis.x402Payment.amountCspr} CSPR (${aiAnalysis.x402Payment.mode})`,
+          status: 'success',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+          href: aiAnalysis.x402Payment.explorerUrl,
+        })
+        updateActivityStep('x402', {
+          status: 'complete',
+          detail: `Settled ${aiAnalysis.x402Payment.amountCspr} CSPR`,
+          timestamp: new Date(),
+        })
+      } else if (aiAnalysis.x402Status === 'verified') {
+        pushStep({
+          message: 'x402 header verified (agent key not configured for settle)',
+          status: 'success',
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        })
+      }
+
       pushStep({
         message: `AI analysis complete — Risk: ${riskLevel}`,
         status: 'success',
@@ -229,6 +251,7 @@ export default function Home() {
           message: `TX: ${aiAnalysis.onchain.transactionHash} — View on Explorer →`,
           status: 'success',
           timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+          href: aiAnalysis.onchain.explorerUrl,
         })
         updateActivityStep('onchain', {
           status: 'complete',
@@ -380,7 +403,7 @@ export default function Home() {
             <div className="animate-slide-up">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.08] rounded-full text-xs font-medium text-primary mb-8 shadow-stripe-sm animate-pulse-glow">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Casper Agentic Buildathon 2026
+                Finalist · Casper Agentic Buildathon 2026
               </div>
               <h1 className="text-[44px] md:text-[64px] leading-[1.05] font-bold text-ink-900 dark:text-white mb-6 tracking-tight">
                 Autonomous portfolio management,{' '}
@@ -532,6 +555,9 @@ export default function Home() {
 
         {/* Live RWA Intelligence */}
         <RWADashboard />
+
+        {/* Judge verification pack */}
+        <JudgeProofPanel />
 
         {/* Docs Section */}
         <section id="docs" className="relative z-10 py-24 px-6 lg:px-8 border-t border-black/[0.06] dark:border-white/[0.06]">

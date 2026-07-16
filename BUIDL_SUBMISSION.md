@@ -95,7 +95,16 @@ The core differentiator is a closed agentic loop that ends on-chain:
 - **Reproducible proof:** the `Record Analysis On-Chain` GitHub workflow invokes `store_analysis` via `casper-client`, producing a verifiable transaction independent of the app.
 
 ## Demo Video
-📺 YouTube: (Link to be added after recording — follow DEMO_SCRIPT.md)
+📺 YouTube: https://youtu.be/3oaGutfrkKo
+
+## Judge Playbook
+https://github.com/thesithunyein/casper-ai-portfolio-agent/blob/main/JUDGE_PLAYBOOK.md
+
+## Final Round notes (2026-07-16)
+- x402: agent wallet settles a real 0.01 CSPR Testnet micropayment per analysis when configured (HTTP facilitator optional)
+- Landing page includes Judge verification pack with package hash + described sample txs
+- CodeQL + Dependabot enabled; CODE_OF_CONDUCT + CONTRIBUTING added
+- Keep Vercel deploy green — do not leave `main` broken while iterating
 
 ## GitHub
 https://github.com/thesithunyein/casper-ai-portfolio-agent

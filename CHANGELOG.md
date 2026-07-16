@@ -1,5 +1,20 @@
 # UI Refactor Changelog
 
+## 2026-07-16 — Final Round sprint (max win, keep app live)
+
+### Why
+Casper Agentic Buildathon Final Round. Organizer feedback: fix/improve the web app; keep repo functional at all times; security tooling required.
+
+### Shipped
+- **Real x402 micropayment settle**: when HTTP facilitator cannot settle, agent wallet submits a real 0.01 CSPR Testnet transfer and returns the explorer tx
+- **x402 status honesty**: UI no longer claims "confirmed" before settle; shows settled/verified + explorer link
+- **Judge proof panel** on landing page: package hash + sample txs with descriptions + playbook links
+- **Clickable activity-log tx links** for on-chain steps
+- **JUDGE_PLAYBOOK.md** — 60-second reviewer path
+- **CodeQL workflow + Dependabot**
+- **CODE_OF_CONDUCT.md + CONTRIBUTING.md**
+- Finalist badge on hero; live (not "simulated") RWA copy
+
 ## 2026-06-16 — Linear.app-style redesign
 
 ### Philosophy

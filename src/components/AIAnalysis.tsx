@@ -42,7 +42,7 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
               />
             </div>
             <p className="mt-2 text-[10px] text-ink-400 dark:text-ink-500">
-              Simulated RWA feed: tokenized T-bills, gold, and equities for uncorrelated exposure.
+              Live RWA feed: Treasury.gov T-bill yields + CoinGecko PAXG/ONDO prices.
             </p>
           </div>
         )}
@@ -97,6 +97,50 @@ export const AIAnalysisComponent = ({ analysis }: AIAnalysisProps) => {
           </div>
         </div>
       </div>
+
+      {/* x402 Micropayment */}
+      {(analysis.x402Status || analysis.x402Payment) && (
+        <div className="bg-white dark:bg-ink-900 border border-sky-200 dark:border-sky-500/20 rounded-xl p-5 shadow-stripe-sm">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-ink-900 dark:text-white tracking-tight">x402 Micropayment</h2>
+            <span className="text-[10px] font-mono text-sky-600 bg-sky-500/5 border border-sky-500/20 px-1.5 py-0.5 rounded">
+              {analysis.x402Status === 'settled' ? 'SETTLED ON-CHAIN' : analysis.x402Status === 'verified' ? 'VERIFIED' : 'OPTIONAL'}
+            </span>
+          </div>
+          {analysis.x402Payment ? (
+            <div className="space-y-2">
+              <div className="p-3 bg-ink-50 dark:bg-ink-800/50 border border-black/[0.06] dark:border-white/[0.06] rounded-lg">
+                <p className="text-[10px] font-mono text-ink-400 dark:text-ink-500 uppercase mb-1 tracking-wider">Amount</p>
+                <p className="text-sm text-ink-900 dark:text-white font-medium">{analysis.x402Payment.amountCspr} CSPR</p>
+              </div>
+              <div className="p-3 bg-ink-50 dark:bg-ink-800/50 border border-black/[0.06] dark:border-white/[0.06] rounded-lg">
+                <p className="text-[10px] font-mono text-ink-400 dark:text-ink-500 uppercase mb-1 tracking-wider">Mode</p>
+                <p className="text-xs font-mono text-ink-600 dark:text-ink-300">
+                  {analysis.x402Payment.mode === 'facilitator' ? 'HTTP facilitator settle' : 'Agent-wallet native transfer'}
+                </p>
+              </div>
+              {analysis.x402Payment.explorerUrl && (
+                <div className="p-3 bg-ink-50 dark:bg-ink-800/50 border border-black/[0.06] dark:border-white/[0.06] rounded-lg">
+                  <p className="text-[10px] font-mono text-ink-400 dark:text-ink-500 uppercase mb-1 tracking-wider">Settlement Tx</p>
+                  <a
+                    href={analysis.x402Payment.explorerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sky-600 font-mono text-xs break-all hover:underline"
+                  >
+                    {analysis.x402Payment.transactionHash}
+                    <ExternalLink className="w-3 h-3 flex-shrink-0" />
+                  </a>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-ink-500 dark:text-ink-400">
+              Payment header structurally verified. Configure the agent key to produce a settled on-chain micropayment.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* On-chain Record */}
       {analysis.onchain && (

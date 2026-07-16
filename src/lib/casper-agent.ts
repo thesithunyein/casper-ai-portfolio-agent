@@ -98,6 +98,71 @@ export const isAutonomousRebalanceEnabled = (): boolean =>
 /** 1 CSPR in motes — tiny enough for demos, non-zero for a real tx. */
 const REBALANCE_AMOUNT_MOTES = 1_000_000_000
 
+/** 0.01 CSPR in motes — x402 analysis micropayment amount. */
+const X402_MICROPAYMENT_MOTES = 10_000_000
+
+/**
+ * Real on-chain x402-style micropayment: the agent wallet pays 0.01 CSPR
+ * for each analysis. Produces a verifiable Testnet transaction judges can
+ * open on cspr.live. Used when the HTTP facilitator is not configured or
+ * cannot settle a full EIP-712 payload in this environment.
+ *
+ * Returns the transaction record, or null when the agent key is missing.
+ */
+export const executeX402Micropayment = async (
+  recipientAddress?: string
+): Promise<{ transactionHash: string; explorerUrl: string; amountCspr: string } | null> => {
+  const privateKey = loadAgentPrivateKey()
+  if (!privateKey) return null
+
+  const targetHex =
+    recipientAddress ||
+    process.env.NEXT_PUBLIC_X402_RECIPIENT ||
+    privateKey.publicKey.toHex()
+
+  const MAX_ATTEMPTS = 3
+  let lastError: string | null = null
+
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      const targetPublicKey = PublicKey.fromHex(targetHex)
+      const transaction = new NativeTransferBuilder()
+        .from(privateKey.publicKey)
+        .target(targetPublicKey)
+        .amount(String(X402_MICROPAYMENT_MOTES))
+        .chainName(CASPER_CHAIN_NAME)
+        .payment(STORE_ANALYSIS_PAYMENT_MOTES, GAS_PRICE_TOLERANCE)
+        .build()
+
+      transaction.sign(privateKey)
+
+      const rpcClient = new RpcClient(new HttpHandler(CASPER_NODE_RPC_URL))
+      const result = await rpcClient.putTransaction(transaction)
+      const transactionHash = result.transactionHash.toHex()
+
+      console.log('x402 micropayment tx:', transactionHash)
+
+      return {
+        transactionHash,
+        explorerUrl: getTransactionExplorerUrl(transactionHash),
+        amountCspr: '0.01',
+      }
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : String(error)
+      console.error(
+        `x402 micropayment failed (attempt ${attempt}/${MAX_ATTEMPTS}):`,
+        error
+      )
+      if (attempt < MAX_ATTEMPTS) {
+        await new Promise((resolve) => setTimeout(resolve, 600))
+      }
+    }
+  }
+
+  console.error('x402 micropayment ultimately failed:', lastError)
+  return null
+}
+
 /**
  * Autonomous on-chain action: transfer a small amount of CSPR to a
  * configured vault (or back to the user wallet) when the AI recommends

@@ -259,6 +259,13 @@ export interface AIAnalysis {
   /** Percentage of portfolio recommended to be in tokenized RWA assets */
   rwaExposurePercent?: number
   x402Status?: 'settled' | 'verified' | 'optional'
+  /** Present when a real x402 micropayment was recorded on-chain */
+  x402Payment?: {
+    transactionHash: string
+    explorerUrl: string
+    amountCspr: string
+    mode: 'facilitator' | 'agent-wallet'
+  } | null
   /** 'openai' = live OpenAI, 'claude' = live Claude, 'heuristic' = deterministic demo fallback */
   analysisSource?: 'openai' | 'claude' | 'heuristic'
   /** Present when the agent recorded this analysis on Casper Testnet */
