@@ -12,14 +12,14 @@ interface RoadmapItem {
 const ROADMAP: RoadmapItem[] = [
   {
     phase: 'Q2 2026',
-    title: 'MVP on Casper Testnet',
-    desc: 'Portfolio analysis, Odra smart contract, autonomous rebalancing, and live RWA feeds.',
+    title: 'Testnet launch',
+    desc: 'Portfolio analysis, Odra contract, autonomous rebalancing, and live RWA feeds on Casper Testnet.',
     status: 'done',
   },
   {
     phase: 'Jul 2026',
-    title: 'Final Round hardening',
-    desc: 'Real x402 on-chain settle, judge verification pack, CodeQL/Dependabot, honest payment status in UI.',
+    title: 'Production hardening',
+    desc: 'Real x402 on-chain settle, verification surface, CodeQL/Dependabot, and honest payment status.',
     status: 'done',
   },
   {
@@ -30,7 +30,7 @@ const ROADMAP: RoadmapItem[] = [
   },
   {
     phase: 'Q3 2026',
-    title: 'Mainnet Deployment',
+    title: 'Mainnet deployment',
     desc: 'Audited PortfolioAgent on Casper Mainnet with production agent wallets.',
     status: 'upcoming',
   },
@@ -55,7 +55,7 @@ export const RoadmapSection = () => {
         <div className="text-center mb-16">
           <h2 className="text-[32px] md:text-[40px] font-bold text-ink-900 dark:text-white mb-4 tracking-tight">Roadmap</h2>
           <p className="text-base text-ink-500 dark:text-ink-400 max-w-md mx-auto">
-            Where we are headed — from hackathon MVP to a full agentic portfolio mesh.
+            From Testnet product to mainnet agentic portfolio mesh.
           </p>
         </div>
 

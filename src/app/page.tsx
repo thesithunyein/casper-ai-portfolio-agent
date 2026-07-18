@@ -24,8 +24,6 @@ import { RWADashboard } from '@/components/RWADashboard'
 import { JudgeProofPanel } from '@/components/JudgeProofPanel'
 import { AgentIdentityCard } from '@/components/AgentIdentityCard'
 import { AgentReputationCard } from '@/components/AgentReputationCard'
-import { JudgeBanner } from '@/components/JudgeBanner'
-import { FloatingTokens } from '@/components/FloatingTokens'
 import { TokenTicker } from '@/components/TokenTicker'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import type { AgentStep } from '@/lib/store'
@@ -376,9 +374,8 @@ export default function Home() {
             <div className="flex items-center gap-1">
               <a href="#features" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">Features</a>
               <a href="#how-it-works" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">How It Works</a>
+              <a href="#proof" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">Verify</a>
               <a href="#roadmap" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">Roadmap</a>
-              <a href="#faq" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">FAQ</a>
-              <a href="#docs" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">Docs</a>
               <ThemeToggle />
               <button
                 onClick={() => {
@@ -400,23 +397,21 @@ export default function Home() {
 
         {/* Hero Section */}
         <section className="relative z-10 pt-44 pb-28 px-6 lg:px-8 overflow-hidden">
-          {/* 3D Floating Tokens */}
-          <FloatingTokens />
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
             <div className="animate-slide-up">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.08] rounded-full text-xs font-medium text-primary mb-8 shadow-stripe-sm animate-pulse-glow">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.08] rounded-full text-xs font-medium text-ink-700 dark:text-ink-200 mb-8 shadow-stripe-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Finalist · Casper Agentic Buildathon 2026
+                Live on Casper Testnet
               </div>
               <h1 className="text-[44px] md:text-[64px] leading-[1.05] font-bold text-ink-900 dark:text-white mb-6 tracking-tight">
                 Autonomous portfolio management,{' '}
                 <span className="gradient-text-animated">powered by AI</span>
               </h1>
               <p className="text-lg text-ink-500 dark:text-ink-400 mb-4 max-w-lg leading-relaxed">
-                AI-powered analysis with autonomous on-chain rebalancing. The agent pays via x402, reads live RWA prices, and signs real Casper Testnet transactions — no human approval.
+                The agent pays via x402, reads live RWA prices, analyzes risk, and signs real Casper transactions — without human approval.
               </p>
               <p className="text-sm text-ink-400 dark:text-ink-500 mb-10 max-w-lg leading-relaxed">
-                Supports CSPR, stablecoins, and RWA token analysis — including live US T-bill yields and tokenized gold (PAXG).
+                Built for CSPR, stablecoins, and RWA intelligence — including live US T-bill yields and tokenized gold (PAXG).
               </p>
               <div className="flex flex-wrap items-center gap-3 mb-10">
                 <button
@@ -429,18 +424,16 @@ export default function Home() {
                   Start Analyzing
                 </button>
                 <a
-                  href="https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#proof"
                   className="px-6 py-3 border border-black/[0.08] dark:border-white/[0.08] text-ink-700 dark:text-ink-200 text-sm font-semibold rounded-lg hover:bg-black/[0.02] dark:hover:bg-white/[0.03] hover:border-black/[0.14] dark:hover:border-white/[0.14] transition-all duration-300"
                 >
-                  View contract →
+                  Verify on-chain →
                 </a>
               </div>
               <div className="flex items-center gap-6 text-xs font-medium text-ink-400 dark:text-ink-500">
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  Live on Testnet
+                  x402 settle
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -459,12 +452,12 @@ export default function Home() {
                 <div className="space-y-1.5">
                   <p><span className="text-ink-600">14:32:01</span> <span className="text-primary">INFO</span> <span className="text-ink-300">Portfolio fetch initiated</span></p>
                   <p><span className="text-ink-600">14:32:02</span> <span className="text-primary">INFO</span> <span className="text-ink-300">Connected to CSPR.cloud API</span></p>
-                  <p><span className="text-ink-600">14:32:02</span> <span className="text-primary">INFO</span> <span className="text-ink-300">RWA oracle: TBILL $99.87, XAU $2,345.60</span></p>
+                  <p><span className="text-ink-600">14:32:02</span> <span className="text-primary">INFO</span> <span className="text-ink-300">RWA oracle: TBILL 4.12%, PAXG live</span></p>
                   <p><span className="text-ink-600">14:32:03</span> <span className="text-amber-400">WARN</span> <span className="text-ink-300">CSPR concentration 78% — above threshold</span></p>
-                  <p><span className="text-ink-600">14:32:04</span> <span className="text-primary">INFO</span> <span className="text-ink-300">AI analysis: OpenAI GPT-4o</span></p>
-                  <p><span className="text-ink-600">14:32:05</span> <span className="text-emerald-400">OK</span> <span className="text-ink-300">store_analysis recorded on-chain</span></p>
-                  <p><span className="text-ink-600">14:32:06</span> <span className="text-violet-400">ACT</span> <span className="text-ink-300">Autonomous rebalance executed</span></p>
-                  <p><span className="text-ink-600">14:32:07</span> <span className="text-emerald-400">OK</span> <span className="text-ink-300">Native transfer: 1 CSPR → user</span></p>
+                  <p><span className="text-ink-600">14:32:04</span> <span className="text-sky-400">PAY</span> <span className="text-ink-300">x402 settled — 0.01 CSPR</span></p>
+                  <p><span className="text-ink-600">14:32:05</span> <span className="text-primary">INFO</span> <span className="text-ink-300">AI analysis: OpenAI GPT-4o</span></p>
+                  <p><span className="text-ink-600">14:32:06</span> <span className="text-emerald-400">OK</span> <span className="text-ink-300">store_analysis recorded on-chain</span></p>
+                  <p><span className="text-ink-600">14:32:07</span> <span className="text-violet-400">ACT</span> <span className="text-ink-300">Reputation score committed</span></p>
                   <p className="text-ink-600 mt-2"><span className="terminal-cursor">_</span></p>
                 </div>
               </div>
@@ -512,7 +505,7 @@ export default function Home() {
                 { num: '01', title: 'Connect Wallet', desc: 'Use Casper Wallet extension or enter your public key manually. No private keys ever required.' },
                 { num: '02', title: 'Fetch Balances', desc: 'Real-time portfolio data pulled from CSPR.cloud API across all your token holdings.' },
                 { num: '03', title: 'AI Analysis', desc: 'GPT-4o generates a complete risk profile and rebalancing suggestions tailored to your allocation.' },
-                { num: '04', title: 'On-Chain Action', desc: 'Agent records analysis to the Odra contract and optionally executes autonomous rebalancing transfers.' },
+                { num: '04', title: 'On-Chain Action', desc: 'Agent settles x402, records analysis to the Odra contract, and can execute rebalancing transfers.' },
               ].map((step, i) => (
                 <div key={i} className="group animate-fade-in">
                   <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 flex items-start gap-4 hover:shadow-stripe-md hover:border-black/[0.1] dark:hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-300 h-full">
@@ -541,7 +534,7 @@ export default function Home() {
                 { q: 'What is x402 and why does the agent pay for analysis?', a: 'x402 is a Casper-native payment protocol for agent-to-agent micropayments. The agent holds its own CSPR and pays the analysis fee on your behalf, demonstrating true agentic autonomy.' },
                 { q: 'What does "autonomous rebalancing" mean?', a: 'When the AI detects significant portfolio imbalance, the agent can autonomously execute a native CSPR transfer to rebalance — recorded transparently on-chain.' },
                 { q: 'Which wallet do I need?', a: 'We recommend the Casper Wallet browser extension. You can also paste any valid Casper public key (starting with 01 or 02) to try the demo.' },
-                { q: 'Is this on mainnet or testnet?', a: 'Currently running on Casper Testnet. Mainnet deployment is planned after the buildathon period.' },
+                { q: 'Is this on mainnet or testnet?', a: 'Live on Casper Testnet today. Mainnet deployment is on the roadmap after audit.' },
               ].map((item, i) => (
                 <details key={i} className="group bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl open:shadow-stripe-md open:border-black/[0.1] dark:open:border-white/[0.1] transition-all duration-300">
                   <summary className="flex items-center justify-between cursor-pointer p-5 text-sm font-medium text-ink-900 dark:text-white hover:text-primary transition-colors duration-300 list-none">
@@ -560,38 +553,8 @@ export default function Home() {
         {/* Live RWA Intelligence */}
         <RWADashboard />
 
-        {/* Judge verification pack */}
+        {/* On-chain verification */}
         <JudgeProofPanel />
-
-        {/* Docs Section */}
-        <section id="docs" className="relative z-10 py-24 px-6 lg:px-8 border-t border-black/[0.06] dark:border-white/[0.06]">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-[32px] md:text-[40px] font-bold text-ink-900 dark:text-white mb-4 tracking-tight">Documentation</h2>
-              <p className="text-base text-ink-500 dark:text-ink-400 max-w-md mx-auto">Everything you need to understand and extend the agent.</p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-4">
-              {[
-                { title: 'Smart Contract', desc: 'Odra-based contract deployed on Casper Testnet. Stores analysis hashes and autonomous action records.', link: 'https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6', tag: 'Testnet' },
-                { title: 'Roadmap', desc: 'Q3 2026 Mainnet, Q4 2026 RWA oracle + CEP-18, Q1 2027 Mobile PWA + DAO governance.', link: 'https://github.com/thesithunyein/casper-ai-portfolio-agent#roadmap--launch-plans', tag: 'Planned' },
-                { title: 'GitHub Repository', desc: 'Full source code including frontend, AI agents, x402 integration, and Odra smart contracts.', link: 'https://github.com/thesithunyein/casper-ai-portfolio-agent', tag: 'Open Source' },
-              ].map((doc, i) => (
-                <a key={i} href={doc.link} target="_blank" rel="noopener noreferrer" className="group block">
-                  <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 hover:shadow-stripe-md hover:border-black/[0.1] dark:hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-300 h-full flex flex-col">
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs font-mono text-primary bg-primary/5 border border-primary/10 px-2 py-1 rounded">{doc.tag}</span>
-                      <svg className="w-4 h-4 text-ink-400 group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </div>
-                    <h3 className="text-sm font-semibold text-ink-900 dark:text-white mb-2">{doc.title}</h3>
-                    <p className="text-xs text-ink-500 dark:text-ink-400 leading-relaxed flex-1">{doc.desc}</p>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Roadmap Section */}
         <RoadmapSection />
@@ -607,8 +570,6 @@ export default function Home() {
 
         {/* Footer */}
         <AppFooter />
-        <div className="h-14" />
-        <JudgeBanner />
       </main>
     )
   }
@@ -634,7 +595,7 @@ export default function Home() {
         </div>
       </nav>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-24 pb-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-24 pb-12">
         {!portfolio ? (
           <div className="max-w-md mt-8 mx-auto">
             <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 shadow-stripe-sm">
@@ -694,8 +655,6 @@ export default function Home() {
           </div>
         )}
       </div>
-      <div className="h-14" />
-      <JudgeBanner />
     </main>
   )
 }

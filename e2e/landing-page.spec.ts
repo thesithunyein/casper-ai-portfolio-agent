@@ -7,10 +7,10 @@ test.describe('Landing Page', () => {
     await expect(page.locator('text=Autonomous portfolio management')).toBeVisible()
   })
 
-  test('should display buildathon badge', async ({ page }) => {
+  test('should display live testnet badge', async ({ page }) => {
     await page.goto('/')
     await expect(
-      page.locator('main').getByText('Finalist · Casper Agentic Buildathon 2026', { exact: true }).first()
+      page.getByText('Live on Casper Testnet', { exact: true })
     ).toBeVisible()
   })
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { ExternalLink, ShieldCheck, FileCode2, PlayCircle } from 'lucide-react'
+import { ExternalLink, ShieldCheck, FileCode2, Activity } from 'lucide-react'
 
 const PROOFS = [
   {
@@ -27,10 +27,7 @@ const PROOFS = [
   },
 ]
 
-/**
- * Judge-facing proof panel — package hash + sample Testnet txs with descriptions.
- * Required by Final Round qualification checklist; kept prominent on the landing page.
- */
+/** On-chain verification — product-grade proof surface (also used by Final Round reviewers). */
 export const JudgeProofPanel = () => {
   return (
     <section id="proof" className="relative z-10 py-24 px-6 lg:px-8 border-t border-black/[0.06] dark:border-white/[0.06]">
@@ -38,13 +35,13 @@ export const JudgeProofPanel = () => {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-full text-xs font-medium text-emerald-700 dark:text-emerald-400 mb-6">
             <ShieldCheck className="w-3.5 h-3.5" />
-            Judge verification pack
+            Verifiable on Testnet
           </div>
           <h2 className="text-[32px] md:text-[40px] font-bold text-ink-900 dark:text-white mb-4 tracking-tight">
             On-chain proof
           </h2>
           <p className="text-base text-ink-500 dark:text-ink-400 max-w-xl mx-auto">
-            Package hash and sample Testnet transactions with descriptions — ready for Final Round review.
+            Package hash and sample transactions — open any link on cspr.live to verify.
           </p>
         </div>
 
@@ -82,20 +79,20 @@ export const JudgeProofPanel = () => {
           >
             <FileCode2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-ink-900 dark:text-white">Judge playbook</p>
-              <p className="text-xs text-ink-500 dark:text-ink-400 mt-1">60-second test path with demo account</p>
+              <p className="text-sm font-semibold text-ink-900 dark:text-white">Quick verify guide</p>
+              <p className="text-xs text-ink-500 dark:text-ink-400 mt-1">60-second path with demo account</p>
             </div>
           </a>
           <a
-            href="https://youtu.be/3oaGutfrkKo"
+            href="https://github.com/thesithunyein/casper-ai-portfolio-agent"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-start gap-3 bg-ink-50 dark:bg-ink-800/40 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-4 hover:border-primary/30 transition-colors"
           >
-            <PlayCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+            <Activity className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-ink-900 dark:text-white">Demo video</p>
-              <p className="text-xs text-ink-500 dark:text-ink-400 mt-1">End-to-end walkthrough on YouTube</p>
+              <p className="text-sm font-semibold text-ink-900 dark:text-white">Source code</p>
+              <p className="text-xs text-ink-500 dark:text-ink-400 mt-1">Open-source on GitHub</p>
             </div>
           </a>
           <a
@@ -106,8 +103,8 @@ export const JudgeProofPanel = () => {
           >
             <ShieldCheck className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-ink-900 dark:text-white">Live agent status</p>
-              <p className="text-xs text-ink-500 dark:text-ink-400 mt-1">Secret-free diagnostics JSON</p>
+              <p className="text-sm font-semibold text-ink-900 dark:text-white">Agent status</p>
+              <p className="text-xs text-ink-500 dark:text-ink-400 mt-1">Live diagnostics (no secrets)</p>
             </div>
           </a>
         </div>
