@@ -90,7 +90,7 @@ export const WalletConnect = () => {
             onClick={handleConnect}
             className="w-full px-4 py-3.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0"
           >
-            Analyze Portfolio
+            Connect & Analyze
           </button>
 
           {/* Divider */}
@@ -105,7 +105,7 @@ export const WalletConnect = () => {
             onClick={handleDemo}
             className="w-full px-4 py-2.5 bg-ink-50 dark:bg-ink-800/50 border border-black/[0.06] dark:border-white/[0.06] text-ink-600 dark:text-ink-300 text-sm font-medium rounded-lg hover:bg-ink-100 dark:hover:bg-ink-800 hover:border-black/[0.1] dark:hover:border-white/[0.1] hover:text-ink-900 dark:hover:text-white transition-all duration-300 active:scale-[0.98]"
           >
-            Try with Demo Account
+            Try Demo — Auto-Analyze
           </button>
         </div>
 

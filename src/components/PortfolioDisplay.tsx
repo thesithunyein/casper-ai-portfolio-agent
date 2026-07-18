@@ -15,6 +15,17 @@ export const PortfolioDisplay = ({ portfolio }: PortfolioDisplayProps) => {
             <p className="text-xs text-ink-400 dark:text-ink-500 font-mono">{portfolio.assets.length} assets</p>
           </div>
           <div className="text-right">
+            <div className="flex items-center justify-end gap-2 mb-0.5">
+              <span
+                className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${
+                  portfolio.isLiveData
+                    ? 'text-emerald-600 bg-emerald-500/5 border-emerald-500/20'
+                    : 'text-amber-600 bg-amber-500/5 border-amber-500/20'
+                }`}
+              >
+                {portfolio.isLiveData ? 'LIVE' : 'DEMO'}
+              </span>
+            </div>
             <p className="text-[10px] font-mono text-ink-400 dark:text-ink-500 uppercase tracking-wider">Total Value</p>
             <p className="text-lg font-semibold text-ink-900 dark:text-white tracking-tight">
               ${portfolio.totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

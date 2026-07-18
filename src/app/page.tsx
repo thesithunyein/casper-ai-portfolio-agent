@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useAppStore } from '@/lib/store'
 import {
   ANALYSIS_COST_CSPR,
@@ -13,8 +13,6 @@ import { PortfolioDisplay } from '@/components/PortfolioDisplay'
 import { AIAnalysisComponent } from '@/components/AIAnalysis'
 import { MultiAgentPanel } from '@/components/MultiAgentPanel'
 import { YieldRoutingDashboard } from '@/components/YieldRoutingDashboard'
-import { LoadingState } from '@/components/LoadingState'
-import { ErrorState } from '@/components/ErrorState'
 import { Logo } from '@/components/Logo'
 import { AgentChat } from '@/components/AgentChat'
 import { AgentActivityLog } from '@/components/AgentActivityLog'
@@ -24,6 +22,7 @@ import { RWADashboard } from '@/components/RWADashboard'
 import { JudgeProofPanel } from '@/components/JudgeProofPanel'
 import { AgentIdentityCard } from '@/components/AgentIdentityCard'
 import { AgentReputationCard } from '@/components/AgentReputationCard'
+import { AnalysisOutcomeStrip } from '@/components/AnalysisOutcomeStrip'
 import { TokenTicker } from '@/components/TokenTicker'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import type { AgentStep } from '@/lib/store'
@@ -344,21 +343,17 @@ export default function Home() {
     }
   }, [walletAddress, setPortfolio, setAnalysis, setLoading, setError, setActivityLog, updateActivityStep, appendActivityStep, setRwaPrices, clearAgentSteps, addAgentStep])
 
-  if (loading) {
-    return (
-      <div className="relative min-h-screen flex flex-col items-center justify-center p-4">
-        <LoadingState />
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="relative min-h-screen flex flex-col items-center justify-center p-4">
-        <ErrorState error={error} onRetry={reset} />
-      </div>
-    )
-  }
+  // Auto-start analysis once per connected address (Connect Wallet / Try Demo).
+  const autoStartedFor = useRef<string | null>(null)
+  useEffect(() => {
+    if (!walletAddress) {
+      autoStartedFor.current = null
+      return
+    }
+    if (autoStartedFor.current === walletAddress) return
+    autoStartedFor.current = walletAddress
+    void handleAnalyze()
+  }, [walletAddress, handleAnalyze])
 
   if (!walletAddress) {
     return (
@@ -596,35 +591,71 @@ export default function Home() {
       </nav>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-24 pb-12">
+        {error && (
+          <div className="mb-6 mt-2 flex flex-col sm:flex-row sm:items-center gap-3 rounded-xl border border-red-200 dark:border-red-500/30 bg-red-50 dark:bg-red-500/10 px-4 py-3">
+            <p className="flex-1 text-sm text-red-700 dark:text-red-300">{error}</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  setError(null)
+                  void handleAnalyze()
+                }}
+                className="px-3 py-1.5 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-[#5a4dff] transition-colors"
+              >
+                Retry
+              </button>
+              <button
+                onClick={reset}
+                className="px-3 py-1.5 border border-black/[0.08] dark:border-white/[0.1] text-ink-700 dark:text-ink-200 text-xs font-medium rounded-lg hover:bg-black/[0.02] dark:hover:bg-white/[0.04] transition-colors"
+              >
+                Disconnect
+              </button>
+            </div>
+          </div>
+        )}
+
         {!portfolio ? (
-          <div className="max-w-md mt-8 mx-auto">
+          <div className="max-w-2xl mt-4 mx-auto space-y-6">
             <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 shadow-stripe-sm">
               <div className="mb-4">
                 <p className="text-xs font-mono text-ink-400 dark:text-ink-500 uppercase mb-2 tracking-wider">Connected Wallet</p>
                 <p className="font-mono text-xs text-ink-900 dark:text-white break-all bg-ink-50 dark:bg-ink-800/50 border border-black/[0.06] dark:border-white/[0.06] rounded-lg p-3">{walletAddress}</p>
               </div>
-              <div className="space-y-3">
-                <button
-                  onClick={handleAnalyze}
-                  className="w-full px-4 py-3 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300"
-                >
-                  Analyze Portfolio
-                </button>
-                <button
-                  onClick={reset}
-                  className="w-full px-4 py-3 bg-ink-50 dark:bg-ink-800 text-ink-900 dark:text-white text-sm font-medium border border-black/[0.06] dark:border-white/[0.06] rounded-lg hover:bg-ink-100 dark:hover:bg-ink-700 hover:border-black/[0.1] dark:hover:border-white/[0.1] transition-all duration-300"
-                >
-                  Disconnect
-                </button>
-              </div>
+              {loading ? (
+                <p className="text-sm text-primary font-medium">
+                  Agent running — live steps stream below. No second click needed.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  <button
+                    onClick={() => void handleAnalyze()}
+                    className="w-full px-4 py-3 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300"
+                  >
+                    Analyze Portfolio
+                  </button>
+                  <button
+                    onClick={reset}
+                    className="w-full px-4 py-3 bg-ink-50 dark:bg-ink-800 text-ink-900 dark:text-white text-sm font-medium border border-black/[0.06] dark:border-white/[0.06] rounded-lg hover:bg-ink-100 dark:hover:bg-ink-700 transition-all duration-300"
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              )}
             </div>
+            <AgentActivityLog steps={agentSteps} isRunning={loading} />
           </div>
         ) : (
           <div className="space-y-6 mt-4">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-black/[0.06] dark:border-white/[0.06]">
               <div>
-                <h1 className="text-xl font-semibold text-ink-900 dark:text-white tracking-tight">Analysis Results</h1>
-                <p className="text-sm text-ink-500 dark:text-ink-400">Portfolio overview and AI insights</p>
+                <h1 className="text-xl font-semibold text-ink-900 dark:text-white tracking-tight">
+                  {loading ? 'Agent running…' : 'Analysis Results'}
+                </h1>
+                <p className="text-sm text-ink-500 dark:text-ink-400">
+                  {loading
+                    ? 'Watch live agent output — x402, RWA, and on-chain writes'
+                    : 'Portfolio overview and AI insights'}
+                </p>
               </div>
               <button
                 onClick={reset}
@@ -633,6 +664,8 @@ export default function Home() {
                 New Analysis
               </button>
             </div>
+
+            {analysis && <AnalysisOutcomeStrip analysis={analysis} loading={loading} />}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-6">
