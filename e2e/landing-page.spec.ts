@@ -28,8 +28,8 @@ test.describe('Landing Page', () => {
 
   test('should have Connect button', async ({ page }) => {
     await page.goto('/')
-    const connectBtn = page.locator('button:has-text("Connect")')
-    await expect(connectBtn).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Connect', exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Connect & Analyze' })).toBeVisible()
   })
 
   test('should have theme toggle button', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Landing Page', () => {
 
   test('should scroll to wallet section on Connect click', async ({ page }) => {
     await page.goto('/')
-    await page.locator('button:has-text("Connect")').click()
+    await page.getByRole('button', { name: 'Connect', exact: true }).click()
     await page.waitForTimeout(1000)
     const walletSection = page.locator('#wallet-section')
     await expect(walletSection).toBeVisible()
@@ -84,7 +84,6 @@ test.describe('Mobile Layout', () => {
   test('Connect button should be visible on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/')
-    const connectBtn = page.locator('button:has-text("Connect")')
-    await expect(connectBtn).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Connect', exact: true })).toBeVisible()
   })
 })
