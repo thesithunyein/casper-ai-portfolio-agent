@@ -17,7 +17,7 @@ export const AgentChat = ({ portfolio, analysis, onAnalyze }: AgentChatProps) =>
     {
       id: 'welcome',
       role: 'agent',
-      content: 'Hello! I\'m your Casper AI Portfolio Agent 🐻✨ I can analyze your portfolio, assess risk, suggest rebalancing, and even pay for analysis via x402 micropayments. How can I help you today?',
+      content: 'Hello — I\'m your Casper AI Portfolio Agent. I can analyze holdings, assess risk with live RWA context, settle x402 micropayments, and record results on Casper Testnet. How can I help?',
       timestamp: new Date(),
       actions: [
         { type: 'analyze', label: 'Analyze Portfolio' },

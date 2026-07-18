@@ -479,13 +479,14 @@ export default function Home() {
               <h2 className="text-[32px] md:text-[40px] font-bold text-ink-900 dark:text-white mb-4 tracking-tight">Capabilities</h2>
               <p className="text-base text-ink-500 dark:text-ink-400 max-w-md mx-auto">What the agent does on your behalf.</p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 stagger-children">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
               {[
-                { badge: 'AI', title: 'Portfolio Analysis', desc: 'OpenAI GPT-4o analyzes holdings and generates risk assessments in real-time.', color: 'bg-violet-50 text-violet-600 border-violet-100' },
-                { badge: 'AG', title: 'Agent Chat', desc: 'Conversational interface for portfolio queries and agent-directed actions.', color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
-                { badge: '$0', title: 'x402 Micropayments', desc: 'Agent pays per-analysis fees via Casper\'s x402 payment protocol.', color: 'bg-sky-50 text-sky-600 border-sky-100' },
-                { badge: 'CH', title: 'On-Chain Storage', desc: 'Analysis records persisted to Casper Testnet via Odra smart contract.', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-                { badge: 'RWA', title: 'RWA Intelligence', desc: 'Live US T-bill yields, tokenized gold, and ONDO prices integrated into AI rebalancing.', color: 'bg-amber-50 text-amber-600 border-amber-100' },
+                { badge: 'AI', title: 'Portfolio Analysis', desc: 'GPT-4o analyzes holdings and generates risk assessments with live RWA context.', color: 'bg-violet-50 text-violet-600 border-violet-100' },
+                { badge: 'x402', title: 'Micropayments', desc: 'Agent settles 0.01 CSPR per analysis via facilitator or agent-wallet transfer.', color: 'bg-sky-50 text-sky-600 border-sky-100' },
+                { badge: 'TX', title: 'On-Chain Writes', desc: 'Agent signs Casper 2.0 store_analysis transactions to the Odra contract.', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
+                { badge: '5×', title: 'Multi-Agent Swarm', desc: 'Portfolio, Risk, Treasury, Oracle, and Yield agents coordinate autonomously.', color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
+                { badge: 'RWA', title: 'RWA Intelligence', desc: 'Live US T-bill yields, PAXG, and ONDO prices factored into rebalancing.', color: 'bg-amber-50 text-amber-600 border-amber-100' },
+                { badge: 'RP', title: 'Agent Reputation', desc: 'Transparent 0–100 score from settle, on-chain write, and swarm success.', color: 'bg-rose-50 text-rose-600 border-rose-100' },
               ].map((feat, i) => (
                 <div key={i} className="group animate-fade-in">
                   <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 hover:shadow-stripe-md hover:border-black/[0.1] dark:hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-300 h-full">

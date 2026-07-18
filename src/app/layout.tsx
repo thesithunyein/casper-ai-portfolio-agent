@@ -18,7 +18,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: 'Casper Agent — Autonomous AI Portfolio Management',
-  description: 'AI-powered portfolio analysis with autonomous on-chain rebalancing on Casper Network. Real RWA intelligence, x402 micropayments, and MCP-native blockchain access.',
+  description: 'Finalist · Casper Agentic Buildathon 2026. Autonomous AI portfolio agent on Casper Testnet with x402 settle, Odra contracts, live RWA, and agent reputation.',
   icons: {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },

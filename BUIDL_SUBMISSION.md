@@ -1,157 +1,49 @@
-# BUIDL Submission - Casper AI Portfolio Agent
+# BUIDL Submission — Casper AI Portfolio Agent
 
-## Project Name
-Casper AI Portfolio Agent
+**Event:** Casper Agentic Buildathon 2026 — Final Round  
+**Status:** Finalist  
+**Builder:** Sithu Nyein (@thesithunyein)
 
-## One-Liner
-An adorable, conversational AI portfolio manager for the Casper Network that pays for its own analysis via x402 micropayments and stores results on-chain.
+## One-liner
 
-## Problem
-DeFi portfolio management is intimidating. Most tools are dark, complex, and require deep blockchain knowledge. There are no friendly, approachable AI agents for the Casper ecosystem that can analyze portfolios, answer questions in natural language, operate autonomously, and persist analysis results on-chain.
+Autonomous AI portfolio agent on Casper Testnet that settles x402 micropayments, analyzes risk with GPT-4o, signs real Casper 2.0 transactions, and exposes agent reputation — without human approval.
 
-## Solution
-A cute, conversational AI agent (with a bear mascot!) that:
-1. Fetches your Casper portfolio via CSPR.cloud API
-2. Lets you chat with an AI agent about your holdings ("Should I buy more CSPR?")
-3. Pays for AI analysis via Casper's x402 micropayment protocol
-4. Stores results on-chain via an Odra upgradeable smart contract
-5. Generates real-time rebalancing recommendations using Claude 3.5 Sonnet
+## Links (must match live site + README)
 
-## Key Features
-- **Agent Chat** — Conversational AI with context awareness and one-click action buttons
-- **x402 Integration** — Facilitator-ready HTTP-native micropayments (0.01 CSPR per analysis, verify → settle on-chain)
-- **On-chain Agentic Loop** — AI signs and submits a real Casper 2.0 transaction to store each analysis in the PortfolioAgent contract
-- **Smart Contract** — Odra/Rust upgradeable contract deployed on Casper Testnet
-- **Real AI Analysis** — Claude 3.5 Sonnet API generates personalized portfolio insights
-- **Cute UI** — Pink accents, bear mascot, floating animations — stands out from generic DeFi apps
-- **Real Data** — CSPR.cloud REST API for live Casper Testnet balances
+| Resource | URL |
+|---|---|
+| Live app | https://casper-ai-portfolio-agent.vercel.app |
+| GitHub | https://github.com/thesithunyein/casper-ai-portfolio-agent |
+| Demo script | [DEMO_SCRIPT.md](./DEMO_SCRIPT.md) |
+| Judge playbook | [JUDGE_PLAYBOOK.md](./JUDGE_PLAYBOOK.md) |
+| Contract | https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6 |
+| X | https://x.com/CasperAgentAI |
+| Telegram | https://t.me/casperagent |
 
-## Tech Stack
-- **Frontend:** Next.js 14 + TypeScript + Tailwind CSS
-- **AI:** Claude 3.5 Sonnet API with structured JSON output + agent chat engine
-- **Blockchain:** casper-js-sdk (Casper 2.0 transaction signing) + CSPR.cloud REST API
-- **Smart Contracts:** Odra 2.7 Framework (Rust) — upgradeable, deployed on Testnet
-- **Payments:** x402 Micropayment Protocol (HTTP-native, Facilitator-ready verify/settle)
-- **State:** Zustand lightweight state management
+## On-chain (paste onto DoraHacks)
 
-## Judging Criteria Alignment
+| Artifact | Value |
+|---|---|
+| Package hash | `2f76596281bab4993440f5bd88728a34faa1031ab4b7ce8e0064219e1ae2e03d` |
+| Contract hash | `0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6` |
+| Sample `store_analysis` tx | `cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779` — Success · AI analysis recorded |
+| Install tx | `9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a` — Odra install |
+| CI `store_analysis` | `bca8c90f0326424745efb591a748c5d2e93ca3ce0a42c6e2580c69781239136a` — Success |
 
-| Criterion | How this project addresses it |
-|-----------|-------------------------------|
-| Technical Execution | TypeScript frontend + Rust/Odra contract, modular `src/lib` integration layer, CI for web and WASM builds. |
-| Innovation & Originality | Friendly, approachable agentic DeFi assistant on Casper combining an AI agent, x402 micropayments, and on-chain analysis storage. |
-| Use of AI / Agentic Systems | Claude 3.5 Sonnet powers both the structured analysis (`/api/analyze`) and the conversational agent (`/api/chat`), grounded in live portfolio context. |
-| Real-World Applicability | Portfolio risk assessment and rebalancing is a genuine DeFi need; reads live Testnet balances via CSPR.cloud. |
-| User Experience & Design | Distinctive, polished cute UI with a bear mascot that stands out from generic dark DeFi dashboards. |
-| Working Smart Contracts | Odra contract (`odra-project/`) storing analysis results on Casper Testnet. |
-| Long-Term Launch Plans | Roadmap toward live x402 Facilitator settlement, full CEP-18 indexing, and community voting. |
-| Potential for Long-Term Impact | Open-source reference for building agentic AI dApps on Casper. |
+## Key features (same as live app)
 
-## On-Chain Component (Casper Testnet)
+1. **Agent wallet signing** — real Casper 2.0 `store_analysis` txs  
+2. **x402 settle** — facilitator or agent-wallet 0.01 CSPR with explorer proof  
+3. **5-agent swarm** — Portfolio, Risk, Treasury, Oracle, Yield Router  
+4. **Live RWA** — Treasury.gov T-bill + CoinGecko PAXG/ONDO  
+5. **Agent Reputation** — 0–100 score committed via summary hash  
+6. **Judge proof pack** — package hash + sample txs on the landing page  
+7. **Odra/Rust contract** — deployed on Casper Testnet  
 
-The submission includes an **Odra 2.7 smart contract** (`odra-project/`) with a `store_analysis` entry point. After the contract is deployed, the AI agent autonomously signs and submits real Casper 2.0 transactions to record every analysis on-chain.
+## Tech stack
 
-| Step | Status | Details |
-|------|--------|---------|
-| Build WASM | Done | `odra-project/` builds in CI (`.github/workflows/ci.yml`) |
-| Deploy Contract | **Deployed** | Installed on Casper Testnet via `.github/workflows/deploy-contract.yml` (block height 8185068) |
-| On-chain agent writes | **Live** | The deployed app autonomously signs & submits `store_analysis` on every analysis (`src/lib/casper-agent.ts` via `casper-js-sdk` `ContractCallBuilder`). Verified live-app txn: `cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779` |
+Next.js 14 · TypeScript · Zustand · GPT-4o/Claude · casper-js-sdk · Odra/Rust · CSPR.cloud · x402 · Vercel
 
-**Deployed contract (Casper Testnet, protocol 2.2.1):**
-- **Install Transaction Hash:** `9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a`
-- **Contract Package Hash:** `2f76596281bab4993440f5bd88728a34faa1031ab4b7ce8e0064219e1ae2e03d`
-- **Contract Hash (v1):** `0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6`
-- **Block:** height `8185068`, hash `d30b313e98cc16ed26ac4de3e050e434429292096bf2cb0f3c78d12f73386933`
-- **Deployer Account:** `020343c494c68ea9929fad760585d3c138241876fbf8bd03f7cef3147eeee33dd4a6`
-- **store_analysis (CI workflow):** `bca8c90f0326424745efb591a748c5d2e93ca3ce0a42c6e2580c69781239136a` (Success, block 8187293)
-- **store_analysis (LIVE app, autonomous):** `cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779`
-- **Explorer (install txn):** https://testnet.cspr.live/transaction/9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a
-- **Explorer (live-app store_analysis):** https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779
-- **Explorer (contract):** https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6
+## How judges test
 
-## Agentic Loop Architecture
-
-The core differentiator is a closed agentic loop that ends on-chain:
-
-```
-  User wallet ──▶ CSPR.cloud REST API ──▶ live portfolio context
-                                              │
-                                              ▼
-                            Claude 3.5 Sonnet (/api/analyze, /api/chat)
-                                              │  structured analysis
-                                              ▼
-                        x402 micropayment (verify → settle)  ── pays for the analysis
-                                              │
-                                              ▼
-                   Agent signs a Casper 2.0 transaction (casper-js-sdk)
-                                              │  store_analysis(...)
-                                              ▼
-                 PortfolioAgent Odra contract on Casper Testnet (on-chain audit)
-```
-
-- **Autonomous, not manual:** the server-side agent (`src/lib/casper-agent.ts`) loads its own key, builds a `ContractCallBuilder` transaction, signs it, and submits it via the node RPC — no human signs.
-- **Auditable:** every analysis is hashed (SHA-256) and persisted via `store_analysis`, callable back via `get_analysis` / `has_analysis` / `get_total_analyses`.
-- **Resilient:** the on-chain write never blocks the user-facing analysis; failures degrade gracefully.
-- **Reproducible proof:** the `Record Analysis On-Chain` GitHub workflow invokes `store_analysis` via `casper-client`, producing a verifiable transaction independent of the app.
-
-## Demo Video
-📺 YouTube: https://youtu.be/3oaGutfrkKo
-
-## Judge Playbook
-https://github.com/thesithunyein/casper-ai-portfolio-agent/blob/main/JUDGE_PLAYBOOK.md
-
-## Final Round notes (2026-07-16)
-- x402: agent wallet settles a real 0.01 CSPR Testnet micropayment per analysis when configured (HTTP facilitator optional)
-- Landing page includes Judge verification pack with package hash + described sample txs
-- CodeQL + Dependabot enabled; CODE_OF_CONDUCT + CONTRIBUTING added
-- Keep Vercel deploy green — do not leave `main` broken while iterating
-
-## GitHub
-https://github.com/thesithunyein/casper-ai-portfolio-agent
-
-## Live Demo
-https://casper-ai-portfolio-agent.vercel.app
-
-## Team
-Solo builder — thesithunyein
-- GitHub: https://github.com/thesithunyein
-- Twitter/X: (To be created per SOCIAL_MEDIA_LAUNCH.md)
-
-## Socials & Community
-- Twitter/X: @CasperAgent (launch per SOCIAL_MEDIA_LAUNCH.md)
-- Casper Developer Discord: Active in #showcase
-- GitHub: Open-source with full documentation
-
-## Future Plans
-- [x] Agent autonomously records analysis on-chain via `casper-js-sdk`
-- [x] x402 Facilitator-ready verify/settle flow
-- [ ] Mainnet x402 deployment — Production micropayments for agent autonomy
-- [ ] MCP server expansion — Connect to CSPR.trade, more DeFi protocols
-- [ ] Multi-agent DAO governance — Swarm of specialized agents (Risk, Treasury, Legal)
-- [ ] Mobile app — React Native with push notifications for portfolio alerts
-- [ ] Grant application — Casper Ecosystem Fund for continued development
-
-## Deployment Instructions
-
-### Smart Contract
-1. Fund a Casper Testnet key at https://testnet.cspr.live/tools/faucet
-2. Add the private key as GitHub secret `CSPR_TESTNET_PRIVATE_KEY`
-3. Run the **Deploy Contract to Casper Testnet** workflow (`.github/workflows/deploy-contract.yml`)
-4. Copy the contract package hash into `PORTFOLIO_AGENT_PACKAGE_HASH`
-
-### Web App
-```bash
-# 1. Install dependencies
-npm install
-
-# 2. Set environment variables
-cp .env.example .env.local
-# Edit .env.local with your ANTHROPIC_API_KEY, CSPR_CLOUD_API_KEY,
-# PORTFOLIO_AGENT_PACKAGE_HASH, and CASPER_AGENT_PRIVATE_KEY_PEM
-
-# 3. Run locally
-npm run dev
-
-# 4. Deploy to Vercel
-vercel --prod
-```
+See [JUDGE_PLAYBOOK.md](./JUDGE_PLAYBOOK.md) — Demo account → Analyze → click txs.
