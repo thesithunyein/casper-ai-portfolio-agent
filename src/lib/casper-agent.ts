@@ -47,13 +47,30 @@ const STORE_ANALYSIS_PAYMENT_MOTES = Number(
 )
 
 /**
- * Gas price tolerance for classic/PaymentLimited pricing. Testnet currently
- * requires >= 2 (matches the successful contract install).
+ * Gas price tolerance for PaymentLimited pricing. Casper testnet/mainnet
+ * chainspec currently sets max_gas_price = 1 — values above that are rejected
+ * as "invalid pricing mode" (-32016 Invalid transaction).
  */
-const GAS_PRICE_TOLERANCE = 2
+const GAS_PRICE_TOLERANCE = Number(process.env.CASPER_GAS_PRICE_TOLERANCE || 1)
 
 const normalizeHash = (hash: string): string =>
   hash.replace(/^(hash-|contract-package-wasm|contract-package-)/, '')
+
+/** Pull the useful `data` field from Casper JSON-RPC -32016 errors. */
+const formatRpcError = (error: unknown): string => {
+  if (!error || typeof error !== 'object') return String(error)
+  const err = error as {
+    message?: string
+    data?: unknown
+    sourceErr?: { message?: string; data?: unknown }
+    cause?: { message?: string; data?: unknown }
+  }
+  const message = err.message || 'Unknown RPC error'
+  const data = err.sourceErr?.data ?? err.data ?? err.cause?.data
+  if (data == null) return message
+  const detail = typeof data === 'string' ? data : JSON.stringify(data)
+  return detail && !message.includes(detail) ? `${message}: ${detail}` : message
+}
 
 const loadAgentPrivateKey = (): PrivateKey | null => {
   const pem = process.env.CASPER_AGENT_PRIVATE_KEY_PEM
@@ -95,19 +112,29 @@ export const isAutonomousRebalanceEnabled = (): boolean =>
   process.env.ENABLE_AUTONOMOUS_REBALANCE === '1' ||
   process.env.ENABLE_AUTONOMOUS_REBALANCE === 'true'
 
-/** 1 CSPR in motes — tiny enough for demos, non-zero for a real tx. */
-const REBALANCE_AMOUNT_MOTES = 1_000_000_000
+/**
+ * Native transfer floor on casper-test (chainspec native_transfer_minimum_motes).
+ * Below this, put_transaction returns Invalid transaction.
+ */
+const NATIVE_TRANSFER_MINIMUM_MOTES = 2_500_000_000
 
-/** 0.01 CSPR in motes — x402 analysis micropayment amount. */
-const X402_MICROPAYMENT_MOTES = 10_000_000
+/** Autonomous rebalance demo transfer — must meet native transfer minimum. */
+const REBALANCE_AMOUNT_MOTES = Number(
+  process.env.REBALANCE_AMOUNT_MOTES || NATIVE_TRANSFER_MINIMUM_MOTES
+)
 
 /**
- * Real on-chain x402-style micropayment: the agent wallet pays 0.01 CSPR
- * for each analysis. Produces a verifiable Testnet transaction judges can
- * open on cspr.live. Used when the HTTP facilitator is not configured or
- * cannot settle a full EIP-712 payload in this environment.
- *
- * Returns the transaction record, or null when the agent key is missing.
+ * Agent-wallet x402 settle amount in motes. Intent headers may still say 0.01;
+ * on-chain native settle must be >= native_transfer_minimum_motes (2.5 CSPR).
+ */
+const X402_MICROPAYMENT_MOTES = Number(
+  process.env.X402_MICROPAYMENT_MOTES || NATIVE_TRANSFER_MINIMUM_MOTES
+)
+
+/**
+ * Real on-chain x402-style micropayment via agent-wallet native transfer.
+ * Amount defaults to chainspec native_transfer_minimum_motes (2.5 CSPR) so
+ * put_transaction is accepted. Produces a verifiable Testnet transaction.
  */
 export const executeX402Micropayment = async (
   recipientAddress?: string
@@ -123,6 +150,8 @@ export const executeX402Micropayment = async (
   const MAX_ATTEMPTS = 3
   let lastError: string | null = null
 
+  const amountCspr = (X402_MICROPAYMENT_MOTES / 1_000_000_000).toFixed(2)
+
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
       const targetPublicKey = PublicKey.fromHex(targetHex)
@@ -130,6 +159,7 @@ export const executeX402Micropayment = async (
         .from(privateKey.publicKey)
         .target(targetPublicKey)
         .amount(String(X402_MICROPAYMENT_MOTES))
+        .id(Date.now())
         .chainName(CASPER_CHAIN_NAME)
         .payment(STORE_ANALYSIS_PAYMENT_MOTES, GAS_PRICE_TOLERANCE)
         .build()
@@ -145,13 +175,13 @@ export const executeX402Micropayment = async (
       return {
         transactionHash,
         explorerUrl: getTransactionExplorerUrl(transactionHash),
-        amountCspr: '0.01',
+        amountCspr,
       }
     } catch (error) {
-      lastError = error instanceof Error ? error.message : String(error)
+      lastError = formatRpcError(error)
       console.error(
         `x402 micropayment failed (attempt ${attempt}/${MAX_ATTEMPTS}):`,
-        error
+        lastError
       )
       if (attempt < MAX_ATTEMPTS) {
         await new Promise((resolve) => setTimeout(resolve, 600))
@@ -188,6 +218,7 @@ export const executeAutonomousRebalance = async (
         .from(privateKey.publicKey)
         .target(targetPublicKey)
         .amount(String(REBALANCE_AMOUNT_MOTES))
+        .id(Date.now())
         .chainName(CASPER_CHAIN_NAME)
         .payment(STORE_ANALYSIS_PAYMENT_MOTES, GAS_PRICE_TOLERANCE)
         .build()
@@ -205,10 +236,10 @@ export const executeAutonomousRebalance = async (
         explorerUrl: getTransactionExplorerUrl(transactionHash),
       }
     } catch (error) {
-      lastError = error instanceof Error ? error.message : String(error)
+      lastError = formatRpcError(error)
       console.error(
         `Autonomous rebalance failed (attempt ${attempt}/${MAX_ATTEMPTS}):`,
-        error
+        lastError
       )
       if (attempt < MAX_ATTEMPTS) {
         await new Promise((resolve) => setTimeout(resolve, 600))
@@ -286,10 +317,10 @@ export const recordAnalysisOnChain = async (params: {
         error: null,
       }
     } catch (error) {
-      lastError = error instanceof Error ? error.message : String(error)
+      lastError = formatRpcError(error)
       console.error(
         `On-chain analysis recording failed (attempt ${attempt}/${MAX_ATTEMPTS}):`,
-        error
+        lastError
       )
       // brief backoff before retrying
       if (attempt < MAX_ATTEMPTS) {
@@ -332,6 +363,11 @@ export const getAgentDiagnostics = () => {
     hasPem,
     hasHex,
     hasPackageHash,
+    packageHashPrefix: process.env.PORTFOLIO_AGENT_PACKAGE_HASH
+      ? `${normalizeHash(process.env.PORTFOLIO_AGENT_PACKAGE_HASH).slice(0, 8)}…`
+      : null,
+    gasPriceTolerance: GAS_PRICE_TOLERANCE,
+    x402SettleAmountCspr: (X402_MICROPAYMENT_MOTES / 1_000_000_000).toFixed(2),
     algorithm,
     keyLoads,
     publicKey,

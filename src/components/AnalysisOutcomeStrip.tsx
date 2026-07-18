@@ -31,7 +31,11 @@ export const AnalysisOutcomeStrip = ({ analysis, loading }: AnalysisOutcomeStrip
     },
     {
       label: 'On-chain',
-      value: analysis.onchain ? 'store_analysis' : 'Skipped',
+      value: analysis.onchain
+        ? 'store_analysis'
+        : analysis.onchainError
+          ? 'Failed'
+          : 'Skipped',
       ok: Boolean(analysis.onchain),
       href: analysis.onchain?.explorerUrl,
     },

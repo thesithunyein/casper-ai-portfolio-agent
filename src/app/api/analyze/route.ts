@@ -328,7 +328,7 @@ export async function POST(request: Request) {
     }
 
     // x402 payment: try HTTP facilitator first; if not settled, fall back to a
-    // real agent-signed 0.01 CSPR transfer so judges always get on-chain proof.
+    // real agent-signed native transfer (>= 2.5 CSPR floor) so judges get on-chain proof.
     let x402Settlement: import('@/lib/x402').X402SettlementStatus = 'none'
     let x402Payment: {
       transactionHash: string

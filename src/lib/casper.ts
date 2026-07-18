@@ -276,6 +276,8 @@ export interface AIAnalysis {
     network: string
     entryPoint: string
   } | null
+  /** Set when on-chain recording was attempted but rejected / failed */
+  onchainError?: string | null
   /** Present when the agent autonomously executed a rebalancing action */
   autonomousAction?: {
     transactionHash: string

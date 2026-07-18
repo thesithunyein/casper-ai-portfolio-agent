@@ -197,7 +197,7 @@ export default function Home() {
         })
       } else if (aiAnalysis.x402Status === 'verified') {
         pushStep({
-          message: 'x402 header verified (agent key not configured for settle)',
+          message: 'x402 header verified (on-chain settle skipped this run)',
           status: 'success',
           timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
         })
@@ -264,19 +264,23 @@ export default function Home() {
           timestamp: new Date(),
         })
       } else {
+        const chainErr =
+          typeof aiAnalysis.onchainError === 'string' && aiAnalysis.onchainError
+            ? aiAnalysis.onchainError
+            : 'On-chain write not returned this run'
         pushStep({
-          message: 'On-chain recording skipped — agent key not configured',
-          status: 'success',
+          message: `On-chain recording failed — ${chainErr}`,
+          status: 'error',
           timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
         })
         updateActivityStep('onchain', {
-          status: 'complete',
-          detail: 'Agent key not configured',
+          status: 'error',
+          detail: chainErr,
           timestamp: new Date(),
         })
         updateActivityStep('submit', {
-          status: 'complete',
-          detail: 'On-chain write skipped',
+          status: 'error',
+          detail: 'On-chain write failed',
           timestamp: new Date(),
         })
       }
@@ -470,7 +474,7 @@ export default function Home() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
               {[
                 { badge: 'AI', title: 'Portfolio Analysis', desc: 'GPT-4o analyzes holdings and generates risk assessments with live RWA context.', color: 'bg-violet-50 text-violet-600 border-violet-100' },
-                { badge: 'x402', title: 'Micropayments', desc: 'Agent settles 0.01 CSPR per analysis via facilitator or agent-wallet transfer.', color: 'bg-sky-50 text-sky-600 border-sky-100' },
+                { badge: 'x402', title: 'Micropayments', desc: 'Agent settles via x402 facilitator or agent-wallet native transfer on Casper Testnet.', color: 'bg-sky-50 text-sky-600 border-sky-100' },
                 { badge: 'TX', title: 'On-Chain Writes', desc: 'Agent signs Casper 2.0 store_analysis transactions to the Odra contract.', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
                 { badge: '5×', title: 'Multi-Agent Swarm', desc: 'Portfolio, Risk, Treasury, Oracle, and Yield agents coordinate autonomously.', color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
                 { badge: 'RWA', title: 'RWA Intelligence', desc: 'Live US T-bill yields, PAXG, and ONDO prices factored into rebalancing.', color: 'bg-amber-50 text-amber-600 border-amber-100' },
