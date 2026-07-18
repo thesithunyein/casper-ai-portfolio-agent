@@ -30,4 +30,4 @@ Same product as the [live app](https://casper-ai-portfolio-agent.vercel.app) and
 
 ## Demo recording
 
-Follow [DEMO_SCRIPT.md](./DEMO_SCRIPT.md) for Final Round video.
+Record a 75–90s walkthrough: Judges bar → Try demo → Analyze → click x402 + `store_analysis` explorer links → Identity + Reputation. Upload to YouTube and link it on the DoraHacks BUIDL page.

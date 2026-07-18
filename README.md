@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="public/profile-logo.svg" width="96" height="96" alt="Casper AI Portfolio Agent" />
+
 # Casper AI Portfolio Agent
 
 **Finalist · Casper Agentic Buildathon 2026 — Final Round**
@@ -15,7 +17,6 @@ reads holdings → settles **x402** → analyzes with GPT-4o → **signs real Ca
 
 **[Live App](https://casper-ai-portfolio-agent.vercel.app)** ·
 **[Judge Playbook](./JUDGE_PLAYBOOK.md)** ·
-**[Demo Script](./DEMO_SCRIPT.md)** ·
 **[Contract](https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6)** ·
 **[X](https://x.com/CasperAgentAI)** ·
 **[Telegram](https://t.me/casperagent)**
@@ -265,8 +266,6 @@ src/lib          # casper-agent, x402, multi-agent, reputation, yield
 odra-project/    # PortfolioAgent (Rust / Odra)
 e2e/             # Playwright
 JUDGE_PLAYBOOK.md
-DEMO_SCRIPT.md
-BUIDL_SUBMISSION.md
 ```
 
 ---

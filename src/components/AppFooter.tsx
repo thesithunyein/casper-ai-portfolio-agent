@@ -10,7 +10,7 @@ export const AppFooter = () => {
           <div>
             <p className="text-sm font-semibold text-ink-900 dark:text-white tracking-tight">Casper AI Portfolio Agent</p>
             <p className="text-xs text-ink-400 dark:text-ink-500 mt-1">
-              Finalist · Casper Agentic Buildathon 2026
+              Casper Agentic Buildathon 2026 · Final Round
             </p>
           </div>
 

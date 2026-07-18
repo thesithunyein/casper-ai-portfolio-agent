@@ -53,7 +53,7 @@ casper-client put-transaction session \
 2. The contract package hash is stored under the named key
    `portfolio_agent_package_hash` on the deploying account.
    View it at `https://testnet.cspr.live/account/<your-public-key>`.
-3. Put both hashes in `BUIDL_SUBMISSION.md` and set the frontend env var
+3. Put both hashes in the README on-chain proof table and set the frontend env var
    `NEXT_PUBLIC_CONTRACT_PACKAGE_HASH=hash-...` so the app can link to the
    on-chain contract.
 
