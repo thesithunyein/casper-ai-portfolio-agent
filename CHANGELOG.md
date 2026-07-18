@@ -1,5 +1,13 @@
 # UI Refactor Changelog
 
+## 2026-07-18 — Winner-pack cleanup (pre-demo)
+
+- README rewritten: no screenshots/thumbnails; advanced Mermaid architecture, sequence, swarm, x402 diagrams; live=code=docs alignment
+- Removed dead weight: `coming-soon` page, `MouseGlow`, `logo-preview.html`, outdated `SOCIAL_MEDIA_LAUNCH.md`
+- BUIDL / JUDGE_PLAYBOOK / QUICKSTART synced to Final Round product surface
+- Live UI: 6 capability cards (incl. Reputation), professional chat voice, Finalist footer
+- `tsconfig.tsbuildinfo` gitignored
+
 ## 2026-07-16 — Final Round sprint (max win, keep app live)
 
 ### Why
