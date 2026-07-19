@@ -1,16 +1,15 @@
-# Judge Playbook — Casper AI Portfolio Agent
+# Judge Playbook — CasperAgent
 
 Same product as the [live app](https://casper-ai-portfolio-agent.vercel.app) and root [README.md](./README.md).
 
 ## 60-second path
 
 1. Open https://casper-ai-portfolio-agent.vercel.app  
-2. Sticky **Judges** bar → **Try demo** (or Connect → **Try with Demo Account**)  
-3. **Analyze Portfolio**  
-4. Verify activity log: portfolio → RWA → **x402 settle** → AI → `store_analysis`  
-5. Click tx hashes → `testnet.cspr.live` shows **Success**  
-6. Confirm **Agent Identity**, **Agent Reputation**, Multi-Agent, Yield Routing  
-7. Optional: `/api/agent-status`
+2. **Try demo** (or enter a public key → **Connect & Analyze**)  
+3. Stay on **Agent running** until results load  
+4. On results, click **x402** / **On-chain** chips → `testnet.cspr.live` shows **Success**  
+5. Skim holdings, insight, and **Built On Casper Network**  
+6. Optional: `/api/agent-status` · home Essentials → **Contract** / **Verify**
 
 ## On-chain artifacts
 
@@ -25,9 +24,9 @@ Same product as the [live app](https://casper-ai-portfolio-agent.vercel.app) and
 
 - Transaction-producing component: Odra `PortfolioAgent.store_analysis`  
 - Agentic loop: AI decides → agent wallet signs → Testnet confirms  
-- x402: real settle (facilitator or agent-wallet 0.01 CSPR) when configured  
+- x402: real settle (facilitator or agent-wallet) when configured  
 - RWA: live Treasury.gov + CoinGecko feeds  
 
-## Demo recording
+## Demo recording tip
 
-Record a 75–90s walkthrough: Judges bar → Try demo → Analyze → click x402 + `store_analysis` explorer links → Identity + Reputation. Upload to YouTube and link it on the DoraHacks BUIDL page.
+Record ~75–90s: home → Try demo → Agent running → results → click explorer proofs → Built On Casper. Upload to YouTube and link on the DoraHacks BUIDL page.

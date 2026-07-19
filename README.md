@@ -6,8 +6,8 @@
 
 **Finalist · Casper Agentic Buildathon 2026 — Final Round**
 
-Autonomous portfolio agent on **Casper Testnet**:  
-reads holdings → settles **x402** → analyzes with GPT-4o → **signs real Casper 2.0 txs** → scores agent reputation → optional rebalance.
+Autonomous portfolio agent on **Casper Testnet**.  
+Connect a wallet → agent settles **x402** → analyzes holdings with AI → writes **`store_analysis`** on-chain → returns clickable explorer proof.
 
 [![Live App](https://img.shields.io/badge/Live-Vercel-000?style=flat-square&logo=vercel)](https://casper-ai-portfolio-agent.vercel.app)
 [![Casper Testnet](https://img.shields.io/badge/Chain-Casper_Testnet-e11d48?style=flat-square)](https://testnet.cspr.live)
@@ -18,6 +18,7 @@ reads holdings → settles **x402** → analyzes with GPT-4o → **signs real Ca
 **[Live App](https://casper-ai-portfolio-agent.vercel.app)** ·
 **[Judge Playbook](./JUDGE_PLAYBOOK.md)** ·
 **[Contract](https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6)** ·
+**[Sample tx](https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779)** ·
 **[X](https://x.com/CasperAgentAI)** ·
 **[Telegram](https://t.me/casperagent)**
 
@@ -25,187 +26,114 @@ reads holdings → settles **x402** → analyzes with GPT-4o → **signs real Ca
 
 ---
 
+## What it is
+
+**CasperAgent** is a production-shaped agentic DeFi app for the Final Round:
+
+| Layer | What judges see |
+|---|---|
+| Live product | Minimal home → full-screen **Agent running** → results with proofs |
+| Agentic AI | GPT-4o / Claude / heuristic analysis; agent wallet signs without the user |
+| x402 | Real settle path (facilitator **or** agent-wallet native CSPR) with explorer URL |
+| On-chain | Odra `PortfolioAgent.store_analysis` on Casper Testnet |
+| RWA | Live Treasury.gov + CoinGecko context in analysis |
+| Brand | Lime mark + **Built On Casper Network** attribution |
+
+Same story on the [live site](https://casper-ai-portfolio-agent.vercel.app), this README, and `main`.
+
+---
+
 ## Judge verify (60 seconds)
 
-> Live site, this README, and the GitHub `main` branch describe the **same** product.
-
 1. Open https://casper-ai-portfolio-agent.vercel.app  
-2. Use sticky **Judges** bar → **Try demo** (or scroll to Connect → **Try with Demo Account**)  
-3. Click **Analyze Portfolio**  
-4. Confirm activity log: portfolio → live RWA → **x402 settle** → AI → `store_analysis`  
-5. Open tx links on `testnet.cspr.live` → status **Success**  
-6. Check **Agent Identity**, **Agent Reputation**, Multi-Agent, Yield Routing, and **On-chain proof** section  
-
-Diagnostics (no secrets): `/api/agent-status`
-
----
-
-## System architecture
-
-```mermaid
-flowchart TB
-  subgraph Client["Live App — Next.js 14"]
-    UI["Landing · Proof pack · Demo wallet"]
-    Chat["Agent Chat"]
-    Log["Activity Log + clickable txs"]
-    Rep["Agent Reputation + Identity"]
-  end
-
-  subgraph API["Server routes"]
-    P["/api/portfolio"]
-    R["/api/rwa-feed"]
-    A["/api/analyze"]
-    C["/api/chat"]
-    S["/api/agent-status"]
-  end
-
-  subgraph External["Data + AI"]
-    Cloud["CSPR.cloud"]
-    RWA["Treasury.gov + CoinGecko"]
-    LLM["GPT-4o → Claude → heuristic"]
-    MCP["Casper MCP / CSPR.trade MCP"]
-  end
-
-  subgraph Agent["Agentic execution"]
-    X402["x402 settle\nfacilitator OR agent-wallet 0.01 CSPR"]
-    Swarm["5-agent swarm"]
-    Signer["casper-agent.ts\nCasper 2.0 signer"]
-  end
-
-  subgraph Chain["Casper Testnet"]
-    Odra["PortfolioAgent Odra contract"]
-  end
-
-  UI --> P & R & A
-  Chat --> C
-  P --> Cloud
-  R --> RWA
-  A --> LLM & MCP & X402 & Swarm & Signer
-  Signer --> Odra
-  Swarm --> Signer
-  X402 --> Signer
-  S -.-> Signer
-  Log --> A
-  Rep --> A
-```
+2. Tap **Try demo** (or paste a Casper public key → **Connect & Analyze**)  
+3. Wait on **Agent running** / “Working on your portfolio”  
+4. On results, confirm:
+   - Portfolio value + holdings  
+   - **x402** / **On-chain** proof chips (click → `testnet.cspr.live`)  
+   - Insight + next steps  
+   - **Built On Casper Network**  
+5. Optional diagnostics (no secrets): `/api/agent-status`  
+6. Essentials on home: **Docs** · **Contract** · **Verify**
 
 ---
 
-## Agentic sequence (what judges see)
+## Live product surface
+
+Matches the deployed UI (not the older marketing layout):
+
+| Screen | Content |
+|---|---|
+| **Home** | CasperAgent mark + wordmark · Connect & Analyze · Try demo · Essentials (Docs / Contract / Verify) · Built On Casper |
+| **Running** | Full-viewport agent state while analysis + settle + on-chain write run |
+| **Results** | Value · risk · x402 / on-chain / reputation chips · holdings · insight · next steps · explorer proofs · Built On Casper |
+
+---
+
+## Agentic loop
 
 ```mermaid
 sequenceDiagram
   autonumber
-  actor Judge
-  participant App as Live App
+  actor User
+  participant App as CasperAgent UI
   participant API as /api/analyze
   participant AI as GPT-4o / Claude
   participant Agent as Agent wallet
   participant Chain as Casper Testnet
 
-  Judge->>App: Demo account → Analyze
+  User->>App: Connect & Analyze / Try demo
+  App->>App: Agent running
   App->>API: portfolio + RWA + x402 header
-  API->>API: settle x402 (0.01 CSPR)
-  Agent-->>Chain: native micropayment tx
-  API->>AI: risk + RWA context
-  AI-->>API: structured analysis JSON
-  API->>API: multi-agent coordination
-  Agent-->>Chain: store_analysis
-  opt rebalance enabled
-    Agent-->>Chain: native rebalance transfer
-  end
-  API-->>App: analysis + x402Payment + onchain + reputation
-  App-->>Judge: clickable explorer proofs
+  API->>Agent: settle x402 (when configured)
+  Agent-->>Chain: micropayment / settle proof
+  API->>AI: holdings + RWA context
+  AI-->>API: structured analysis
+  API->>Agent: store_analysis
+  Agent-->>Chain: Odra PortfolioAgent
+  API-->>App: analysis + proofs
+  App-->>User: Results + explorer links
 ```
 
 ---
 
-## Multi-agent swarm
-
-```mermaid
-flowchart LR
-  subgraph Swarm["runMultiAgentCoordination"]
-    PA["Portfolio Agent\nstore_analysis"]
-    RA["Risk Agent\nset_target_allocation"]
-    TA["Treasury Agent\nexecute_rebalance"]
-    OA["Oracle Agent\nupdate_rwa_prices"]
-    YA["Yield Router\nregister_yield_opportunity"]
-  end
-
-  PA --> RA --> TA
-  OA -.-> PA
-  YA -.-> TA
-```
-
-| Agent | On-chain entry point | Role |
-|---|---|---|
-| Portfolio | `store_analysis` | Persist analysis hash + risk |
-| Risk | `set_target_allocation` | CSPR / stable / RWA / DeFi targets |
-| Treasury | `execute_rebalance` | Record + optional native transfer |
-| Oracle | `update_rwa_prices` | T-bill / PAXG / ONDO / CSPR |
-| Yield Router | `register_yield_opportunity` | APY / TVL / risk registry |
-
----
-
-## x402 settlement path
-
-```mermaid
-flowchart TD
-  H["x402-payment header"] --> V{"X402_FACILITATOR_URL set?"}
-  V -->|yes| F["POST /verify → /settle"]
-  F -->|success| S1["status: settled · mode: facilitator"]
-  F -->|fail / unavailable| W
-  V -->|no| W["Agent-wallet native transfer 0.01 CSPR"]
-  W --> S2["status: settled · mode: agent-wallet + explorer URL"]
-  H -->|invalid| N["status: none / verified-only"]
-```
-
-UI never claims “confirmed on Testnet” until a settle path returns a real result.
-
----
-
-## On-chain proof (same as live **Proof** section)
+## On-chain proof
 
 | Artifact | Value |
 |---|---|
 | Package hash | `2f76596281bab4993440f5bd88728a34faa1031ab4b7ce8e0064219e1ae2e03d` |
 | Contract | [`0b4e53d2…04b6`](https://testnet.cspr.live/contract/0b4e53d2415953680a79a89069d91e673329c0a15a1897513a99f69124eb04b6) |
-| Sample `store_analysis` | [`cc648f7d…7b779`](https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779) — Success |
+| Sample `store_analysis` | [`cc648f7d…7b779`](https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779) — **Success** |
 | Contract install | [`9460c0d3…dc0a`](https://testnet.cspr.live/transaction/9460c0d39fe20ee75efcf768e6b7bb2f3a5597aff956e5eea141312b22a2dc0a) |
-| CI `store_analysis` | `bca8c90f0326424745efb591a748c5d2e93ca3ce0a42c6e2580c69781239136a` |
 
 Paste this table onto the DoraHacks Final Round BUIDL page.
 
 ---
 
-## Live product surface (what the site shows)
-
-| Surface | Purpose |
-|---|---|
-| Finalist hero + terminal preview | Positioning |
-| Capabilities · How it works · FAQ · RWA | Product story |
-| **On-chain proof** | Package hash + sample txs |
-| Demo wallet → Analyze | End-to-end agentic loop |
-| Agent Identity | Live signer public key + settle mode |
-| Agent Reputation | 0–100 grade from this run |
-| x402 / On-chain / Autonomous cards | Clickable explorer links |
-| Multi-Agent + Yield Routing | Swarm + routes (MCP or labeled reference) |
-| Sticky Judges bar | Proof · Try demo · Status |
-
----
-
 ## Final Round criteria map
 
-| Criterion | Evidence |
+Aligned to **Casper Agentic Buildathon 2026 — Final Round** jury criteria:
+
+| Criterion | How CasperAgent maps |
 |---|---|
-| Technical Execution | Next.js 14 + Odra/Rust, Jest, Playwright, CI, CodeQL, Dependabot, CSP/HSTS |
-| Innovation | Closed loop on Casper + x402 settle + 5-agent swarm + reputation hash |
-| AI / Agentic | GPT-4o / Claude / heuristic; agent signs without human approval |
-| Real-World Applicability | Live T-bill / PAXG / ONDO in rebalancing advice |
-| UX & Design | Demo mode, dark mode, WCAG AA, judge-first proof UX |
-| Working Smart Contracts | Deployed `PortfolioAgent` (15 entry points) |
-| Long-Term Launch Plans | Roadmap + socials + mainnet / facilitator / CEP-18 |
-| Long-Term Impact | Open-source Casper agentic DeFi + x402 reference |
+| **Technical Execution** | Next.js 14 app, Odra/Rust contract, Jest + Playwright, CI (lint/build, E2E, Odra WASM), CodeQL, Dependabot |
+| **Innovation & Originality** | Closed agentic loop on Casper: pay → analyze → persist hash on-chain with reputation |
+| **Use of AI / Agentic Systems** | LLM analysis + autonomous agent wallet signing; multi-agent coordination in `/api/analyze` |
+| **Real-World Applicability** | Portfolio risk + live RWA feeds (T-bills / gold / ONDO-style context) for DeFi advice |
+| **User Experience & Design** | Minimal product UI: home → running → results; lime brand; dark mode; demo path |
+| **Working Smart Contracts** | Deployed `PortfolioAgent` on Testnet with verified `store_analysis` txs |
+| **Long-Term Launch Plans** | Roadmap below · socials · mainnet / facilitator / CEP-18 plans |
+| **Potential for Long-Term Impact** | Open-source Casper agentic DeFi + x402 settle reference for builders |
+
+### Buildathon fit (AI Toolkit)
+
+Uses Casper’s agent stack directions from [casper.network/ai](https://www.casper.network/ai):
+
+- **x402** micropayment settle with explorer proof  
+- **CSPR.cloud** portfolio reads  
+- **Odra** contract with AI-friendly repo layout  
+- **MCP** enrichment when servers are configured  
+- Agent wallet signing via Casper 2.0 JS SDK  
 
 ---
 
@@ -213,12 +141,12 @@ Paste this table onto the DoraHacks Final Round BUIDL page.
 
 | Layer | Tech |
 |---|---|
-| App | Next.js 14, React 18, Tailwind, Zustand |
-| AI | GPT-4o → Claude 3.5 → heuristic |
-| Chain | `casper-js-sdk` v5 · Casper 2.0 |
+| App | Next.js 14 · React 18 · Tailwind · Zustand · Framer Motion |
+| AI | GPT-4o → Claude 3.5 → heuristic fallback |
+| Chain | `casper-js-sdk` v5 · Casper 2.0 Testnet |
 | Contract | Odra / Rust · `odra-project/` |
-| Data | CSPR.cloud · Treasury.gov · CoinGecko · MCP |
-| Payments | x402 facilitator **or** agent-wallet settle |
+| Data | CSPR.cloud · Treasury.gov · CoinGecko · MCP (optional) |
+| Payments | x402 facilitator **or** agent-wallet native settle |
 | Deploy | Vercel ← `main` |
 
 ---
@@ -244,25 +172,63 @@ npm run dev
 
 ---
 
+## Architecture (repo ↔ live)
+
+```mermaid
+flowchart TB
+  subgraph UI["Live UI"]
+    Home["Home · Connect / Demo"]
+    Run["Agent running"]
+    Results["Results · proofs"]
+  end
+
+  subgraph API["Server"]
+    A["/api/analyze"]
+    P["/api/portfolio"]
+    R["/api/rwa-feed"]
+    S["/api/agent-status"]
+  end
+
+  subgraph Exec["Agentic execution"]
+    X402["x402 settle"]
+    LLM["LLM analysis"]
+    Swarm["Multi-agent coord"]
+    Signer["casper-agent signer"]
+  end
+
+  subgraph Chain["Casper Testnet"]
+    Odra["PortfolioAgent Odra"]
+  end
+
+  Home --> Run --> Results
+  Run --> A
+  A --> P & R & X402 & LLM & Swarm & Signer
+  Signer --> Odra
+  Results --> Odra
+  S -.-> Signer
+```
+
+---
+
 ## Roadmap
 
 | When | Milestone | Status |
 |---|---|---|
 | Q2 2026 | MVP on Casper Testnet | Shipped |
-| Jul 2026 | Final Round: x402 settle, proof pack, reputation, CodeQL | Shipped |
-| Q3 2026 | Live HTTP facilitator + on-chain RWA oracle writes | In progress |
+| Jul 2026 | Final Round product UI + x402 settle + proof pack | Shipped |
+| Q3 2026 | Hardened HTTP facilitator + richer RWA writes | In progress |
 | Q3 2026 | Mainnet PortfolioAgent (audit) | Planned |
 | Q4 2026 | CEP-18 multi-token + deeper MCP yield | Planned |
-| Q1 2027 | Mobile PWA + Wallet/Ledger + agent mesh | Planned |
+| Q1 2027 | Mobile PWA + Wallet/Ledger | Planned |
 
 ---
 
 ## Repo layout
 
 ```
-src/app          # Live routes + API (matches Vercel)
-src/components   # UI: proof, identity, reputation, agents, yield
-src/lib          # casper-agent, x402, multi-agent, reputation, yield
+src/app          # Routes + API (matches Vercel)
+src/components   # Home · running · results · brand
+src/lib          # casper-agent, x402, multi-agent, reputation
 odra-project/    # PortfolioAgent (Rust / Odra)
 e2e/             # Playwright
 JUDGE_PLAYBOOK.md
@@ -272,9 +238,9 @@ JUDGE_PLAYBOOK.md
 
 ## Security & quality
 
-- CodeQL · Dependabot · CI (lint/build, Playwright, Odra WASM)
-- CSP, HSTS, input caps, fetch timeouts
-- [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) · [CONTRIBUTING.md](./CONTRIBUTING.md)
+- CodeQL · Dependabot · CI (lint/build, Playwright, Odra WASM)  
+- CSP, HSTS, input caps, fetch timeouts  
+- [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) · [CONTRIBUTING.md](./CONTRIBUTING.md)  
 - Keep `main` always deployable (Final Round rule)
 
 ---
