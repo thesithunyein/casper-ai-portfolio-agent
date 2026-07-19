@@ -259,6 +259,8 @@ export interface AIAnalysis {
   /** Percentage of portfolio recommended to be in tokenized RWA assets */
   rwaExposurePercent?: number
   x402Status?: 'settled' | 'verified' | 'optional'
+  /** Set when agent-wallet / facilitator settle was attempted but failed */
+  x402Error?: string | null
   /** Present when a real x402 micropayment was recorded on-chain */
   x402Payment?: {
     transactionHash: string

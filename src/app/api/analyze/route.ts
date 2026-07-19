@@ -282,7 +282,7 @@ async function getClaudeAnalysis(
   return extractAnalysisJson(content)
 }
 
-export const maxDuration = 30
+export const maxDuration = 90
 
 export async function POST(request: Request) {
   try {
@@ -336,6 +336,7 @@ export async function POST(request: Request) {
       amountCspr: string
       mode: 'facilitator' | 'agent-wallet'
     } | null = null
+    let x402Error: string | null = null
     try {
       const x402Header = request.headers.get('x402-payment')
       x402Settlement = await settleX402Payment(x402Header)
@@ -348,17 +349,25 @@ export async function POST(request: Request) {
           mode: 'facilitator',
         }
       } else if (x402Settlement === 'verified' || x402Settlement === 'failed' || x402Settlement === 'none') {
-        const micropayment = await executeX402Micropayment()
-        if (micropayment) {
+        const micropayment = await executeX402Micropayment(
+          portfolio.walletAddress
+        )
+        if (micropayment?.transactionHash) {
           x402Settlement = 'settled'
           x402Payment = {
-            ...micropayment,
+            transactionHash: micropayment.transactionHash,
+            explorerUrl: micropayment.explorerUrl,
+            amountCspr: micropayment.amountCspr,
             mode: 'agent-wallet',
           }
+        } else if (micropayment?.error) {
+          x402Error = micropayment.error
         }
       }
     } catch (x402Err) {
       console.error('[ANALYZE] x402 settlement failed:', x402Err)
+      x402Error =
+        x402Err instanceof Error ? x402Err.message : String(x402Err)
     }
     const paymentVerified =
       x402Settlement === 'settled' || x402Settlement === 'verified'
@@ -548,6 +557,7 @@ export async function POST(request: Request) {
               ? 'verified'
               : 'optional',
         x402Payment,
+        x402Error,
         analysisSource,
         onchain,
         onchainError,

@@ -133,29 +133,58 @@ const X402_MICROPAYMENT_MOTES = Number(
 
 /**
  * Real on-chain x402-style micropayment via agent-wallet native transfer.
- * Amount defaults to chainspec native_transfer_minimum_motes (2.5 CSPR) so
- * put_transaction is accepted. Produces a verifiable Testnet transaction.
+ * Amount defaults to chainspec native_transfer_minimum_motes (2.5 CSPR).
  *
- * Always settles to a real Casper public key (never the demo placeholder).
- * Default target is the agent wallet itself so Invalid purse cannot come from
- * a missing NEXT_PUBLIC_X402_RECIPIENT / placeholder env value.
+ * Never self-transfers — Casper mint returns "Invalid purse" when from === to.
+ * Prefer an explicit recipient, else a funded demo account on testnet.
  */
 export const executeX402Micropayment = async (
-  _recipientAddress?: string
-): Promise<{ transactionHash: string; explorerUrl: string; amountCspr: string } | null> => {
+  recipientAddress?: string
+): Promise<{
+  transactionHash: string
+  explorerUrl: string
+  amountCspr: string
+  error?: string
+} | null> => {
   const privateKey = loadAgentPrivateKey()
   if (!privateKey) return null
 
-  // Agent-wallet settle always pays the agent account itself. Env recipients
-  // (placeholders / mistyped keys) were causing mint "Invalid purse" failures
-  // even when put_transaction succeeded — store_analysis still worked.
-  const targetHex = privateKey.publicKey.toHex()
+  const agentHex = privateKey.publicKey.toHex().toLowerCase()
+  /** Known active testnet account used by the app demo flow. */
+  const DEMO_SETTLE_TARGET =
+    '018ac72bcc176b6bedc8928772d591b57888c67c0c5d1f31712a3593c2ee582f90'
 
-  const MAX_ATTEMPTS = 3
+  const candidates = [
+    recipientAddress,
+    process.env.NEXT_PUBLIC_X402_RECIPIENT,
+    DEMO_SETTLE_TARGET,
+  ]
+  let targetHex = DEMO_SETTLE_TARGET
+  for (const c of candidates) {
+    if (!c) continue
+    const trimmed = c.trim()
+    if (
+      /your_casper_wallet|example|placeholder|changeme|0123456789abcdef0123456789abcdef/i.test(
+        trimmed
+      )
+    ) {
+      continue
+    }
+    try {
+      PublicKey.fromHex(trimmed)
+      if (trimmed.toLowerCase() !== agentHex) {
+        targetHex = trimmed
+        break
+      }
+    } catch {
+      // skip invalid
+    }
+  }
+
+  const MAX_ATTEMPTS = 2
   let lastError: string | null = null
 
   const amountCspr = (X402_MICROPAYMENT_MOTES / 1_000_000_000).toFixed(2)
-  // Native transfers don't need the 10 CSPR store_analysis budget.
   const paymentMotes = Number(
     process.env.NATIVE_TRANSFER_PAYMENT_MOTES || 5_000_000_000
   )
@@ -178,9 +207,10 @@ export const executeX402Micropayment = async (
       const result = await rpcClient.putTransaction(transaction)
       const transactionHash = result.transactionHash.toHex()
 
-      // put_transaction only means accepted — wait briefly for execution so we
-      // don't report SETTLED when the mint returns Invalid purse.
-      const execError = await waitForTransactionExecutionError(transactionHash)
+      const execError = await waitForTransactionExecutionError(
+        transactionHash,
+        25_000
+      )
       if (execError) {
         lastError = execError
         console.error(
@@ -212,7 +242,7 @@ export const executeX402Micropayment = async (
   }
 
   console.error('x402 micropayment ultimately failed:', lastError)
-  return null
+  return lastError ? { transactionHash: '', explorerUrl: '', amountCspr, error: lastError } : null
 }
 
 /**
