@@ -363,13 +363,7 @@ export default function Home() {
 
   // Full-screen running experience until analysis finishes — no partial dashboard.
   if (walletAddress && loading) {
-    return (
-      <AgentRunningScreen
-        steps={agentSteps}
-        walletAddress={walletAddress}
-        onCancel={reset}
-      />
-    )
+    return <AgentRunningScreen onCancel={reset} />
   }
 
   if (!walletAddress) {
