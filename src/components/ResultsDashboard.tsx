@@ -319,6 +319,16 @@ export const ResultsDashboard = ({
             )}
           </motion.section>
         )}
+
+        <motion.div
+          custom={6}
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          className="flex justify-center pt-4 pb-6"
+        >
+          <BuiltOnCasper />
+        </motion.div>
       </div>
     </AppShell>
   )
