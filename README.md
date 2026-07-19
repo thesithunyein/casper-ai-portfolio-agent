@@ -72,27 +72,37 @@ Matches the deployed UI (not the older marketing layout):
 
 ## Agentic loop
 
+Always-visible steps (works even if diagrams fail to render):
+
+1. User taps **Connect & Analyze** or **Try demo**
+2. UI shows **Agent running**
+3. `/api/analyze` loads portfolio + RWA + x402 header
+4. Agent wallet settles **x402** (when configured) → Testnet proof
+5. LLM analyzes holdings + RWA context
+6. Agent wallet calls Odra **`store_analysis`**
+7. UI shows **Results** with explorer links
+
 ```mermaid
 sequenceDiagram
   autonumber
   actor User
-  participant App as CasperAgent UI
-  participant API as /api/analyze
-  participant AI as GPT-4o / Claude
-  participant Agent as Agent wallet
-  participant Chain as Casper Testnet
+  participant App as CasperAgentUI
+  participant API as AnalyzeAPI
+  participant AI as LLM
+  participant Agent as AgentWallet
+  participant Chain as CasperTestnet
 
-  User->>App: Connect & Analyze / Try demo
+  User->>App: Connect or Try demo
   App->>App: Agent running
-  App->>API: portfolio + RWA + x402 header
-  API->>Agent: settle x402 (when configured)
-  Agent-->>Chain: micropayment / settle proof
-  API->>AI: holdings + RWA context
-  AI-->>API: structured analysis
+  App->>API: portfolio RWA x402
+  API->>Agent: settle x402
+  Agent-->>Chain: settle proof
+  API->>AI: holdings plus RWA
+  AI-->>API: analysis JSON
   API->>Agent: store_analysis
-  Agent-->>Chain: Odra PortfolioAgent
-  API-->>App: analysis + proofs
-  App-->>User: Results + explorer links
+  Agent-->>Chain: PortfolioAgent
+  API-->>App: analysis plus proofs
+  App-->>User: Results
 ```
 
 ---
@@ -172,37 +182,56 @@ npm run dev
 
 ---
 
-## Architecture (repo ↔ live)
+## Architecture (repo to live)
+
+```text
+Home (Connect / Demo)
+   → Agent running
+      → /api/analyze
+         → portfolio + rwa-feed
+         → x402 settle
+         → LLM analysis
+         → multi-agent coord
+         → casper-agent signer
+            → Casper Testnet PortfolioAgent (store_analysis)
+   → Results (proofs + Built On Casper)
+```
 
 ```mermaid
 flowchart TB
-  subgraph UI["Live UI"]
-    Home["Home · Connect / Demo"]
-    Run["Agent running"]
-    Results["Results · proofs"]
+  subgraph liveui [Live UI]
+    Home[Home Connect Demo]
+    Run[Agent running]
+    Results[Results proofs]
   end
 
-  subgraph API["Server"]
-    A["/api/analyze"]
-    P["/api/portfolio"]
-    R["/api/rwa-feed"]
-    S["/api/agent-status"]
+  subgraph server [Server]
+    A[api analyze]
+    P[api portfolio]
+    R[api rwa-feed]
+    S[api agent-status]
   end
 
-  subgraph Exec["Agentic execution"]
-    X402["x402 settle"]
-    LLM["LLM analysis"]
-    Swarm["Multi-agent coord"]
-    Signer["casper-agent signer"]
+  subgraph exec [Agentic execution]
+    X402[x402 settle]
+    LLM[LLM analysis]
+    Swarm[Multi-agent coord]
+    Signer[casper-agent signer]
   end
 
-  subgraph Chain["Casper Testnet"]
-    Odra["PortfolioAgent Odra"]
+  subgraph chain [Casper Testnet]
+    Odra[PortfolioAgent Odra]
   end
 
-  Home --> Run --> Results
+  Home --> Run
+  Run --> Results
   Run --> A
-  A --> P & R & X402 & LLM & Swarm & Signer
+  A --> P
+  A --> R
+  A --> X402
+  A --> LLM
+  A --> Swarm
+  A --> Signer
   Signer --> Odra
   Results --> Odra
   S -.-> Signer
