@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="public/profile-logo.svg" width="96" height="96" alt="Casper AI Portfolio Agent" />
+<img src="public/profile-logo.png" width="96" height="96" alt="CasperAgent" />
 
-# Casper AI Portfolio Agent
+# CasperAgent
 
 **Finalist · Casper Agentic Buildathon 2026 — Final Round**
 
