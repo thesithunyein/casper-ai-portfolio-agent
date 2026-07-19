@@ -305,13 +305,71 @@ button:active, a:active {
   animation: gradientSweep 6s ease infinite;
 }
 
+/* Live atmosphere — soft drifting orbs */
+.atmosphere-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  will-change: transform;
+}
+
+.atmosphere-orb-a {
+  width: min(55vw, 480px);
+  height: min(55vw, 480px);
+  top: -12%;
+  left: 20%;
+  background: rgba(99, 91, 255, 0.22);
+  animation: meshFloat 18s ease-in-out infinite;
+}
+
+.atmosphere-orb-b {
+  width: min(45vw, 380px);
+  height: min(45vw, 380px);
+  bottom: 5%;
+  right: 8%;
+  background: rgba(16, 185, 129, 0.12);
+  animation: meshFloat2 22s ease-in-out infinite;
+}
+
+.atmosphere-orb-c {
+  width: min(35vw, 280px);
+  height: min(35vw, 280px);
+  top: 42%;
+  left: -5%;
+  background: rgba(6, 182, 212, 0.1);
+  animation: blob 26s ease-in-out infinite;
+}
+
+.dark .atmosphere-orb-a {
+  background: rgba(99, 91, 255, 0.28);
+}
+.dark .atmosphere-orb-b {
+  background: rgba(16, 185, 129, 0.14);
+}
+.dark .atmosphere-orb-c {
+  background: rgba(6, 182, 212, 0.12);
+}
+
+.atmosphere-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+@keyframes countPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
   .animate-slide-up,
   .terminal-cursor,
   .animate-pulse-glow,
-  .gradient-text-animated {
+  .gradient-text-animated,
+  .atmosphere-orb-a,
+  .atmosphere-orb-b,
+  .atmosphere-orb-c {
     animation: none;
   }
   * {

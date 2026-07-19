@@ -3,6 +3,7 @@
 import { ReactNode } from 'react'
 import { Logo } from '@/components/Logo'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { LiveAtmosphere } from '@/components/LiveAtmosphere'
 
 interface AppShellProps {
   children: ReactNode
@@ -10,6 +11,8 @@ interface AppShellProps {
   onLogoClick?: () => void
   /** Center content vertically (home / running). Default false for scrollable results. */
   centered?: boolean
+  /** Optional footer strip below main content (home essentials). */
+  footer?: ReactNode
 }
 
 /** Shared atmosphere + nav — matches the minimal Agent running screen. */
@@ -18,16 +21,11 @@ export const AppShell = ({
   rightSlot,
   onLogoClick,
   centered = false,
+  footer,
 }: AppShellProps) => {
   return (
-    <main className="relative min-h-screen flex flex-col overflow-x-hidden bg-ink-50 dark:bg-ink-950">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-70 dark:opacity-40"
-        style={{
-          background:
-            'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,91,255,0.18), transparent 55%), radial-gradient(ellipse 60% 40% at 80% 100%, rgba(16,185,129,0.08), transparent 50%)',
-        }}
-      />
+    <main className="relative min-h-screen flex flex-col overflow-x-hidden">
+      <LiveAtmosphere />
 
       <nav className="relative z-10 flex items-center justify-between px-6 lg:px-10 h-16 shrink-0">
         <button
@@ -35,7 +33,7 @@ export const AppShell = ({
           onClick={onLogoClick}
           className="flex items-center gap-2.5 group"
         >
-          <Logo className="w-7 h-7" />
+          <Logo className="w-7 h-7 transition-transform duration-500 group-hover:rotate-12" />
           <span className="font-semibold text-[15px] text-ink-900 dark:text-white tracking-tight group-hover:text-primary transition-colors">
             Casper Agent
           </span>
@@ -48,11 +46,17 @@ export const AppShell = ({
 
       <div
         className={`relative z-10 flex-1 flex flex-col px-6 lg:px-10 ${
-          centered ? 'justify-center pb-20' : 'pb-16 pt-4'
+          centered ? 'justify-center pb-12' : 'pb-12 pt-4'
         }`}
       >
         {children}
       </div>
+
+      {footer && (
+        <div className="relative z-10 shrink-0 px-6 lg:px-10 pb-10">
+          {footer}
+        </div>
+      )}
     </main>
   )
 }
