@@ -1,19 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
-  <defs>
-    <linearGradient id="bg" x1="32" y1="16" x2="224" y2="240" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#7a73ff"/>
-      <stop offset="55%" stop-color="#635bff"/>
-      <stop offset="100%" stop-color="#4f46e5"/>
-    </linearGradient>
-    <linearGradient id="sheen" x1="64" y1="32" x2="160" y2="140" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.32"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-  </defs>
-  <rect x="16" y="16" width="224" height="224" rx="62" fill="url(#bg)"/>
-  <rect x="16" y="16" width="224" height="224" rx="62" fill="url(#sheen)"/>
-  <circle cx="128" cy="128" r="58" stroke="white" stroke-opacity="0.28" stroke-width="6"/>
-  <circle cx="128" cy="128" r="27" fill="white" fill-opacity="0.96"/>
-  <circle cx="178" cy="90" r="12.5" fill="white" fill-opacity="0.9"/>
-  <path d="M148 108C157 101 166 96 176 92" stroke="white" stroke-opacity="0.55" stroke-width="6" stroke-linecap="round"/>
+  <rect width="256" height="256" rx="56" fill="#DFFF00"/>
+  <path
+    d="M64 184V136C64 88 96 64 136 64C184 64 208 100 208 136C208 176 176 200 136 200C104 200 88 180 88 156C88 128 112 112 144 112L184 80"
+    stroke="#0A0A0A"
+    stroke-width="28"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+  <path d="M158 58L208 56L194 104Z" fill="#0A0A0A"/>
 </svg>

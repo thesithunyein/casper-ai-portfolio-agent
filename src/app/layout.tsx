@@ -16,7 +16,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Casper Agent — Autonomous AI Portfolio Management',
+  title: 'CasperAgent – AI-Powered Portfolio Agent',
   description: 'Autonomous AI portfolio agent on Casper Testnet — x402 settle, Odra contracts, live RWA intelligence, and agent reputation.',
   icons: {
     icon: [
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: 'Casper Agent',
+    title: 'CasperAgent',
     statusBarStyle: 'default',
   },
 }

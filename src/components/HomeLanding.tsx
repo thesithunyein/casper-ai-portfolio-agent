@@ -105,7 +105,7 @@ export const HomeLanding = ({ onLogoClick }: HomeLandingProps) => {
           animate="show"
           className="text-[34px] md:text-[44px] font-semibold text-ink-900 dark:text-white tracking-[-0.035em] mb-3.5 leading-[1.05]"
         >
-          Casper Agent
+          CasperAgent
         </motion.h1>
 
         <motion.p

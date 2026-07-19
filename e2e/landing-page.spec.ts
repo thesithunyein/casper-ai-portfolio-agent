@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test.describe('Landing Page', () => {
   test('should load homepage with brand hero', async ({ page }) => {
     await page.goto('/')
-    await expect(page.getByRole('heading', { name: 'Casper Agent', exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'CasperAgent', exact: true })).toBeVisible()
     await expect(
       page.getByText('Autonomous portfolio analysis with x402 settle and on-chain proof.')
     ).toBeVisible()
@@ -40,7 +40,7 @@ test.describe('Mobile Layout', () => {
   test('should be responsive on mobile viewport', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/')
-    await expect(page.getByRole('heading', { name: 'Casper Agent', exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'CasperAgent', exact: true })).toBeVisible()
   })
 
   test('theme toggle should be visible on mobile', async ({ page }) => {

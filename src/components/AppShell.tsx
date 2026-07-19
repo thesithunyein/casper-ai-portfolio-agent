@@ -31,11 +31,11 @@ export const AppShell = ({
         <button
           type="button"
           onClick={onLogoClick}
-          className="flex items-center gap-2.5 group rounded-full px-1.5 py-1 -ml-1.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-colors duration-300"
+          className="flex items-center gap-2.5 group rounded-xl px-1 py-1 -ml-1 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-colors duration-300"
         >
-          <Logo className="w-8 h-8 transition-transform duration-500 ease-out group-hover:scale-[1.04]" />
-          <span className="font-semibold text-[15px] text-ink-900 dark:text-white tracking-[-0.02em]">
-            Casper Agent
+          <Logo className="w-8 h-8 shrink-0 transition-transform duration-400 ease-out group-hover:scale-[1.04]" />
+          <span className="font-semibold text-[16px] text-ink-900 dark:text-white tracking-[-0.03em] leading-none">
+            CasperAgent
           </span>
         </button>
         <div className="flex items-center gap-1.5">
