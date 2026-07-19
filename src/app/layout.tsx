@@ -28,14 +28,14 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: 'Casper Agent',
-    statusBarStyle: 'black-translucent',
+    statusBarStyle: 'default',
   },
 }
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#635bff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0e1a' },
+    { media: '(prefers-color-scheme: light)', color: '#f5f5f7' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0c' },
   ],
   width: 'device-width',
   initialScale: 1,

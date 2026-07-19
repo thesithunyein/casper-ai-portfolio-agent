@@ -77,7 +77,7 @@ export function SpotlightCard({
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
     setStyle({
-      background: `radial-gradient(420px circle at ${x}px ${y}px, rgba(99,91,255,0.12), transparent 55%)`,
+      background: `radial-gradient(160px circle at ${x}px ${y}px, rgba(99,91,255,0.08), transparent 70%)`,
     })
   }
 
@@ -145,7 +145,7 @@ export function MagneticButton({
     const rect = ref.current.getBoundingClientRect()
     const x = e.clientX - rect.left - rect.width / 2
     const y = e.clientY - rect.top - rect.height / 2
-    setOffset({ x: x * 0.12, y: y * 0.18 })
+    setOffset({ x: x * 0.06, y: y * 0.09 })
   }
 
   const handleLeave = () => setOffset({ x: 0, y: 0 })
