@@ -15,7 +15,7 @@ interface AppShellProps {
   footer?: ReactNode
 }
 
-/** Shared atmosphere + nav — matches the minimal Agent running screen. */
+/** Shared atmosphere + nav — product shell. */
 export const AppShell = ({
   children,
   rightSlot,
@@ -24,21 +24,21 @@ export const AppShell = ({
   footer,
 }: AppShellProps) => {
   return (
-    <main className="relative min-h-screen flex flex-col overflow-x-hidden">
+    <main className="relative min-h-screen flex flex-col overflow-x-hidden selection:bg-primary/20 selection:text-ink-900 dark:selection:text-white">
       <LiveAtmosphere />
 
-      <nav className="relative z-10 flex items-center justify-between px-6 lg:px-10 h-16 shrink-0">
+      <nav className="relative z-10 flex items-center justify-between px-6 lg:px-10 h-[60px] shrink-0">
         <button
           type="button"
           onClick={onLogoClick}
-          className="flex items-center gap-2.5 group"
+          className="flex items-center gap-2.5 group rounded-full px-1.5 py-1 -ml-1.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-colors duration-300"
         >
-          <Logo className="w-7 h-7 transition-transform duration-500 group-hover:rotate-12" />
-          <span className="font-semibold text-[15px] text-ink-900 dark:text-white tracking-tight group-hover:text-primary transition-colors">
+          <Logo className="w-7 h-7 transition-transform duration-500 ease-out group-hover:scale-105 group-hover:rotate-6" />
+          <span className="font-semibold text-[15px] text-ink-900 dark:text-white tracking-[-0.02em] group-hover:opacity-80 transition-opacity">
             Casper Agent
           </span>
         </button>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <ThemeToggle />
           {rightSlot}
         </div>
@@ -46,14 +46,14 @@ export const AppShell = ({
 
       <div
         className={`relative z-10 flex-1 flex flex-col px-6 lg:px-10 ${
-          centered ? 'justify-center pb-12' : 'pb-12 pt-4'
+          centered ? 'justify-center pb-14' : 'pb-14 pt-6'
         }`}
       >
         {children}
       </div>
 
       {footer && (
-        <div className="relative z-10 shrink-0 px-6 lg:px-10 pb-10">
+        <div className="relative z-10 shrink-0 px-6 lg:px-10 pb-11">
           {footer}
         </div>
       )}
