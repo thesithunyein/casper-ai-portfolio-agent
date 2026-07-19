@@ -8,24 +8,10 @@ import {
   buildX402HeaderValue,
   createX402Payment,
 } from '@/lib/x402'
-import { WalletConnect } from '@/components/WalletConnect'
-import { PortfolioDisplay } from '@/components/PortfolioDisplay'
-import { AIAnalysisComponent } from '@/components/AIAnalysis'
-import { MultiAgentPanel } from '@/components/MultiAgentPanel'
-import { YieldRoutingDashboard } from '@/components/YieldRoutingDashboard'
-import { Logo } from '@/components/Logo'
-import { AgentChat } from '@/components/AgentChat'
-import { AgentActivityLog } from '@/components/AgentActivityLog'
-import { RoadmapSection } from '@/components/RoadmapSection'
-import { AppFooter } from '@/components/AppFooter'
-import { RWADashboard } from '@/components/RWADashboard'
-import { JudgeProofPanel } from '@/components/JudgeProofPanel'
-import { AgentIdentityCard } from '@/components/AgentIdentityCard'
-import { AgentReputationCard } from '@/components/AgentReputationCard'
-import { AnalysisOutcomeStrip } from '@/components/AnalysisOutcomeStrip'
+import { HomeLanding } from '@/components/HomeLanding'
 import { AgentRunningScreen } from '@/components/AgentRunningScreen'
-import { TokenTicker } from '@/components/TokenTicker'
-import { ThemeToggle } from '@/components/ThemeToggle'
+import { ResultsDashboard } from '@/components/ResultsDashboard'
+import { AppShell } from '@/components/AppShell'
 import type { AgentStep } from '@/lib/store'
 
 export default function Home() {
@@ -35,7 +21,6 @@ export default function Home() {
     analysis,
     loading,
     error,
-    agentSteps,
     setPortfolio,
     setAnalysis,
     setLoading,
@@ -361,335 +346,54 @@ export default function Home() {
     void handleAnalyze()
   }, [walletAddress, handleAnalyze, setLoading])
 
-  // Full-screen running experience until analysis finishes — no partial dashboard.
   if (walletAddress && loading) {
     return <AgentRunningScreen onCancel={reset} />
   }
 
   if (!walletAddress) {
+    return <HomeLanding onLogoClick={reset} />
+  }
+
+  if (portfolio && analysis) {
     return (
-      <main className="relative min-h-screen">
-
-        {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 z-50 stripe-glass border-b border-black/[0.06] dark:border-white/[0.08]">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-2.5 cursor-pointer group" onClick={reset}>
-              <Logo className="relative w-7 h-7" />
-              <span className="font-semibold text-[15px] text-ink-900 dark:text-white tracking-tight group-hover:text-primary transition-colors duration-300">Casper Agent</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <a href="#features" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">Features</a>
-              <a href="#how-it-works" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">How It Works</a>
-              <a href="#proof" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">Verify</a>
-              <a href="#roadmap" className="hidden sm:block px-3 py-2 text-[13px] font-medium text-ink-500 dark:text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors duration-300">Roadmap</a>
-              <ThemeToggle />
-              <button
-                onClick={() => {
-                  const element = document.getElementById('wallet-section')
-                  element?.scrollIntoView({ behavior: 'smooth' })
-                }}
-                className="ml-2 px-4 py-2 bg-primary text-white text-[13px] font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300"
-              >
-                Connect
-              </button>
-            </div>
-          </div>
-        </nav>
-
-        {/* Token Ticker */}
-        <div className="fixed top-16 left-0 right-0 z-40">
-          <TokenTicker />
-        </div>
-
-        {/* Hero Section */}
-        <section className="relative z-10 pt-44 pb-28 px-6 lg:px-8 overflow-hidden">
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
-            <div className="animate-slide-up">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.08] rounded-full text-xs font-medium text-ink-700 dark:text-ink-200 mb-8 shadow-stripe-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Live on Casper Testnet
-              </div>
-              <h1 className="text-[44px] md:text-[64px] leading-[1.05] font-bold text-ink-900 dark:text-white mb-6 tracking-tight">
-                Autonomous portfolio management,{' '}
-                <span className="gradient-text-animated">powered by AI</span>
-              </h1>
-              <p className="text-lg text-ink-500 dark:text-ink-400 mb-4 max-w-lg leading-relaxed">
-                The agent pays via x402, reads live RWA prices, analyzes risk, and signs real Casper transactions — without human approval.
-              </p>
-              <p className="text-sm text-ink-400 dark:text-ink-500 mb-10 max-w-lg leading-relaxed">
-                Built for CSPR, stablecoins, and RWA intelligence — including live US T-bill yields and tokenized gold (PAXG).
-              </p>
-              <div className="flex flex-wrap items-center gap-3 mb-10">
-                <button
-                  onClick={() => {
-                    const element = document.getElementById('wallet-section')
-                    element?.scrollIntoView({ behavior: 'smooth' })
-                  }}
-                  className="px-6 py-3 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.97]"
-                >
-                  Start Analyzing
-                </button>
-                <a
-                  href="#proof"
-                  className="px-6 py-3 border border-black/[0.08] dark:border-white/[0.08] text-ink-700 dark:text-ink-200 text-sm font-semibold rounded-lg hover:bg-black/[0.02] dark:hover:bg-white/[0.03] hover:border-black/[0.14] dark:hover:border-white/[0.14] transition-all duration-300"
-                >
-                  Verify on-chain →
-                </a>
-              </div>
-              <div className="flex items-center gap-6 text-xs font-medium text-ink-400 dark:text-ink-500">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  x402 settle
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  <a href="https://testnet.cspr.live/transaction/cc648f7dab74736d2c0bb12b0178648f87b42c2b3cdd97c7de9a5b2a1307b779" target="_blank" rel="noopener noreferrer" className="hover:text-ink-900 dark:hover:text-white transition-colors">Proof of write →</a>
-                </span>
-              </div>
-            </div>
-
-            {/* Terminal activity log */}
-            <div className="relative animate-slide-up" style={{ animationDelay: '0.15s' }}>
-              <div className="relative bg-ink-950 border border-white/[0.06] rounded-xl p-5 font-mono text-xs leading-relaxed shadow-stripe-lg">
-                <div className="flex items-center gap-2 mb-3 text-ink-400 border-b border-white/[0.06] pb-2">
-                  <span className="text-primary">agent.log</span>
-                  <span className="ml-auto text-ink-600">_</span>
-                </div>
-                <div className="space-y-1.5">
-                  <p><span className="text-ink-600">14:32:01</span> <span className="text-primary">INFO</span> <span className="text-ink-300">Portfolio fetch initiated</span></p>
-                  <p><span className="text-ink-600">14:32:02</span> <span className="text-primary">INFO</span> <span className="text-ink-300">Connected to CSPR.cloud API</span></p>
-                  <p><span className="text-ink-600">14:32:02</span> <span className="text-primary">INFO</span> <span className="text-ink-300">RWA oracle: TBILL 4.12%, PAXG live</span></p>
-                  <p><span className="text-ink-600">14:32:03</span> <span className="text-amber-400">WARN</span> <span className="text-ink-300">CSPR concentration 78% — above threshold</span></p>
-                  <p><span className="text-ink-600">14:32:04</span> <span className="text-sky-400">PAY</span> <span className="text-ink-300">x402 settled — 0.01 CSPR</span></p>
-                  <p><span className="text-ink-600">14:32:05</span> <span className="text-primary">INFO</span> <span className="text-ink-300">AI analysis: OpenAI GPT-4o</span></p>
-                  <p><span className="text-ink-600">14:32:06</span> <span className="text-emerald-400">OK</span> <span className="text-ink-300">store_analysis recorded on-chain</span></p>
-                  <p><span className="text-ink-600">14:32:07</span> <span className="text-violet-400">ACT</span> <span className="text-ink-300">Reputation score committed</span></p>
-                  <p className="text-ink-600 mt-2"><span className="terminal-cursor">_</span></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section id="features" className="relative z-10 py-24 px-6 lg:px-8 border-t border-black/[0.06] dark:border-white/[0.06]">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-[32px] md:text-[40px] font-bold text-ink-900 dark:text-white mb-4 tracking-tight">Capabilities</h2>
-              <p className="text-base text-ink-500 dark:text-ink-400 max-w-md mx-auto">What the agent does on your behalf.</p>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
-              {[
-                { badge: 'AI', title: 'Portfolio Analysis', desc: 'GPT-4o analyzes holdings and generates risk assessments with live RWA context.', color: 'bg-violet-50 text-violet-600 border-violet-100' },
-                { badge: 'x402', title: 'Micropayments', desc: 'Agent settles via x402 facilitator or agent-wallet native transfer on Casper Testnet.', color: 'bg-sky-50 text-sky-600 border-sky-100' },
-                { badge: 'TX', title: 'On-Chain Writes', desc: 'Agent signs Casper 2.0 store_analysis transactions to the Odra contract.', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-                { badge: '5×', title: 'Multi-Agent Swarm', desc: 'Portfolio, Risk, Treasury, Oracle, and Yield agents coordinate autonomously.', color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
-                { badge: 'RWA', title: 'RWA Intelligence', desc: 'Live US T-bill yields, PAXG, and ONDO prices factored into rebalancing.', color: 'bg-amber-50 text-amber-600 border-amber-100' },
-                { badge: 'RP', title: 'Agent Reputation', desc: 'Transparent 0–100 score from settle, on-chain write, and swarm success.', color: 'bg-rose-50 text-rose-600 border-rose-100' },
-              ].map((feat, i) => (
-                <div key={i} className="group animate-fade-in">
-                  <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 hover:shadow-stripe-md hover:border-black/[0.1] dark:hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-300 h-full">
-                    <div className={`w-10 h-10 rounded-lg ${feat.color} border flex items-center justify-center text-xs font-mono font-bold mb-4`}>{feat.badge}</div>
-                    <h3 className="text-sm font-semibold text-ink-900 dark:text-white mb-2 tracking-tight">{feat.title}</h3>
-                    <p className="text-xs text-ink-500 dark:text-ink-400 leading-relaxed">{feat.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* How It Works */}
-        <section id="how-it-works" className="relative z-10 py-24 px-6 lg:px-8 border-t border-black/[0.06] dark:border-white/[0.06]">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-[32px] md:text-[40px] font-bold text-ink-900 dark:text-white mb-4 tracking-tight">How It Works</h2>
-              <p className="text-base text-ink-500 dark:text-ink-400 max-w-md mx-auto">Four steps from connection to autonomous action.</p>
-            </div>
-            <div className="grid md:grid-cols-2 gap-4 stagger-children">
-              {[
-                { num: '01', title: 'Connect Wallet', desc: 'Use Casper Wallet extension or enter your public key manually. No private keys ever required.' },
-                { num: '02', title: 'Fetch Balances', desc: 'Real-time portfolio data pulled from CSPR.cloud API across all your token holdings.' },
-                { num: '03', title: 'AI Analysis', desc: 'GPT-4o generates a complete risk profile and rebalancing suggestions tailored to your allocation.' },
-                { num: '04', title: 'On-Chain Action', desc: 'Agent settles x402, records analysis to the Odra contract, and can execute rebalancing transfers.' },
-              ].map((step, i) => (
-                <div key={i} className="group animate-fade-in">
-                  <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 flex items-start gap-4 hover:shadow-stripe-md hover:border-black/[0.1] dark:hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-300 h-full">
-                    <span className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/5 border border-primary/10 flex items-center justify-center text-sm font-mono font-bold text-primary">{step.num}</span>
-                    <div>
-                      <h3 className="text-sm font-semibold text-ink-900 dark:text-white mb-1 tracking-tight">{step.title}</h3>
-                      <p className="text-xs text-ink-500 dark:text-ink-400 leading-relaxed">{step.desc}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section id="faq" className="relative z-10 py-24 px-6 lg:px-8 border-t border-black/[0.06] dark:border-white/[0.06]">
-          <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-[32px] md:text-[40px] font-bold text-ink-900 dark:text-white mb-4 tracking-tight">FAQ</h2>
-              <p className="text-base text-ink-500 dark:text-ink-400">Common questions about the Casper AI Portfolio Agent.</p>
-            </div>
-            <div className="space-y-3">
-              {[
-                { q: 'Is this safe? Do you store my private keys?', a: 'Absolutely safe. We never ask for or store private keys. You only provide your public key (wallet address), which is publicly visible on the blockchain anyway.' },
-                { q: 'What is x402 and why does the agent pay for analysis?', a: 'x402 is a Casper-native payment protocol for agent-to-agent micropayments. The agent holds its own CSPR and pays the analysis fee on your behalf, demonstrating true agentic autonomy.' },
-                { q: 'What does "autonomous rebalancing" mean?', a: 'When the AI detects significant portfolio imbalance, the agent can autonomously execute a native CSPR transfer to rebalance — recorded transparently on-chain.' },
-                { q: 'Which wallet do I need?', a: 'We recommend the Casper Wallet browser extension. You can also paste any valid Casper public key (starting with 01 or 02) to try the demo.' },
-                { q: 'Is this on mainnet or testnet?', a: 'Live on Casper Testnet today. Mainnet deployment is on the roadmap after audit.' },
-              ].map((item, i) => (
-                <details key={i} className="group bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl open:shadow-stripe-md open:border-black/[0.1] dark:open:border-white/[0.1] transition-all duration-300">
-                  <summary className="flex items-center justify-between cursor-pointer p-5 text-sm font-medium text-ink-900 dark:text-white hover:text-primary transition-colors duration-300 list-none">
-                    <span>{item.q}</span>
-                    <span className="ml-4 text-primary transition-transform duration-300 group-open:rotate-180">▼</span>
-                  </summary>
-                  <div className="px-5 pb-5 text-xs text-ink-500 dark:text-ink-400 leading-relaxed animate-fade-in">
-                    {item.a}
-                  </div>
-                </details>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Live RWA Intelligence */}
-        <RWADashboard />
-
-        {/* On-chain verification */}
-        <JudgeProofPanel />
-
-        {/* Roadmap Section */}
-        <RoadmapSection />
-
-        {/* Connect Wallet Section */}
-        <section id="wallet-section" className="relative z-10 py-24 px-6 lg:px-8 border-t border-black/[0.06] dark:border-white/[0.06]">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-[32px] md:text-[40px] font-bold text-ink-900 dark:text-white mb-3 tracking-tight">Connect Wallet</h2>
-            <p className="text-base text-ink-500 dark:text-ink-400 mb-10 max-w-md mx-auto">Link your Casper wallet to get AI-powered portfolio analysis and autonomous rebalancing.</p>
-            <WalletConnect />
-          </div>
-        </section>
-
-        {/* Footer */}
-        <AppFooter />
-      </main>
+      <ResultsDashboard
+        portfolio={portfolio}
+        analysis={analysis}
+        walletAddress={walletAddress}
+        error={error}
+        onReset={reset}
+        onRetry={() => {
+          setError(null)
+          void handleAnalyze()
+        }}
+      />
     )
   }
 
   return (
-    <main className="relative min-h-screen">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 stripe-glass border-b border-black/[0.06] dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2.5 cursor-pointer group" onClick={reset}>
-            <Logo className="w-7 h-7" />
-            <span className="font-semibold text-[15px] text-ink-900 dark:text-white tracking-tight group-hover:text-primary transition-colors duration-300">Casper Agent</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <button
-              onClick={reset}
-              className="px-4 py-2 bg-primary text-white text-[13px] font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300"
-            >
-              Back to Home
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-24 pb-12">
-        {error && (
-          <div className="mb-6 mt-2 flex flex-col sm:flex-row sm:items-center gap-3 rounded-xl border border-red-200 dark:border-red-500/30 bg-red-50 dark:bg-red-500/10 px-4 py-3">
-            <p className="flex-1 text-sm text-red-700 dark:text-red-300">{error}</p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  setError(null)
-                  void handleAnalyze()
-                }}
-                className="px-3 py-1.5 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-[#5a4dff] transition-colors"
-              >
-                Retry
-              </button>
-              <button
-                onClick={reset}
-                className="px-3 py-1.5 border border-black/[0.08] dark:border-white/[0.1] text-ink-700 dark:text-ink-200 text-xs font-medium rounded-lg hover:bg-black/[0.02] dark:hover:bg-white/[0.04] transition-colors"
-              >
-                Disconnect
-              </button>
-            </div>
-          </div>
-        )}
-
-        {!portfolio || !analysis ? (
-          <div className="max-w-md mt-8 mx-auto">
-            <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 shadow-stripe-sm">
-              <div className="mb-4">
-                <p className="text-xs font-mono text-ink-400 dark:text-ink-500 uppercase mb-2 tracking-wider">Connected Wallet</p>
-                <p className="font-mono text-xs text-ink-900 dark:text-white break-all bg-ink-50 dark:bg-ink-800/50 border border-black/[0.06] dark:border-white/[0.06] rounded-lg p-3">{walletAddress}</p>
-              </div>
-              <div className="space-y-3">
-                <button
-                  onClick={() => void handleAnalyze()}
-                  className="w-full px-4 py-3 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300"
-                >
-                  Analyze Portfolio
-                </button>
-                <button
-                  onClick={reset}
-                  className="w-full px-4 py-3 bg-ink-50 dark:bg-ink-800 text-ink-900 dark:text-white text-sm font-medium border border-black/[0.06] dark:border-white/[0.06] rounded-lg hover:bg-ink-100 dark:hover:bg-ink-700 transition-all duration-300"
-                >
-                  Disconnect
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-6 mt-4 animate-fade-in">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-black/[0.06] dark:border-white/[0.06]">
-              <div>
-                <h1 className="text-xl font-semibold text-ink-900 dark:text-white tracking-tight">
-                  Analysis Results
-                </h1>
-                <p className="text-sm text-ink-500 dark:text-ink-400">
-                  Portfolio overview and AI insights
-                </p>
-              </div>
-              <button
-                onClick={reset}
-                className="px-4 py-2 bg-primary text-white text-[13px] font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300"
-              >
-                New Analysis
-              </button>
-            </div>
-
-            <AnalysisOutcomeStrip analysis={analysis} />
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-6">
-                <PortfolioDisplay portfolio={portfolio} />
-                <AgentIdentityCard />
-                {analysis.reputation && <AgentReputationCard reputation={analysis.reputation} />}
-                <AgentActivityLog steps={agentSteps} isRunning={false} />
-                <AIAnalysisComponent analysis={analysis} />
-                {analysis.multiAgent && <MultiAgentPanel data={analysis.multiAgent} />}
-                {analysis.yieldRouting && <YieldRoutingDashboard data={analysis.yieldRouting} />}
-              </div>
-              <div className="lg:sticky lg:top-20 space-y-6">
-                <AgentChat
-                  portfolio={portfolio}
-                  analysis={analysis}
-                  onAnalyze={handleAnalyze}
-                />
-              </div>
-            </div>
-          </div>
-        )}
+    <AppShell
+      onLogoClick={reset}
+      centered
+      rightSlot={
+        <button
+          onClick={reset}
+          className="text-[13px] font-medium text-ink-400 hover:text-ink-900 dark:hover:text-white transition-colors"
+        >
+          Disconnect
+        </button>
+      }
+    >
+      <div className="text-center animate-fade-in max-w-sm mx-auto">
+        <p className="text-sm text-ink-500 dark:text-ink-400 mb-6">
+          {error || 'Ready to analyze this wallet.'}
+        </p>
+        <button
+          onClick={() => void handleAnalyze()}
+          className="w-full px-4 py-3.5 bg-primary text-white text-sm font-semibold rounded-2xl hover:bg-[#5a4dff] btn-shadow"
+        >
+          Analyze Portfolio
+        </button>
       </div>
-    </main>
+    </AppShell>
   )
 }
