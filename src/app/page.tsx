@@ -23,6 +23,7 @@ import { JudgeProofPanel } from '@/components/JudgeProofPanel'
 import { AgentIdentityCard } from '@/components/AgentIdentityCard'
 import { AgentReputationCard } from '@/components/AgentReputationCard'
 import { AnalysisOutcomeStrip } from '@/components/AnalysisOutcomeStrip'
+import { AgentRunningScreen } from '@/components/AgentRunningScreen'
 import { TokenTicker } from '@/components/TokenTicker'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import type { AgentStep } from '@/lib/store'
@@ -356,8 +357,20 @@ export default function Home() {
     }
     if (autoStartedFor.current === walletAddress) return
     autoStartedFor.current = walletAddress
+    setLoading(true) // show full-screen runner immediately (before async work)
     void handleAnalyze()
-  }, [walletAddress, handleAnalyze])
+  }, [walletAddress, handleAnalyze, setLoading])
+
+  // Full-screen running experience until analysis finishes — no partial dashboard.
+  if (walletAddress && loading) {
+    return (
+      <AgentRunningScreen
+        steps={agentSteps}
+        walletAddress={walletAddress}
+        onCancel={reset}
+      />
+    )
+  }
 
   if (!walletAddress) {
     return (
@@ -618,47 +631,38 @@ export default function Home() {
           </div>
         )}
 
-        {!portfolio ? (
-          <div className="max-w-2xl mt-4 mx-auto space-y-6">
+        {!portfolio || !analysis ? (
+          <div className="max-w-md mt-8 mx-auto">
             <div className="relative bg-white dark:bg-ink-900 border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 shadow-stripe-sm">
               <div className="mb-4">
                 <p className="text-xs font-mono text-ink-400 dark:text-ink-500 uppercase mb-2 tracking-wider">Connected Wallet</p>
                 <p className="font-mono text-xs text-ink-900 dark:text-white break-all bg-ink-50 dark:bg-ink-800/50 border border-black/[0.06] dark:border-white/[0.06] rounded-lg p-3">{walletAddress}</p>
               </div>
-              {loading ? (
-                <p className="text-sm text-primary font-medium">
-                  Agent running — live steps stream below. No second click needed.
-                </p>
-              ) : (
-                <div className="space-y-3">
-                  <button
-                    onClick={() => void handleAnalyze()}
-                    className="w-full px-4 py-3 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300"
-                  >
-                    Analyze Portfolio
-                  </button>
-                  <button
-                    onClick={reset}
-                    className="w-full px-4 py-3 bg-ink-50 dark:bg-ink-800 text-ink-900 dark:text-white text-sm font-medium border border-black/[0.06] dark:border-white/[0.06] rounded-lg hover:bg-ink-100 dark:hover:bg-ink-700 transition-all duration-300"
-                  >
-                    Disconnect
-                  </button>
-                </div>
-              )}
+              <div className="space-y-3">
+                <button
+                  onClick={() => void handleAnalyze()}
+                  className="w-full px-4 py-3 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-[#5a4dff] btn-shadow hover:btn-shadow-hover transition-all duration-300"
+                >
+                  Analyze Portfolio
+                </button>
+                <button
+                  onClick={reset}
+                  className="w-full px-4 py-3 bg-ink-50 dark:bg-ink-800 text-ink-900 dark:text-white text-sm font-medium border border-black/[0.06] dark:border-white/[0.06] rounded-lg hover:bg-ink-100 dark:hover:bg-ink-700 transition-all duration-300"
+                >
+                  Disconnect
+                </button>
+              </div>
             </div>
-            <AgentActivityLog steps={agentSteps} isRunning={loading} />
           </div>
         ) : (
-          <div className="space-y-6 mt-4">
+          <div className="space-y-6 mt-4 animate-fade-in">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-black/[0.06] dark:border-white/[0.06]">
               <div>
                 <h1 className="text-xl font-semibold text-ink-900 dark:text-white tracking-tight">
-                  {loading ? 'Agent running…' : 'Analysis Results'}
+                  Analysis Results
                 </h1>
                 <p className="text-sm text-ink-500 dark:text-ink-400">
-                  {loading
-                    ? 'Watch live agent output — x402, RWA, and on-chain writes'
-                    : 'Portfolio overview and AI insights'}
+                  Portfolio overview and AI insights
                 </p>
               </div>
               <button
@@ -669,17 +673,17 @@ export default function Home() {
               </button>
             </div>
 
-            {analysis && <AnalysisOutcomeStrip analysis={analysis} loading={loading} />}
+            <AnalysisOutcomeStrip analysis={analysis} />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-6">
                 <PortfolioDisplay portfolio={portfolio} />
                 <AgentIdentityCard />
-                {analysis?.reputation && <AgentReputationCard reputation={analysis.reputation} />}
-                <AgentActivityLog steps={agentSteps} isRunning={loading} />
-                {analysis && <AIAnalysisComponent analysis={analysis} />}
-                {analysis?.multiAgent && <MultiAgentPanel data={analysis.multiAgent} />}
-                {analysis?.yieldRouting && <YieldRoutingDashboard data={analysis.yieldRouting} />}
+                {analysis.reputation && <AgentReputationCard reputation={analysis.reputation} />}
+                <AgentActivityLog steps={agentSteps} isRunning={false} />
+                <AIAnalysisComponent analysis={analysis} />
+                {analysis.multiAgent && <MultiAgentPanel data={analysis.multiAgent} />}
+                {analysis.yieldRouting && <YieldRoutingDashboard data={analysis.yieldRouting} />}
               </div>
               <div className="lg:sticky lg:top-20 space-y-6">
                 <AgentChat
