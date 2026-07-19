@@ -25,12 +25,20 @@ export interface X402Payment {
 export const ANALYSIS_COST_CSPR = '0.01'
 
 /**
- * Recipient address for analysis payments. Configure via
- * NEXT_PUBLIC_X402_RECIPIENT; falls back to a placeholder for demo flows.
+ * Recipient address for analysis payment *intents* (header only).
+ * On-chain agent-wallet settle ignores placeholders and pays a real key
+ * (see resolveNativeTransferTarget in casper-agent).
  */
 export const ANALYSIS_RECIPIENT =
-  process.env.NEXT_PUBLIC_X402_RECIPIENT ||
-  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+  process.env.NEXT_PUBLIC_X402_RECIPIENT &&
+  !/your_casper_wallet|example|placeholder|changeme/i.test(
+    process.env.NEXT_PUBLIC_X402_RECIPIENT
+  ) &&
+  process.env.NEXT_PUBLIC_X402_RECIPIENT !==
+    '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+    ? process.env.NEXT_PUBLIC_X402_RECIPIENT
+    : // Live agent wallet — safe default so intents never point at a fake key
+      '020343c494c68ea9929fad760585d3c138241876fbf8bd03f7cef3147eeee33dd4a6'
 
 /** Construct an x402 payment intent for portfolio analysis. */
 export const createX402Payment = async (
