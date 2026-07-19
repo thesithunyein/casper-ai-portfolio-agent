@@ -68,7 +68,7 @@ export const HomeLanding = ({ onLogoClick }: HomeLandingProps) => {
                 href={item.href}
                 className="rounded-[16px] border border-black/[0.06] dark:border-white/[0.08] bg-white/55 dark:bg-white/[0.04] backdrop-blur-xl px-3 py-4 text-center shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
               >
-                <item.icon className="w-4 h-4 mx-auto mb-2.5 text-primary/75 group-hover:text-primary transition-colors duration-300" />
+                <item.icon className="w-4 h-4 mx-auto mb-2.5 text-ink-900 dark:text-primary group-hover:scale-110 transition-transform duration-300" />
                 <p className="text-[13px] font-semibold text-ink-900 dark:text-white tracking-tight">
                   {item.label}
                 </p>
@@ -90,8 +90,8 @@ export const HomeLanding = ({ onLogoClick }: HomeLandingProps) => {
           className="inline-flex items-center gap-2 px-3.5 py-1.5 mb-9 rounded-full bg-white/70 dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-xl"
         >
           <span className="relative flex h-1.5 w-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-45" />
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-55" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary ring-1 ring-primary-ink/20" />
           </span>
           <span className="text-[11px] font-medium tracking-wide text-ink-600 dark:text-ink-300">
             Live on Casper Testnet

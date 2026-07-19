@@ -2,12 +2,13 @@
 
 import { motion } from 'framer-motion'
 import { AppShell } from '@/components/AppShell'
+import { Logo } from '@/components/Logo'
 
 interface AgentRunningScreenProps {
   onCancel?: () => void
 }
 
-/** Calm running state — cursor light still live in the shell. */
+/** Calm running state — lime brand pulse + vector mark. */
 export const AgentRunningScreen = ({ onCancel }: AgentRunningScreenProps) => {
   return (
     <AppShell
@@ -25,14 +26,24 @@ export const AgentRunningScreen = ({ onCancel }: AgentRunningScreenProps) => {
     >
       <div className="text-center">
         <motion.div
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto mb-8 w-14 h-14 relative"
+        >
+          <span className="absolute inset-0 rounded-[14px] bg-primary/40 blur-xl animate-pulse" />
+          <Logo className="relative w-14 h-14 drop-shadow-sm" />
+        </motion.div>
+
+        <motion.div
           initial={{ opacity: 0, scale: 0.96, filter: 'blur(4px)' }}
           animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 mb-9 rounded-full bg-white/70 dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-xl"
+          transition={{ delay: 0.08, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 mb-7 rounded-full bg-white/70 dark:bg-white/[0.06] border border-primary/30 dark:border-primary/20 shadow-[0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-xl"
         >
           <span className="relative flex h-1.5 w-1.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-55" />
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary ring-1 ring-primary-ink/20" />
           </span>
           <span className="text-[11px] font-medium tracking-wide text-ink-600 dark:text-ink-300">
             Agent running

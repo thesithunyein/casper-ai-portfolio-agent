@@ -77,7 +77,7 @@ export function SpotlightCard({
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
     setStyle({
-      background: `radial-gradient(160px circle at ${x}px ${y}px, rgba(99,91,255,0.08), transparent 70%)`,
+      background: `radial-gradient(160px circle at ${x}px ${y}px, rgba(223,255,0,0.18), transparent 70%)`,
     })
   }
 
@@ -168,7 +168,7 @@ export function MagneticButton({
         className="pointer-events-none absolute inset-0 opacity-60 group-hover:opacity-100 transition-opacity duration-500"
         style={{
           background:
-            'radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,0.28), transparent 55%)',
+            'radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,0.45), transparent 55%)',
         }}
       />
       <span className="relative z-[1]">{children}</span>

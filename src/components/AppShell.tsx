@@ -24,7 +24,7 @@ export const AppShell = ({
   footer,
 }: AppShellProps) => {
   return (
-    <main className="relative min-h-screen flex flex-col overflow-x-hidden selection:bg-primary/20 selection:text-ink-900 dark:selection:text-white">
+    <main className="relative min-h-screen flex flex-col overflow-x-hidden selection:bg-primary/40 selection:text-primary-ink">
       <LiveAtmosphere />
 
       <nav className="relative z-10 flex items-center justify-between px-6 lg:px-10 h-[60px] shrink-0">

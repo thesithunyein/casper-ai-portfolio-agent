@@ -20,10 +20,10 @@ export const metadata: Metadata = {
   description: 'Autonomous AI portfolio agent on Casper Testnet — x402 settle, Odra contracts, live RWA intelligence, and agent reputation.',
   icons: {
     icon: [
-      { url: '/icon.png', type: 'image/png', sizes: 'any' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
       { url: '/favicon-32.png', type: 'image/png', sizes: '32x32' },
     ],
-    shortcut: '/favicon-32.png',
+    shortcut: '/icon.svg',
     apple: '/icon-64.png',
   },
   appleWebApp: {
@@ -35,8 +35,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f5f5f7' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0c' },
+    { media: '(prefers-color-scheme: light)', color: '#DFFF00' },
+    { media: '(prefers-color-scheme: dark)', color: '#050505' },
   ],
   width: 'device-width',
   initialScale: 1,

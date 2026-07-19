@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/profile-logo.png" width="96" height="96" alt="CasperAgent" />
+<img src="public/icon.svg" width="96" height="96" alt="CasperAgent" />
 
 # CasperAgent
 

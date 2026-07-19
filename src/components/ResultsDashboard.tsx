@@ -88,7 +88,7 @@ export const ResultsDashboard = ({
             {onRetry && (
               <button
                 onClick={onRetry}
-                className="text-[13px] font-semibold text-primary hover:opacity-80 transition-opacity"
+                className="text-[13px] font-semibold text-ink-900 dark:text-primary hover:opacity-80 transition-opacity"
               >
                 Retry
               </button>
@@ -103,12 +103,12 @@ export const ResultsDashboard = ({
           animate="show"
           className="text-center pt-2"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 mb-7 rounded-full bg-white/70 dark:bg-white/[0.06] border border-emerald-200/50 dark:border-emerald-500/20 shadow-[0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-xl">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 mb-7 rounded-full bg-white/70 dark:bg-white/[0.06] border border-primary/40 dark:border-primary/25 shadow-[0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-xl">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-40" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-50" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary ring-1 ring-primary-ink/20" />
             </span>
-            <span className="text-[11px] font-medium tracking-wide text-emerald-700 dark:text-emerald-400">
+            <span className="text-[11px] font-medium tracking-wide text-ink-700 dark:text-primary">
               Analysis complete
             </span>
           </div>
@@ -200,7 +200,7 @@ export const ResultsDashboard = ({
                 <SpotlightCard className="rounded-[14px] px-3.5 py-3 transition-colors hover:bg-white/55 dark:hover:bg-white/[0.04]">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="w-9 h-9 rounded-full bg-white/90 dark:bg-white/[0.08] border border-black/[0.06] dark:border-white/[0.08] flex items-center justify-center text-xs font-semibold text-primary shrink-0 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                      <span className="w-9 h-9 rounded-full bg-primary text-primary-ink border border-primary-ink/10 flex items-center justify-center text-xs font-semibold shrink-0 shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
                         {asset.symbol[0]}
                       </span>
                       <div className="min-w-0">
@@ -224,7 +224,7 @@ export const ResultsDashboard = ({
                       </p>
                       <div className="mt-1.5 h-1 w-16 ml-auto rounded-full bg-black/[0.06] dark:bg-white/[0.08] overflow-hidden">
                         <motion.div
-                          className="h-full rounded-full bg-primary/80"
+                          className="h-full rounded-full bg-primary"
                           initial={{ width: 0 }}
                           animate={{ width: `${Math.min(100, asset.percentage)}%` }}
                           transition={{
@@ -273,7 +273,7 @@ export const ResultsDashboard = ({
                   key={i}
                   className="flex gap-3.5 text-[14px] text-ink-600 dark:text-ink-300 leading-relaxed tracking-[-0.01em]"
                 >
-                  <span className="text-[11px] font-semibold text-primary/80 shrink-0 mt-0.5 tabular-nums">
+                  <span className="text-[11px] font-semibold text-ink-900 dark:text-primary shrink-0 mt-0.5 tabular-nums">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <span>{rec}</span>
@@ -298,7 +298,7 @@ export const ResultsDashboard = ({
               href={analysis.onchain.explorerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-mono text-primary hover:opacity-80 transition-opacity break-all"
+              className="inline-flex items-center gap-1.5 text-sm font-mono text-ink-900 dark:text-primary hover:opacity-80 transition-opacity break-all"
             >
               {analysis.onchain.transactionHash.slice(0, 20)}…
               <ExternalLink className="w-3.5 h-3.5 shrink-0" />
@@ -309,7 +309,7 @@ export const ResultsDashboard = ({
                   href={analysis.x402Payment.explorerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-mono text-ink-500 hover:text-primary transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-mono text-ink-500 hover:text-ink-900 dark:hover:text-primary transition-colors"
                 >
                   x402 settle {analysis.x402Payment.amountCspr} CSPR
                   <ExternalLink className="w-3 h-3 shrink-0" />
@@ -336,13 +336,13 @@ const ProofChip = ({
 }) => {
   const className = `inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-[11px] backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] ${
     ok
-      ? 'bg-emerald-50/80 dark:bg-emerald-500/10 border-emerald-200/70 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400'
+      ? 'bg-primary/90 text-primary-ink border-primary-ink/10'
       : 'bg-white/70 dark:bg-white/[0.05] border-black/[0.06] dark:border-white/[0.08] text-ink-600 dark:text-ink-300'
   }`
 
   const inner = (
     <>
-      <span className="font-medium text-ink-400 dark:text-ink-500 tracking-wide">{label}</span>
+      <span className="font-medium text-ink-500 dark:text-ink-400 tracking-wide">{label}</span>
       <span className="font-semibold tracking-tight">{value}</span>
       {href && <ExternalLink className="w-3 h-3 opacity-45" />}
     </>

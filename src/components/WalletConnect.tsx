@@ -52,12 +52,12 @@ export const WalletConnect = () => {
           }}
           onKeyDown={(e) => e.key === 'Enter' && handleConnect()}
           placeholder="01… or 02…"
-          className={`w-full px-4 py-[15px] bg-white/80 dark:bg-white/[0.06] border text-ink-900 dark:text-white placeholder-ink-400/80 focus:outline-none font-mono text-[13px] md:text-sm rounded-[14px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-xl transition-all duration-300 focus:shadow-[0_0_0_4px_rgba(99,91,255,0.12)] ${
+          className={`w-full px-4 py-[15px] bg-white/80 dark:bg-white/[0.06] border text-ink-900 dark:text-white placeholder-ink-400/80 focus:outline-none font-mono text-[13px] md:text-sm rounded-[14px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-xl transition-all duration-300 focus:shadow-[0_0_0_4px_rgba(223,255,0,0.35)] ${
             showError
               ? 'border-red-300/80 focus:border-red-400'
               : isValid && input.trim()
-                ? 'border-emerald-300/70 focus:border-emerald-400'
-                : 'border-black/[0.08] dark:border-white/[0.1] focus:border-primary/50'
+                ? 'border-ink-900/30 dark:border-primary/50 focus:border-ink-900 dark:focus:border-primary'
+                : 'border-black/[0.08] dark:border-white/[0.1] focus:border-ink-900/40 dark:focus:border-primary/60'
           }`}
         />
       </div>
@@ -69,7 +69,7 @@ export const WalletConnect = () => {
 
       <MagneticButton
         onClick={handleConnect}
-        className="w-full px-4 py-[15px] bg-primary text-white text-[15px] font-semibold rounded-[14px] hover:bg-[#5a4dff] shadow-[0_1px_2px_rgba(99,91,255,0.25),0_8px_24px_rgba(99,91,255,0.28)] hover:shadow-[0_1px_2px_rgba(99,91,255,0.3),0_12px_32px_rgba(99,91,255,0.35)] active:scale-[0.985]"
+        className="w-full px-4 py-[15px] bg-primary text-primary-ink text-[15px] font-semibold rounded-[14px] hover:bg-primary-hover shadow-[0_1px_2px_rgba(0,0,0,0.08),0_8px_24px_rgba(223,255,0,0.35)] hover:shadow-[0_1px_2px_rgba(0,0,0,0.1),0_12px_32px_rgba(223,255,0,0.45)] active:scale-[0.985]"
       >
         Connect & Analyze
       </MagneticButton>

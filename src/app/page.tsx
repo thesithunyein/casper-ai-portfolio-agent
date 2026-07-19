@@ -389,7 +389,7 @@ export default function Home() {
         </p>
         <button
           onClick={() => void handleAnalyze()}
-          className="w-full px-4 py-3.5 bg-primary text-white text-sm font-semibold rounded-2xl hover:bg-[#5a4dff] btn-shadow"
+          className="w-full px-4 py-3.5 bg-primary text-primary-ink text-sm font-semibold rounded-2xl hover:bg-primary-hover shadow-[0_8px_24px_rgba(223,255,0,0.3)]"
         >
           Analyze Portfolio
         </button>
