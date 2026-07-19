@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { AppShell } from '@/components/AppShell'
 import { WalletConnect } from '@/components/WalletConnect'
 import { SpotlightCard } from '@/components/PointerEffects'
+import { BuiltOnCasper } from '@/components/BuiltOnCasper'
 import { BookOpen, FileCode2, ShieldCheck } from 'lucide-react'
 
 interface HomeLandingProps {
@@ -56,27 +57,33 @@ export const HomeLanding = ({ onLogoClick }: HomeLandingProps) => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.55, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-lg mx-auto"
+          className="w-full max-w-lg mx-auto space-y-8"
         >
-          <p className="text-center text-[11px] font-medium tracking-[0.14em] uppercase text-ink-400 dark:text-ink-500 mb-4">
-            Essentials
-          </p>
-          <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
-            {ESSENTIALS.map((item) => (
-              <SpotlightCard
-                key={item.label}
-                href={item.href}
-                className="rounded-[16px] border border-black/[0.06] dark:border-white/[0.08] bg-white/55 dark:bg-white/[0.04] backdrop-blur-xl px-3 py-4 text-center shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
-              >
-                <item.icon className="w-4 h-4 mx-auto mb-2.5 text-ink-900 dark:text-primary group-hover:scale-110 transition-transform duration-300" />
-                <p className="text-[13px] font-semibold text-ink-900 dark:text-white tracking-tight">
-                  {item.label}
-                </p>
-                <p className="mt-1 text-[10px] text-ink-400 dark:text-ink-500 leading-tight hidden sm:block">
-                  {item.hint}
-                </p>
-              </SpotlightCard>
-            ))}
+          <div>
+            <p className="text-center text-[11px] font-medium tracking-[0.14em] uppercase text-ink-400 dark:text-ink-500 mb-4">
+              Essentials
+            </p>
+            <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+              {ESSENTIALS.map((item) => (
+                <SpotlightCard
+                  key={item.label}
+                  href={item.href}
+                  className="rounded-[16px] border border-black/[0.06] dark:border-white/[0.08] bg-white/55 dark:bg-white/[0.04] backdrop-blur-xl px-3 py-4 text-center shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_6px_18px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_6px_18px_rgba(0,0,0,0.3)]"
+                >
+                  <item.icon className="w-4 h-4 mx-auto mb-2.5 text-ink-900 dark:text-primary group-hover:scale-105 transition-transform duration-300" />
+                  <p className="text-[13px] font-semibold text-ink-900 dark:text-white tracking-tight">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-[10px] text-ink-400 dark:text-ink-500 leading-tight hidden sm:block">
+                    {item.hint}
+                  </p>
+                </SpotlightCard>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-center pt-1">
+            <BuiltOnCasper />
           </div>
         </motion.div>
       }

@@ -29,8 +29,9 @@ export function usePointerField() {
     const tick = () => {
       const dx = target.current.x - current.current.x
       const dy = target.current.y - current.current.y
-      current.current.x += dx * 0.08
-      current.current.y += dy * 0.08
+      // Slower follow = lighter feel while moving
+      current.current.x += dx * 0.045
+      current.current.y += dy * 0.045
       setPoint({ x: current.current.x, y: current.current.y })
       raf.current = requestAnimationFrame(tick)
     }
@@ -77,7 +78,7 @@ export function SpotlightCard({
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
     setStyle({
-      background: `radial-gradient(160px circle at ${x}px ${y}px, rgba(223,255,0,0.18), transparent 70%)`,
+      background: `radial-gradient(120px circle at ${x}px ${y}px, rgba(223,255,0,0.08), transparent 70%)`,
     })
   }
 
@@ -145,7 +146,7 @@ export function MagneticButton({
     const rect = ref.current.getBoundingClientRect()
     const x = e.clientX - rect.left - rect.width / 2
     const y = e.clientY - rect.top - rect.height / 2
-    setOffset({ x: x * 0.06, y: y * 0.09 })
+    setOffset({ x: x * 0.03, y: y * 0.045 })
   }
 
   const handleLeave = () => setOffset({ x: 0, y: 0 })

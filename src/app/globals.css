@@ -314,40 +314,40 @@ button:active, a:active {
 }
 
 .atmosphere-orb-a {
-  width: min(50vw, 440px);
-  height: min(50vw, 440px);
+  width: min(45vw, 380px);
+  height: min(45vw, 380px);
   top: -14%;
   left: 18%;
-  background: rgba(223, 255, 0, 0.22);
-  animation: meshFloat 20s ease-in-out infinite;
+  background: rgba(223, 255, 0, 0.12);
+  animation: meshFloat 22s ease-in-out infinite;
 }
 
 .atmosphere-orb-b {
-  width: min(40vw, 340px);
-  height: min(40vw, 340px);
+  width: min(36vw, 300px);
+  height: min(36vw, 300px);
   bottom: 2%;
   right: 6%;
-  background: rgba(223, 255, 0, 0.1);
-  animation: meshFloat2 24s ease-in-out infinite;
+  background: rgba(223, 255, 0, 0.06);
+  animation: meshFloat2 26s ease-in-out infinite;
 }
 
 .atmosphere-orb-c {
-  width: min(32vw, 260px);
-  height: min(32vw, 260px);
+  width: min(28vw, 220px);
+  height: min(28vw, 220px);
   top: 42%;
   left: -6%;
-  background: rgba(10, 10, 10, 0.06);
-  animation: blob 28s ease-in-out infinite;
+  background: rgba(10, 10, 10, 0.04);
+  animation: blob 30s ease-in-out infinite;
 }
 
 .dark .atmosphere-orb-a {
-  background: rgba(223, 255, 0, 0.12);
-}
-.dark .atmosphere-orb-b {
   background: rgba(223, 255, 0, 0.07);
 }
+.dark .atmosphere-orb-b {
+  background: rgba(223, 255, 0, 0.04);
+}
 .dark .atmosphere-orb-c {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .atmosphere-noise {

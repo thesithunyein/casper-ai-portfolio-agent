@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import type { Portfolio, AIAnalysis } from '@/lib/casper'
 import { AppShell } from '@/components/AppShell'
 import { SpotlightCard } from '@/components/PointerEffects'
+import { BuiltOnCasper } from '@/components/BuiltOnCasper'
 import { ExternalLink } from 'lucide-react'
 
 interface ResultsDashboardProps {
