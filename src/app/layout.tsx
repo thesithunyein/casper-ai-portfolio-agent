@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   description: 'Autonomous AI portfolio agent on Casper Testnet — x402 settle, Odra contracts, live RWA intelligence, and agent reputation.',
   icons: {
     icon: [
-      { url: '/icon.png', type: 'image/png', sizes: 'any' },
+      { url: '/brand-mark.png', type: 'image/png', sizes: '512x512' },
       { url: '/favicon-32.png', type: 'image/png', sizes: '32x32' },
       { url: '/icon.svg', type: 'image/svg+xml' },
     ],

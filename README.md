@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/profile-logo.png" width="96" height="96" alt="CasperAgent" />
+<img src="https://raw.githubusercontent.com/thesithunyein/casper-ai-portfolio-agent/main/public/brand-mark.png" width="96" height="96" alt="CasperAgent" />
 
 # CasperAgent
 
